@@ -1,0 +1,30 @@
+{
+  "name": "newinventor/easy-form",
+  "description": "EasyForm",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Georgy Ionov",
+      "email": "newinventor20@gmail.com"
+    },
+    {
+      "name": "Andrew Kluev",
+      "email": "a.kluev@php73.ru"
+    }
+  ],
+  "config": {
+    "vendor-dir": "vendor"
+  },
+  "autoload": {
+    "psr-4": {
+      "NewInventor\\EasyForm\\": "src/"
+    }
+  },
+  "require": {
+    "psr/log": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "5.1.*"
+  }
+}
