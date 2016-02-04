@@ -2,11 +2,11 @@
 
 namespace NewInventor\EasyForm\Renderer;
 
-use Prophecy\Exception\Doubler\MethodNotFoundException;
-
 class RenderFactory implements RenderFactoryInterface
 {
     protected static $settings;
+
+    protected static $rendererClassName;
 
     /**
      * RenderFactory constructor.
@@ -15,23 +15,41 @@ class RenderFactory implements RenderFactoryInterface
     public function __construct(array $settings = [])
     {
         self::$settings = include_once(dirname(__FILE__) . '/settings.php');
-
         self::$settings = array_merge(self::$settings, $settings);
     }
 
     public function getRenderer()
     {
-
-    }
-
-    public function __call($name, $params)
-    {
-        if (isset(self::$settings[$name])) {
-            $className = self::$settings[$name];
+        if($this->validRendererExists()){
+            $className = $this->getRendererClassName();
 
             return new $className();
         }
 
-        throw new MethodNotFoundException('Method not found', self::class, $name, $params);
+        throw new \Exception("No valid renderer specified");
     }
+
+    protected function validRendererExists()
+    {
+        if($this->isRendererSet()){
+            $className = $this->getRendererClassName();
+
+            return
+                isset($className) && !empty($className) &&
+                class_exists($className);
+        }
+
+        return false;
+    }
+
+    protected function isRendererSet()
+    {
+        return isset(self::$settings['renderer']);
+    }
+
+    protected function getRendererClassName()
+    {
+        return self::$settings['availableRenderers'][self::$settings['renderer']];
+    }
+
 }

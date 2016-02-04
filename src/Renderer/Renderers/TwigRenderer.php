@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyForm\Renderer\Renderers;
+namespace NewInventor\EasyForm\Renderer\Renderers;
 
 use NewInventor\EasyForm\Renderer\RendererInterface;
 
