@@ -7,23 +7,48 @@
 
 namespace NewInventor\EasyForm\Abstraction;
 
+use NewInventor\EasyForm\Interfaces\NamedObjectInterface;
+
 class Dictionary implements \Iterator
 {
-    /** @var  KeyValuePair[] */
+    /** @var array */
     private $pairs;
+    /** @var string */
+    private $pairDelimiter;
+    /** @var string */
+    private $elementClass;
 
     /**
      * Dictionary constructor.
-     * @param KeyValuePair[]|array $pairs
+     * @param string $elementClass
      */
-    public function __construct(array $pairs)
+    public function __construct($elementClass)
     {
-        $this->addFromArray($pairs);
+        $this->elementClass = $elementClass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPairDelimiter()
+    {
+        return $this->pairDelimiter;
+    }
+
+    /**
+     * @param string $pairDelimiter
+     * @return Dictionary
+     */
+    public function setPairDelimiter($pairDelimiter)
+    {
+        $this->pairDelimiter = (string)$pairDelimiter;
+
+        return $this;
     }
 
     /**
      * @param string $name
-     * @return KeyValuePair
+     * @return NamedObjectInterface
      */
     public function get($name)
     {
@@ -32,18 +57,22 @@ class Dictionary implements \Iterator
     }
 
     /**
-     * @param string $name
-     * @param string $value
+     * @param NamedObjectInterface $pair
+     * @throws \Exception
+     * @return Dictionary
      */
-    public function add($name, $value)
+    public function add($pair)
     {
-        $name = (string)$name;
-        $value = (string)$value;
-        $this->pairs[$name] = $value;
+        if(!is_a($pair, $this->elementClass)){
+            throw new \Exception('Parameter does not match elements class.');
+        }
+        $this->pairs[$pair->getName()] = $pair;
+
+        return $this;
     }
 
     /**
-     * @return KeyValuePair[]
+     * @return NamedObjectInterface[]
      */
     public function getAll()
     {
@@ -65,20 +94,21 @@ class Dictionary implements \Iterator
     }
 
     /**
-     * @param array $pairs
+     * @param NamedObjectInterface[] $pairs
+     * @throws \Exception
+     * @return Dictionary
      */
-    public function addFromArray(array $pairs)
+    public function addArray(array $pairs)
     {
-        foreach($pairs as $key => $pair){
-            if($pair instanceof KeyValuePair){
+        foreach($pairs as $pair){
+            if(is_a($pair, $this->elementClass)){
                 $this->pairs[$pair->getName()] = $pair;
             }else{
-                $this->pairs[$key] = new KeyValuePair($key, $pair['value'], $pair['canBeShort']);
-                $this->pairs[$key]->setDelimiter($pair['delimiter']);
-                $this->pairs[$key]->setNameComas($pair['nameComas'][0], $pair['valueComas'][1]);
-                $this->pairs[$key]->setValueComas($pair['valueComas'][0], $pair['valueComas'][1]);
+                throw new \Exception('Type' . get_class($pair) . ' does not supported');
             }
         }
+
+        return $this;
     }
 
     public function rewind()
@@ -109,5 +139,15 @@ class Dictionary implements \Iterator
         $key = key($this->pairs);
         $var = ($key !== NULL && $key !== FALSE);
         return $var;
+    }
+
+    public function __toString()
+    {
+        return $this->getString();
+    }
+
+    public function getString()
+    {
+        return implode($this->pairDelimiter, $this->pairs);
     }
 }

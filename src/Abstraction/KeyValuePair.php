@@ -7,7 +7,9 @@
 
 namespace NewInventor\EasyForm\Abstraction;
 
-class KeyValuePair
+use NewInventor\EasyForm\Interfaces\NamedObjectInterface;
+
+class KeyValuePair implements NamedObjectInterface
 {
     /** @var string */
     private $name;
@@ -100,10 +102,13 @@ class KeyValuePair
 
     /**
      * @param string $delimiter
+     * @return KeyValuePair
      */
     public function setDelimiter($delimiter)
     {
         $this->delimiter = (string)$delimiter;
+
+        return $this;
     }
 
     /**
@@ -117,6 +122,7 @@ class KeyValuePair
     /**
      * @param string $nameComaLeft
      * @param string $nameComaRight
+     * @return KeyValuePair
      */
     public function setNameComas($nameComaLeft, $nameComaRight = null)
     {
@@ -125,6 +131,8 @@ class KeyValuePair
         }
         $this->nameComaLeft = (string)$nameComaLeft;
         $this->nameComaRight = (string)$nameComaRight;
+
+        return $this;
     }
 
     /**
@@ -138,6 +146,7 @@ class KeyValuePair
     /**
      * @param $valueComaLeft
      * @param $valueComaRight
+     * @return KeyValuePair
      */
     public function setValueComas($valueComaLeft, $valueComaRight = null)
     {
@@ -146,6 +155,8 @@ class KeyValuePair
         }
         $this->valueComaLeft = (string)$valueComaLeft;
         $this->valueComaRight = (string)$valueComaRight;
+
+        return $this;
     }
 
     public function __toString()
@@ -172,5 +183,96 @@ class KeyValuePair
     public function isValueEmpty()
     {
         return empty($this->value);
+    }
+
+    /**
+     * @param array $data
+     * @return KeyValuePair
+     * @throws \Exception
+     */
+    public static function initFromArray(array $data)
+    {
+        if(!isset($data['name'])){
+            throw new \Exception('Name must be specified.');
+        }
+        $pair = new KeyValuePair($data['name']);
+        if(isset($data['value'])){
+            $pair->setValue((string)$data['value']);
+        }
+        if(isset($data['canBeShort'])){
+            $pair->setCanBeShort((bool)$data['canBeShort']);
+        }
+        if(isset($data['delimiter'])){
+            $pair->setDelimiter((string)$data['delimiter']);
+        }
+        if(isset($data['valueComas'])){
+            $pair->setComasArray('value', $data['valueComas']);
+        }
+        if(isset($data['nameComas'])){
+            $pair->setComasArray('name', $data['nameComas']);
+        }
+
+        return $pair;
+    }
+
+    public static function isArrayParamsValid($params){
+        if(!isset($params['name']) || isset($params['name']) && !is_string($params['name'])){
+            return false;
+        }
+        if(isset($params['value']) && !is_string($params['value'])){
+            return false;
+        }
+        if(isset($params['delimiter']) && !is_string($params['delimiter'])){
+            return false;
+        }
+        if(isset($params['canBeShort']) && !is_bool($params['canBeShort'])){
+            return false;
+        }
+        if(isset($params['valueComas']) && !self::validComasArray($params['valueComas'])){
+            return false;
+        }
+        if(isset($params['nameComas']) && !self::validComasArray($params['nameComas'])){
+            return false;
+        }
+        return true;
+    }
+
+    public static function validComasArray($comas)
+    {
+        if((!is_array($comas) || count($comas) < 1 || count($comas) > 2 ||
+            (count($comas) > 0 && !is_string($comas[0])) ||
+            (count($comas) > 1 && !is_string($comas[1]))) &&
+            !is_string($comas)
+        ){
+            return false;
+        }
+        return true;
+    }
+
+    public function setComasArray($kind, $data)
+    {
+        if(!self::validComasArray($data)){
+            throw new \Exception('Not correct format of comas');
+        }
+        $method = $this->getMethod($kind);
+        if(is_array($data) && count($data) == 1){
+            $this->$method($data[0]);
+        }elseif(is_array($data) && count($data) == 2){
+            $this->$method($data[0], $data[1]);
+        }elseif(is_string($data)){
+            $this->$method($data);
+        }else{
+            throw new \Exception('Not correct format of comas');
+        }
+    }
+
+    protected function getMethod($kind)
+    {
+        $method = 'set' . ucfirst($kind) . 'Comas';
+        if(in_array($method, get_class_methods(get_class($this)))){
+            return $method;
+        }
+
+        throw new \Exception('Not correct comas kind.');
     }
 }

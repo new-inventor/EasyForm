@@ -8,19 +8,21 @@
 namespace NewInventor\EasyForm\Tests;
 
 use NewInventor\EasyForm\Abstraction\Dictionary;
+use NewInventor\EasyForm\Abstraction\KeyValuePair;
 
 class DictionaryTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        $dict = new Dictionary([
-            'text' => [
-                'value' => 'qwe',
-                'delimiter' => '=',
-                'valueComas' => ['/', '/'],
-                'nameComas' => ['{', '}']
-            ]
-        ]);
-        $this->assertEquals('{text}=/qwe/', $dict->get('text')->getString());
+        $attr1 = new KeyValuePair('type', 'text', false);
+        $attr1->setDelimiter('=')->setNameComas('')->setValueComas('\'');
+        $attr2 = new KeyValuePair('attach', 'value', false);
+        $attr2->setDelimiter(': ')->setNameComas('')->setValueComas('\'');
+        $dict = new Dictionary(get_class($attr1));
+        $dict->setPairDelimiter(' => ')->add($attr1)->add($attr2);
+        $this->assertEquals('type=\'text\'', $dict->get('type')->getString());
+        $this->assertEquals('attach: \'value\'', $dict->get('attach')->getString());
+
+        $this->assertEquals('type=\'text\' => attach: \'value\'', $dict->getString());
     }
 }
