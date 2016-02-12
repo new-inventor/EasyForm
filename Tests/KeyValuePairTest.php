@@ -11,6 +11,7 @@ use NewInventor\EasyForm\Abstraction\KeyValuePair;
 
 class KeyValuePairTest extends \PHPUnit_Framework_TestCase
 {
+
     public function testConstruct()
     {
         $pair = new KeyValuePair('pair', '', false);

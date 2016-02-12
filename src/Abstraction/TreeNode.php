@@ -46,10 +46,12 @@ trait TreeNode
      */
     public function deleteChild($name)
     {
-        if (isset($this->children[$name])) {
+        if(isset($this->children[$name])){
             unset($this->children[$name]);
+
             return true;
         }
+
         return false;
     }
 

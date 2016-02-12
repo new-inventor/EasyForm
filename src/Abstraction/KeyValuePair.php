@@ -7,12 +7,8 @@
 
 namespace NewInventor\EasyForm\Abstraction;
 
-use NewInventor\EasyForm\Interfaces\NamedObjectInterface;
-
-class KeyValuePair implements NamedObjectInterface
+class KeyValuePair extends NamedObject
 {
-    /** @var string */
-    private $name;
     /** @var string */
     private $value;
     /** @var string */
@@ -36,7 +32,7 @@ class KeyValuePair implements NamedObjectInterface
      */
     public function __construct($name, $value = '', $canBeShort = false)
     {
-        $this->setName($name);
+        parent::__construct($name);
         $this->setValue($value);
         $this->setCanBeShort($canBeShort);
         $this->setDelimiter('');
@@ -53,27 +49,19 @@ class KeyValuePair implements NamedObjectInterface
     }
 
     /**
-     * @param boolean $canBeShort
+     * @param bool $canBeShort
+     * @return $this
+     * @throws \Exception
      */
     public function setCanBeShort($canBeShort)
     {
-        $this->canBeShort = (bool)$canBeShort;
-    }
+        if(is_bool($canBeShort)){
+            $this->canBeShort = $canBeShort;
+        }else{
+            throw new \Exception('CanBeShort does not a boolean');
+        }
 
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = (string)$name;
+        return $this;
     }
 
     /**
@@ -85,11 +73,19 @@ class KeyValuePair implements NamedObjectInterface
     }
 
     /**
-     * @param string $value
+     * @string $value
+     * @return $this
+     * @throws \Exception
      */
     public function setValue($value)
     {
-        $this->value = (string)$value;
+        if(is_string($value)){
+            $this->value = $value;
+        }else{
+            throw new \Exception('Value does not a string');
+        }
+
+        return $this;
     }
 
     /**
@@ -102,21 +98,26 @@ class KeyValuePair implements NamedObjectInterface
 
     /**
      * @param string $delimiter
-     * @return KeyValuePair
+     * @return $this
+     * @throws \Exception
      */
     public function setDelimiter($delimiter)
     {
-        $this->delimiter = (string)$delimiter;
+        if(is_string($delimiter)){
+            $this->delimiter = $delimiter;
+        }else{
+            throw new \Exception('Delimiter does not a string');
+        }
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return array [left, right]
      */
     public function getNameComas()
     {
-        return ['left' => $this->nameComaLeft, 'right' => $this->nameComaRight];
+        return [$this->nameComaLeft, $this->nameComaRight];
     }
 
     /**
@@ -129,18 +130,17 @@ class KeyValuePair implements NamedObjectInterface
         if(!isset($nameComaRight)){
             $nameComaRight = $nameComaLeft;
         }
-        $this->nameComaLeft = (string)$nameComaLeft;
-        $this->nameComaRight = (string)$nameComaRight;
+        $this->setComasArray('name', [$nameComaLeft, $nameComaRight]);
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return array [left, right]
      */
     public function getValueComas()
     {
-        return ['left' => $this->valueComaLeft, 'right' => $this->valueComaRight];
+        return [$this->valueComaLeft, $this->valueComaRight];
     }
 
     /**
@@ -153,8 +153,7 @@ class KeyValuePair implements NamedObjectInterface
         if(!isset($valueComaRight)){
             $valueComaRight = $valueComaLeft;
         }
-        $this->valueComaLeft = (string)$valueComaLeft;
-        $this->valueComaRight = (string)$valueComaRight;
+        $this->setComasArray('value', [$valueComaLeft, $valueComaRight]);
 
         return $this;
     }
@@ -228,16 +227,16 @@ class KeyValuePair implements NamedObjectInterface
         if(isset($params['canBeShort']) && !is_bool($params['canBeShort'])){
             return false;
         }
-        if(isset($params['valueComas']) && !self::validComasArray($params['valueComas'])){
+        if(isset($params['valueComas']) && !self::isValidComasArray($params['valueComas'])){
             return false;
         }
-        if(isset($params['nameComas']) && !self::validComasArray($params['nameComas'])){
+        if(isset($params['nameComas']) && !self::isValidComasArray($params['nameComas'])){
             return false;
         }
         return true;
     }
 
-    public static function validComasArray($comas)
+    public static function isValidComasArray($comas)
     {
         if((!is_array($comas) || count($comas) < 1 || count($comas) > 2 ||
             (count($comas) > 0 && !is_string($comas[0])) ||
@@ -251,7 +250,7 @@ class KeyValuePair implements NamedObjectInterface
 
     public function setComasArray($kind, $data)
     {
-        if(!self::validComasArray($data)){
+        if(!self::isValidComasArray($data)){
             throw new \Exception('Not correct format of comas');
         }
         $method = $this->getMethod($kind);
@@ -264,6 +263,8 @@ class KeyValuePair implements NamedObjectInterface
         }else{
             throw new \Exception('Not correct format of comas');
         }
+
+        return $this;
     }
 
     protected function getMethod($kind)

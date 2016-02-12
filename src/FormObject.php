@@ -3,38 +3,21 @@
 namespace NewInventor\EasyForm;
 
 use NewInventor\EasyForm\Abstraction\Dictionary;
-use NewInventor\EasyForm\Interfaces\FormObjectInterface;
+use NewInventor\EasyForm\Abstraction\NamedObject;
+use NewInventor\EasyForm\Abstraction\TreeNode;
 
-class FormObject
+class FormObject extends NamedObject
 {
+    use TreeNode;
     /** @var Dictionary */
     private $attrs;
-    private $name;
     private $title;
 
     function __construct($name, $title, array $attrs = [])
     {
+        parent::__construct($name);
         $this->attrs = $attrs;
-        $this->name = $name;
         $this->title = $title;
-    }
-
-
-
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param mixed $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
     }
 
     /**
@@ -51,5 +34,14 @@ class FormObject
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    public static function initFromArray(array $data)
+    {
+    }
+
+    public function __toString()
+    {
+        // TODO: Implement __toString() method.
     }
 }

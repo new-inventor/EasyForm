@@ -25,8 +25,12 @@ interface NamedObjectInterface
      */
     public static function initFromArray(array $data);
 
+    public function toArray();
+
     /**
      * @return string
      */
     public function __toString();
+
+    public static function getClass();
 }
