@@ -7,10 +7,14 @@
 
 namespace NewInventor\EasyForm\Abstraction;
 
+use NewInventor\EasyForm\Helper\ObjectHelper;
+use NewInventor\EasyForm\Exception\ArgumentException;
+use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\Interfaces\NamedObjectInterface;
 
 class NamedObject implements NamedObjectInterface
 {
+    use FieldValidatorTrait;
     /** @var string */
     private $name;
 
@@ -34,17 +38,11 @@ class NamedObject implements NamedObjectInterface
     /**
      * @param string $name
      * @return $this
-     * @throws \Exception
+     * @throws ArgumentTypeException
      */
     public function setName($name)
     {
-        if(is_string($name)){
-            $this->name = $name;
-        }else{
-            throw new \Exception('Name is not a string');
-        }
-
-        return $this;
+        return $this->setField('name', $name, [ObjectHelper::STRING]);
     }
 
     public static function initFromArray(array $data)
@@ -52,7 +50,7 @@ class NamedObject implements NamedObjectInterface
         if(isset($data['name'])){
             return new static($data['name']);
         }
-        throw new \Exception('Name does not defined');
+        throw new ArgumentException('Имя не передано.', 'data');
     }
 
     public function toArray()
@@ -62,7 +60,8 @@ class NamedObject implements NamedObjectInterface
         ];
     }
 
-    public function __toString(){
+    public function __toString()
+    {
         return $this->getName();
     }
 

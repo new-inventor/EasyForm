@@ -7,8 +7,12 @@
 
 namespace NewInventor\EasyForm\Abstraction;
 
+use NewInventor\EasyForm\Helper\ObjectHelper;
+
 class KeyValuePair extends NamedObject
 {
+    use FieldValidatorTrait;
+
     /** @var string */
     private $value;
     /** @var string */
@@ -55,13 +59,7 @@ class KeyValuePair extends NamedObject
      */
     public function setCanBeShort($canBeShort)
     {
-        if(is_bool($canBeShort)){
-            $this->canBeShort = $canBeShort;
-        }else{
-            throw new \Exception('CanBeShort does not a boolean');
-        }
-
-        return $this;
+        return $this->setField('canBeShort', $canBeShort, [ObjectHelper::BOOL]);
     }
 
     /**
@@ -73,19 +71,13 @@ class KeyValuePair extends NamedObject
     }
 
     /**
-     * @string $value
+     * @param string $value
      * @return $this
      * @throws \Exception
      */
     public function setValue($value)
     {
-        if(is_string($value)){
-            $this->value = $value;
-        }else{
-            throw new \Exception('Value does not a string');
-        }
-
-        return $this;
+        return $this->setField('value', $value, [ObjectHelper::STRING]);
     }
 
     /**
@@ -103,11 +95,7 @@ class KeyValuePair extends NamedObject
      */
     public function setDelimiter($delimiter)
     {
-        if(is_string($delimiter)){
-            $this->delimiter = $delimiter;
-        }else{
-            throw new \Exception('Delimiter does not a string');
-        }
+        return $this->setField('delimiter', $delimiter, [ObjectHelper::STRING]);
 
         return $this;
     }

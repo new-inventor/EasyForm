@@ -7,6 +7,9 @@
 
 namespace NewInventor\EasyForm\Abstraction;
 
+use NewInventor\EasyForm\Helper\ObjectHelper;
+use NewInventor\EasyForm\Exception\ArgumentTypeException;
+
 trait TreeNode
 {
     private $parent = null;
@@ -14,7 +17,7 @@ trait TreeNode
 
 
     /**
-     * @return FormObjectInterface[]
+     * @return mixed[]
      */
     public function getChildren()
     {
@@ -22,7 +25,7 @@ trait TreeNode
     }
 
     /**
-     * @param FormObjectInterface[] $children
+     * @param mixed[] $children
      */
     public function setChildren(array $children)
     {
@@ -32,7 +35,7 @@ trait TreeNode
     /**
      * @param string $name
      *
-     * @return FormObjectInterface
+     * @return mixed
      */
     public function getChild($name)
     {
@@ -41,22 +44,19 @@ trait TreeNode
 
     /**
      * @param string $name
-     *
-     * @return bool
+     * @throws ArgumentTypeException
      */
     public function deleteChild($name)
     {
-        if(isset($this->children[$name])){
+        if(ObjectHelper::isValidArgumentType($name, [ObjectHelper::STRING])){
             unset($this->children[$name]);
-
-            return true;
         }
 
-        return false;
+        throw new ArgumentTypeException('name', [ObjectHelper::STRING], $name);
     }
 
     /**
-     * @param FormObjectInterface $child
+     * @param mixed $child
      */
     public function addChild($child)
     {
@@ -64,7 +64,7 @@ trait TreeNode
     }
 
     /**
-     * @return FormObjectInterface
+     * @return mixed
      */
     public function getParent()
     {
@@ -72,7 +72,7 @@ trait TreeNode
     }
 
     /**
-     * @param FormObjectInterface $parent
+     * @param mixed $parent
      */
     public function setParent($parent)
     {

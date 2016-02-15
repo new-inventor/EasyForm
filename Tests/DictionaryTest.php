@@ -7,7 +7,7 @@
 
 namespace NewInventor\EasyForm\Tests;
 
-use NewInventor\EasyForm\Abstraction\Dictionary;
+use NewInventor\EasyForm\Abstraction\ObjectList;
 use NewInventor\EasyForm\Abstraction\KeyValuePair;
 
 class DictionaryTest extends \PHPUnit_Framework_TestCase
@@ -18,8 +18,8 @@ class DictionaryTest extends \PHPUnit_Framework_TestCase
         $attr1->setDelimiter('=')->setNameComas('')->setValueComas('\'');
         $attr2 = new KeyValuePair('attach', 'value', false);
         $attr2->setDelimiter(': ')->setNameComas('')->setValueComas('\'');
-        $dict = new Dictionary(get_class($attr1));
-        $dict->setPairDelimiter(' => ')->add($attr1)->add($attr2);
+        $dict = new ObjectList(get_class($attr1));
+        $dict->setObjectsDelimiter(' => ')->add($attr1)->add($attr2);
         $this->assertEquals('type=\'text\'', $dict->get('type')->getString());
         $this->assertEquals('attach: \'value\'', $dict->get('attach')->getString());
 
