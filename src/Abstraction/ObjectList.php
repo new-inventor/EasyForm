@@ -16,7 +16,6 @@ use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 
 class ObjectList implements \Iterator, ObjectListInterface
 {
-    use FieldValidatorTrait;
     /** @var array */
     private $objects;
     /** @var string */
@@ -37,13 +36,12 @@ class ObjectList implements \Iterator, ObjectListInterface
      */
     public function setElementClasses(array $elementClasses = [])
     {
-        if(ArrayHelper::isValidElementsTypes($elementClasses, [ObjectHelper::STRING])){
+        if (ArrayHelper::isValidElementsTypes($elementClasses, [ObjectHelper::STRING])) {
             $this->elementClasses = $elementClasses;
 
             return $this;
         }
-
-        throw new ArgumentException('Переданы  неправильныеклассы', 'elementClasses');
+        throw new ArgumentException('Переданы  неправильные классы', 'elementClasses');
     }
 
     /**
@@ -61,7 +59,12 @@ class ObjectList implements \Iterator, ObjectListInterface
      */
     public function setObjectsDelimiter($objectsDelimiter)
     {
-        return $this->setField('objectsDelimiter', $objectsDelimiter, [ObjectHelper::STRING]);
+        if (ObjectHelper::isValidArgumentType($objectsDelimiter, [ObjectHelper::STRING])) {
+            $this->objectsDelimiter = $objectsDelimiter;
+
+            return $this;
+        }
+        throw new ArgumentTypeException('objectsDelimiter', [ObjectHelper::STRING], $objectsDelimiter);
     }
 
     /**
@@ -71,8 +74,12 @@ class ObjectList implements \Iterator, ObjectListInterface
      */
     public function get($name)
     {
-        if(ObjectHelper::isValidArgumentType($name, [ObjectHelper::STRING])){
-            return $this->objects[$name];
+        if (ObjectHelper::isValidArgumentType($name, [ObjectHelper::STRING])) {
+            if (isset($this->objects[$name])) {
+                return $this->objects[$name];
+            }
+
+            return null;
         }
 
         throw new ArgumentTypeException('name', [ObjectHelper::STRING], $name);
@@ -85,7 +92,7 @@ class ObjectList implements \Iterator, ObjectListInterface
      */
     public function add($pair)
     {
-        if(ObjectHelper::isValidElementTypes($pair, $this->elementClasses)){
+        if (ObjectHelper::isValidElementTypes($pair, $this->elementClasses)) {
             $this->objects[$pair->getName()] = $pair;
 
             return $this;
@@ -108,8 +115,8 @@ class ObjectList implements \Iterator, ObjectListInterface
      */
     public function delete($name)
     {
-        if(ObjectHelper::isValidArgumentType($name, [ObjectHelper::STRING])){
-            if(isset($this->objects[$name])){
+        if (ObjectHelper::isValidArgumentType($name, [ObjectHelper::STRING])) {
+            if (isset($this->objects[$name])) {
                 unset($this->objects[$name]);
 
                 return $this;
@@ -126,7 +133,7 @@ class ObjectList implements \Iterator, ObjectListInterface
      */
     public function addArray(array $pairs)
     {
-        foreach($pairs as $pair){
+        foreach ($pairs as $pair) {
             $this->add($pair);
         }
 
@@ -169,11 +176,21 @@ class ObjectList implements \Iterator, ObjectListInterface
 
     public function __toString()
     {
-        return $this->getString();
+        return $this->render();
     }
 
-    public function getString()
+    public function render()
     {
         return implode($this->objectsDelimiter, $this->objects);
+    }
+
+    public function toArray()
+    {
+        $res = [];
+        foreach($this->getAll() as $name => $obj){
+            $res[$name] = $obj->toArray();
+        }
+
+        return $res;
     }
 }

@@ -59,5 +59,10 @@ interface ObjectListInterface
     /**
      * @return string
      */
-    public function getString();
+    public function render();
+
+    /**
+     * @return array
+     */
+    public function toArray();
 }

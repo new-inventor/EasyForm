@@ -25,6 +25,9 @@ interface NamedObjectInterface
      */
     public static function initFromArray(array $data);
 
+    /**
+     * @return mixed[]
+     */
     public function toArray();
 
     /**
@@ -32,5 +35,13 @@ interface NamedObjectInterface
      */
     public function __toString();
 
+    /**
+     * @return string
+     */
+    public function render();
+
+    /**
+     * @return string
+     */
     public static function getClass();
 }

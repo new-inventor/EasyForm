@@ -6,9 +6,16 @@
  */
 
 return [
+    'default' => [
+        'delimiter' => '',
+        'valueComas' => '',
+        'nameComes' => '',
+        'canBeShort' => false
+    ],
     'htmlAttribute' => [
         'delimiter' => '=',
-        'valueComas' => '"'
+        'valueComas' => '"',
+        'canBeShort' => true
     ],
     'jsObject' => [
         'delimiter' => ': ',

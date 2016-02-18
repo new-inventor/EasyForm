@@ -15,61 +15,61 @@ class KeyValuePairTest extends \PHPUnit_Framework_TestCase
     public function testConstruct()
     {
         $pair = new KeyValuePair('pair', '', false);
-        $this->assertEquals('pair', $pair->getString());
+        $this->assertEquals('pair', $pair->render());
         $pair->setDelimiter('=');
-        $this->assertEquals('pair=', $pair->getString());
+        $this->assertEquals('pair=', $pair->render());
         $pair->setNameComas('{');
-        $this->assertEquals('{pair{=', $pair->getString());
+        $this->assertEquals('{pair{=', $pair->render());
         $pair->setNameComas('{', '}');
-        $this->assertEquals('{pair}=', $pair->getString());
+        $this->assertEquals('{pair}=', $pair->render());
         $pair->setValueComas('/');
-        $this->assertEquals('{pair}=//', $pair->getString());
+        $this->assertEquals('{pair}=//', $pair->render());
         $pair->setValueComas('/', '}');
-        $this->assertEquals('{pair}=/}', $pair->getString());
+        $this->assertEquals('{pair}=/}', $pair->render());
         $pair->setValue('123');
-        $this->assertEquals('{pair}=/123}', $pair->getString());
+        $this->assertEquals('{pair}=/123}', $pair->render());
     }
 
     public function testConstructShort()
     {
         $pair = new KeyValuePair('pair', '', true);
-        $this->assertEquals('pair', $pair->getString());
+        $this->assertEquals('pair', $pair->render());
         $pair->setDelimiter('=');
-        $this->assertEquals('pair', $pair->getString());
+        $this->assertEquals('pair', $pair->render());
         $pair->setNameComas('=');
-        $this->assertEquals('=pair=', $pair->getString());
+        $this->assertEquals('=pair=', $pair->render());
         $pair->setNameComas('=', '\'');
-        $this->assertEquals('=pair\'', $pair->getString());
+        $this->assertEquals('=pair\'', $pair->render());
         $pair->setValueComas('"');
-        $this->assertEquals('=pair\'', $pair->getString());
+        $this->assertEquals('=pair\'', $pair->render());
         $pair->setValue('123');
-        $this->assertEquals('=pair\'="123"', $pair->getString());
-        try{
+        $this->assertEquals('=pair\'="123"', $pair->render());
+        try {
             $pair = new KeyValuePair('');
             $this->assertTrue(false);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->assertTrue(true);
         }
-        try{
+        try {
             $pair = new KeyValuePair([]);
             $this->assertTrue(false);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->assertTrue(true);
         }
-        try{
+        try {
             $pair = new KeyValuePair(new KeyValuePair('name'));
             $this->assertTrue(false);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->assertTrue(true);
         }
     }
 
     public function testConstructFromArray()
     {
-        try{
+        try {
             $pair = KeyValuePair::initFromArray([]);
             $this->assertTrue(false);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->assertTrue(true);
         }
 
@@ -106,7 +106,7 @@ class KeyValuePairTest extends \PHPUnit_Framework_TestCase
         ]);
         $this->assertEquals('-tag-=*123^', '' . $pair);
 
-        try{
+        try {
             $pair = KeyValuePair::initFromArray([
                 'name' => 'tag',
                 'value' => '123',
@@ -116,28 +116,28 @@ class KeyValuePairTest extends \PHPUnit_Framework_TestCase
                 'valueComas' => ['*', 1]
             ]);
             $this->assertTrue(false);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->assertTrue(true);
         }
     }
 
-    public function testValidComas()
+    public function testValidComasArray()
     {
-        $this->assertTrue(KeyValuePair::validComasArray(''));
-        $this->assertTrue(KeyValuePair::validComasArray('\''));
-        $this->assertTrue(KeyValuePair::validComasArray(['-']));
-        $this->assertTrue(KeyValuePair::validComasArray(['-', '*']));
-        $this->assertTrue(KeyValuePair::validComasArray(['-', '']));
-        $this->assertTrue(KeyValuePair::validComasArray(['', '']));
+        $this->assertTrue(KeyValuePair::isValidComasArray(''));
+        $this->assertTrue(KeyValuePair::isValidComasArray('\''));
+        $this->assertTrue(KeyValuePair::isValidComasArray(['-']));
+        $this->assertTrue(KeyValuePair::isValidComasArray(['-', '*']));
+        $this->assertTrue(KeyValuePair::isValidComasArray(['-', '']));
+        $this->assertTrue(KeyValuePair::isValidComasArray(['', '']));
 
-        $this->assertFalse(KeyValuePair::validComasArray(1));
-        $this->assertFalse(KeyValuePair::validComasArray(true));
-        $this->assertFalse(KeyValuePair::validComasArray([]));
-        $this->assertFalse(KeyValuePair::validComasArray(['-', '*', 2]));
-        $this->assertFalse(KeyValuePair::validComasArray(new KeyValuePair('name')));
-        $this->assertFalse(KeyValuePair::validComasArray(null));
-        $this->assertFalse(KeyValuePair::validComasArray([[], '']));
-        $this->assertFalse(KeyValuePair::validComasArray(['', []]));
+        $this->assertFalse(KeyValuePair::isValidComasArray(1));
+        $this->assertFalse(KeyValuePair::isValidComasArray(true));
+        $this->assertFalse(KeyValuePair::isValidComasArray([]));
+        $this->assertFalse(KeyValuePair::isValidComasArray(['-', '*', 2]));
+        $this->assertFalse(KeyValuePair::isValidComasArray(new KeyValuePair('name')));
+        $this->assertFalse(KeyValuePair::isValidComasArray(null));
+        $this->assertFalse(KeyValuePair::isValidComasArray([[], '']));
+        $this->assertFalse(KeyValuePair::isValidComasArray(['', []]));
     }
 
     public function testIsArrayParamsValid()
@@ -230,5 +230,51 @@ class KeyValuePairTest extends \PHPUnit_Framework_TestCase
                 'valueComas' => [],
             ]
         ));
+    }
+
+    public function testName()
+    {
+        $pair = new KeyValuePair('');
+        $pair->setName('123');
+        $name = $pair->getName();
+        $this->assertEquals('123', $name);
+    }
+
+    public function testValue()
+    {
+        $pair = new KeyValuePair('');
+        $pair->setValue('123');
+        $value = $pair->getValue();
+        $this->assertEquals('123', $value);
+    }
+
+    public function testDelimiter()
+    {
+        $pair = new KeyValuePair('');
+        $pair->setDelimiter('123');
+        $delimiter = $pair->getDelimiter();
+        $this->assertEquals('123', $delimiter);
+    }
+
+    public function testValueComas()
+    {
+        $pair = new KeyValuePair('');
+        $pair->setValueComas('123');
+        $comas = $pair->getValueComas();
+        $this->assertEquals(['123', '123'], $comas);
+        $pair->setValueComas('123', '321');
+        $comas = $pair->getValueComas();
+        $this->assertEquals(['123', '321'], $comas);
+    }
+
+    public function testNameComas()
+    {
+        $pair = new KeyValuePair('');
+        $pair->setNameComas('123');
+        $comas = $pair->getNameComas();
+        $this->assertEquals(['123', '123'], $comas);
+        $pair->setNameComas('123', '321');
+        $comas = $pair->getNameComas();
+        $this->assertEquals(['123', '321'], $comas);
     }
 }

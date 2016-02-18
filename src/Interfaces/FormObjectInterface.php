@@ -2,21 +2,14 @@
 
 namespace NewInventor\EasyForm\Interfaces;
 
+use NewInventor\EasyForm\Exception\ArgumentTypeException;
 
-interface FormObjectInterface
+interface FormObjectInterface extends NamedObjectInterface
 {
     /**
-     * @param $name
-     */
-    public function setName($name);
-
-    /**
-     * @return string
-     */
-    public function getName();
-
-    /**
-     * @param $title
+     * @param string $title
+     * @return static
+     * @throws ArgumentTypeException
      */
     public function setTitle($title);
 
@@ -26,20 +19,27 @@ interface FormObjectInterface
     public function getTitle();
 
     /**
-     * Object to string
-     * @return string
-     */
-    public function __toString();
-
-    /**
      * get parent object
      * @return FormInterface|BlockInterface
      */
     public function end();
 
     /**
-     * Convert object to array
-     * @return array
+     * @return bool
      */
-    public function toArray();
+    public function isRepeatable();
+
+    /**
+     * @return static
+     */
+    public function repeatable();
+
+    /**
+     * @return static
+     */
+    public function single();
+
+    public function validate();
+
+    public function show();
 }

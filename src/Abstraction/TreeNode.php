@@ -7,60 +7,31 @@
 
 namespace NewInventor\EasyForm\Abstraction;
 
-use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 
 trait TreeNode
 {
     private $parent = null;
+    /** @var null|ObjectList $children */
     private $children = null;
 
 
     /**
-     * @return mixed[]
+     * @return ObjectList|null
      */
-    public function getChildren()
+    public function children()
     {
         return $this->children;
     }
 
     /**
-     * @param mixed[] $children
-     */
-    public function setChildren(array $children)
-    {
-        $this->children = $children;
-    }
-
-    /**
      * @param string $name
-     *
-     * @return mixed
-     */
-    public function getChild($name)
-    {
-        return $this->children[$name];
-    }
-
-    /**
-     * @param string $name
+     * @return \NewInventor\EasyForm\Interfaces\NamedObjectInterface
      * @throws ArgumentTypeException
      */
-    public function deleteChild($name)
+    public function child($name)
     {
-        if(ObjectHelper::isValidArgumentType($name, [ObjectHelper::STRING])){
-            unset($this->children[$name]);
-        }
-
-        throw new ArgumentTypeException('name', [ObjectHelper::STRING], $name);
-    }
-
-    /**
-     * @param mixed $child
-     */
-    public function addChild($child)
-    {
-        $this->children[$child->getName()] = $child;
+        return $this->children->get($name);
     }
 
     /**

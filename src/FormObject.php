@@ -2,15 +2,16 @@
 
 namespace NewInventor\EasyForm;
 
-use NewInventor\EasyForm\Abstraction\ObjectList;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Abstraction\KeyValuePair;
 use NewInventor\EasyForm\Abstraction\NamedObject;
+use NewInventor\EasyForm\Abstraction\ObjectList;
 use NewInventor\EasyForm\Abstraction\TreeNode;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
+use NewInventor\EasyForm\Helper\ObjectHelper;
+use NewInventor\EasyForm\Interfaces\FormObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 
-class FormObject extends NamedObject
+abstract class FormObject extends NamedObject implements FormObjectInterface
 {
     use TreeNode;
     /** @var ObjectListInterface */
@@ -23,8 +24,12 @@ class FormObject extends NamedObject
     function __construct($name, $title = '', $repeatable = false)
     {
         parent::__construct($name);
-        $this->attrs = new ObjectList(KeyValuePair::getClass());
+        $this->attrs = new ObjectList([KeyValuePair::getClass()]);
         $this->setTitle($title);
+        if (!ObjectHelper::isValidArgumentType($repeatable, [ObjectHelper::BOOL])) {
+            throw new ArgumentTypeException('repeatable', [ObjectHelper::BOOL], $repeatable);
+        }
+        $this->repeatable = $repeatable;
     }
 
     /**
@@ -36,6 +41,16 @@ class FormObject extends NamedObject
     }
 
     /**
+     * @param $name
+     * @return ObjectListInterface
+     * @throws ArgumentTypeException
+     */
+    public function attribute($name)
+    {
+        return $this->attrs->get($name);
+    }
+
+    /**
      * @return bool
      */
     public function isRepeatable()
@@ -44,13 +59,23 @@ class FormObject extends NamedObject
     }
 
     /**
-     * @param bool $repeatable
      * @return static
-     * @throws ArgumentTypeException
      */
-    public function setRepeatable($repeatable)
+    public function repeatable()
     {
-        return $this->setField('repeatable', $repeatable, [ObjectHelper::BOOL]);
+        $this->repeatable = true;
+
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function single()
+    {
+        $this->repeatable = false;
+
+        return $this;
     }
 
     /**
@@ -68,39 +93,58 @@ class FormObject extends NamedObject
      */
     public function setTitle($title)
     {
-        return $this->setField('title', $title, [ObjectHelper::STRING]);
+        if (ObjectHelper::isValidArgumentType($title, [ObjectHelper::STRING])) {
+            $this->title = $title;
+
+            return $this;
+        }
+        throw new ArgumentTypeException('title', [ObjectHelper::STRING], $title);
     }
 
     /**
-     * @param null|int $index
      * @return string
      */
-    public function getFullName($index = null)
+    public function getFullName()
     {
-        $name = $this->getName();
+        $objectName = $this->getName();
         /** @var FormObject|null $parent */
         $parent = $this->getParent();
-        if(isset($parent)){
-            $name = '[' . $name . ']';
+        if (isset($parent)) {
+            return $parent->getFullName() . '[' . $objectName . ']';
         }
-        if($this->isRepeatable()){
-            $name .= '[';
-            if(isset($index) && ObjectHelper::isValidArgumentType($index, [ObjectHelper::INT])){
-                $name .= $index;
-            }
-            $name .= ']';
-        }
-        $name = $parent->getFullName() . $name;
 
-        return $name;
+        return $objectName;
     }
 
-    public static function initFromArray(array $data)
+    public static function initFromArray(array $data){}
+
+    public function __toString(){}
+
+    public function end()
     {
+        return $this->getParent();
     }
 
-    public function __toString()
+    public function toArray()
     {
-        // TODO: Implement __toString() method.
+        $res = parent::toArray();
+        $res = array_merge($res, [
+            'title' => $this->getTitle(),
+            'repeatable' => $this->isRepeatable(),
+            'fullName' => $this->getFullName(),
+            'attrs' => $this->attributes()->toArray()
+        ]);
+
+        return $res;
+    }
+
+    public function render()
+    {
+        return '';
+    }
+
+    public function show()
+    {
+        echo $this->render();
     }
 }

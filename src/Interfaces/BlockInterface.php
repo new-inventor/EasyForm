@@ -2,7 +2,7 @@
 
 namespace NewInventor\EasyForm\Interfaces;
 
-interface BlockInterface extends FormInterface
+interface BlockInterface extends FormObjectInterface
 {
 
 }
