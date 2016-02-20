@@ -7,62 +7,48 @@
 
 namespace NewInventor\EasyForm\Interfaces;
 
-interface ObjectListInterface
+interface ObjectListInterface extends ObjectInterface
 {
-    /**
-     * @return string
-     */
-    public function getObjectsDelimiter();
 
     /**
-     * @param string $pairDelimiter
-     * @return ObjectListInterface
+     * @param string|int $index
+     * @return ObjectInterface
      */
-    public function setObjectsDelimiter($pairDelimiter);
+    public function get($index);
 
     /**
-     * @param string $name
-     * @return mixed
-     */
-    public function get($name);
-
-    /**
-     * @param mixed $pair
+     * @param ObjectInterface $object
      * @throws \Exception
-     * @return ObjectListInterface
+     * @return static
      */
-    public function add($pair);
+    public function add($object);
 
     /**
-     * @return mixed[]
+     * @return ObjectInterface[]
      */
     public function getAll();
 
     /**
-     * @param string $name
+     * @param string|int $name
      * @return bool
      */
     public function delete($name);
 
     /**
-     * @param mixed[] $pairs
+     * @param ObjectInterface[] $pairs
      * @throws \Exception
-     * @return ObjectListInterface
+     * @return static
      */
     public function addArray(array $pairs);
 
     /**
-     * @return string
+     * @param string[] $elementClasses
+     * @return static
      */
-    public function __toString();
+    public function setElementClasses(array $elementClasses = []);
 
     /**
-     * @return string
+     * @return string[]
      */
-    public function render();
-
-    /**
-     * @return array
-     */
-    public function toArray();
+    public function getElementClasses();
 }

@@ -14,7 +14,7 @@ class RenderFactory implements RenderFactoryInterface
      */
     public function __construct(array $settings = [])
     {
-        self::$settings = include_once(dirname(__FILE__) . '/settings.php');
+        self::$settings = include_once(dirname(__DIR__) . '/config/renderer.php');
         self::$settings = array_merge(self::$settings, $settings);
     }
 

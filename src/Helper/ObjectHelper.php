@@ -16,23 +16,16 @@ class ObjectHelper
     const ARR = 'array';
     const OBJ = 'object';
     const RESOURCE = 'resource';
-    const NULL = 'null';
+    const NULL = 'NULL';
 
-    public static function isValidArgumentType($value, $expectedTypes)
+    public static function isValidType($value, $expectedTypes)
     {
-        $res = true;
-        foreach($expectedTypes as $type){
-            $res = $res && (gettype($value) == $type);
+        if(empty($expectedTypes)){
+            return true;
         }
-
-        return $res;
-    }
-
-    public static function isValidElementTypes($el, $expectedTypes)
-    {
-        $res = true;
+        $res = false;
         foreach($expectedTypes as $type){
-            $res = $res && is_a($el, $type);
+            $res = $res || (gettype($value) == $type) || is_a($value, $type);
         }
 
         return $res;

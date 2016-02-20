@@ -75,11 +75,11 @@ class KeyValuePairBuilder
 
     protected function badKeyValueType($type)
     {
-        return !ObjectHelper::isValidArgumentType($type, [ObjectHelper::STRING]) || empty($type);
+        return !ObjectHelper::isValidType($type, [ObjectHelper::STRING]) || empty($type);
     }
 
     protected function badSettingsPath($settingsPath)
     {
-        return !empty($settingsPath) && (!ObjectHelper::isValidArgumentType($settingsPath, [ObjectHelper::STRING]) || !file_exists($settingsPath));
+        return !empty($settingsPath) && (!ObjectHelper::isValidType($settingsPath, [ObjectHelper::STRING]) || !file_exists($settingsPath));
     }
 }

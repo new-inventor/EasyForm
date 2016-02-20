@@ -1,8 +1,8 @@
 <?php
 /**
  * User: Ionov George
- * Date: 10.02.2016
- * Time: 16:35
+ * Date: 20.02.2016
+ * Time: 17:46
  */
 
 namespace NewInventor\EasyForm\Abstraction;
@@ -11,28 +11,24 @@ use NewInventor\EasyForm\Exception\ArgumentException;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\Helper\ArrayHelper;
 use NewInventor\EasyForm\Helper\ObjectHelper;
-use NewInventor\EasyForm\Interfaces\NamedObjectInterface;
+use NewInventor\EasyForm\Interfaces\ObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 
-class ObjectList implements \Iterator, ObjectListInterface
+class ObjectList extends Object implements \Iterator, ObjectListInterface
 {
-    /** @var array */
-    private $objects;
-    /** @var string */
-    private $objectsDelimiter;
+    /** @var ObjectInterface[] */
+    protected $objects;
     /** @var string */
     private $elementClasses;
 
-
     public function __construct(array $elementClasses = [])
     {
+        $this->objects = [];
         $this->setElementClasses($elementClasses);
     }
 
     /**
-     * @param $elementClasses
-     * @return $this
-     * @throws ArgumentException
+     * @inheritdoc
      */
     public function setElementClasses(array $elementClasses = [])
     {
@@ -45,63 +41,44 @@ class ObjectList implements \Iterator, ObjectListInterface
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
-    public function getObjectsDelimiter()
+    public function getElementClasses()
     {
-        return $this->objectsDelimiter;
+        return $this->elementClasses;
     }
 
     /**
-     * @param string $objectsDelimiter
-     * @return $this
-     * @throws ArgumentTypeException
+     * @inheritdoc
      */
-    public function setObjectsDelimiter($objectsDelimiter)
+    public function get($index)
     {
-        if (ObjectHelper::isValidArgumentType($objectsDelimiter, [ObjectHelper::STRING])) {
-            $this->objectsDelimiter = $objectsDelimiter;
-
-            return $this;
-        }
-        throw new ArgumentTypeException('objectsDelimiter', [ObjectHelper::STRING], $objectsDelimiter);
-    }
-
-    /**
-     * @param string $name
-     * @return NamedObjectInterface
-     * @throws ArgumentTypeException
-     */
-    public function get($name)
-    {
-        if (ObjectHelper::isValidArgumentType($name, [ObjectHelper::STRING])) {
-            if (isset($this->objects[$name])) {
-                return $this->objects[$name];
+        if (ObjectHelper::isValidType($index, [ObjectHelper::INT, ObjectHelper::STRING])) {
+            if (isset($this->objects[$index])) {
+                return $this->objects[$index];
             }
 
             return null;
         }
 
-        throw new ArgumentTypeException('name', [ObjectHelper::STRING], $name);
+        throw new ArgumentTypeException('index', [ObjectHelper::INT, ObjectHelper::STRING], $index);
     }
 
     /**
-     * @param NamedObjectInterface $pair
-     * @throws \Exception
-     * @return ObjectList
+     * @inheritdoc
      */
-    public function add($pair)
+    public function add($object)
     {
-        if (ObjectHelper::isValidElementTypes($pair, $this->elementClasses)) {
-            $this->objects[$pair->getName()] = $pair;
+        if (ObjectHelper::isValidType($object, $this->getElementClasses())) {
+            $this->objects[] = $object;
 
             return $this;
         }
-        throw new ArgumentTypeException('pair', $this->elementClasses, $pair);
+        throw new ArgumentTypeException('object', $this->getElementClasses(), $object);
     }
 
     /**
-     * @return NamedObjectInterface[]
+     * @inheritdoc
      */
     public function getAll()
     {
@@ -109,35 +86,45 @@ class ObjectList implements \Iterator, ObjectListInterface
     }
 
     /**
-     * @param string $name
-     * @return $this
-     * @throws ArgumentTypeException
+     * @inheritdoc
      */
-    public function delete($name)
+    public function delete($index)
     {
-        if (ObjectHelper::isValidArgumentType($name, [ObjectHelper::STRING])) {
-            if (isset($this->objects[$name])) {
-                unset($this->objects[$name]);
+        if (ObjectHelper::isValidType($index, [ObjectHelper::INT, ObjectHelper::STRING])) {
+            if (isset($this->objects[$index])) {
+                unset($this->objects[$index]);
 
                 return $this;
             }
         }
 
-        throw new ArgumentTypeException('name', [ObjectHelper::STRING], $name);
+        throw new ArgumentTypeException('index', [ObjectHelper::INT], $index);
     }
 
     /**
-     * @param NamedObjectInterface[] $pairs
-     * @throws \Exception
-     * @return ObjectList
+     * @inheritdoc
      */
-    public function addArray(array $pairs)
+    public function addArray(array $objects)
     {
-        foreach ($pairs as $pair) {
-            $this->add($pair);
+        foreach ($objects as $object) {
+            $this->add($object);
         }
 
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function toArray()
+    {
+        $res = [];
+        /** @var ObjectInterface $obj */
+        foreach ($this->getAll() as $obj) {
+            $res[] = $obj->toArray();
+        }
+
+        return $res;
     }
 
     public function rewind()
@@ -174,23 +161,16 @@ class ObjectList implements \Iterator, ObjectListInterface
         return $var;
     }
 
-    public function __toString()
+    public static function initFromArray(array $data)
     {
-        return $this->render();
-    }
-
-    public function render()
-    {
-        return implode($this->objectsDelimiter, $this->objects);
-    }
-
-    public function toArray()
-    {
-        $res = [];
-        foreach($this->getAll() as $name => $obj){
-            $res[$name] = $obj->toArray();
+        $list = new static();
+        if(isset($data['elementClasses'])){
+            $list->setElementClasses($data['elementClasses']);
+        }
+        if(isset($data['objects'])){
+            $list->addArray($data['objects']);
         }
 
-        return $res;
+        return $list;
     }
 }

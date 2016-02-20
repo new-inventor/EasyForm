@@ -2,13 +2,11 @@
 
 namespace NewInventor\EasyForm\Interfaces;
 
+use NewInventor\EasyForm\Exception\ArgumentException;
+use NewInventor\EasyForm\Exception\ArgumentTypeException;
+
 interface FormInterface extends BlockInterface
 {
-    public function field();
-    public function block();
-    public function tab();
-    public function repeatedBlock();
-    public function repeatedField();
 
 
 

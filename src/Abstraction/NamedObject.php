@@ -12,7 +12,7 @@ use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\NamedObjectInterface;
 
-class NamedObject implements NamedObjectInterface
+class NamedObject extends Object implements NamedObjectInterface
 {
     /** @var string */
     private $name;
@@ -41,7 +41,7 @@ class NamedObject implements NamedObjectInterface
      */
     public function setName($name)
     {
-        if (ObjectHelper::isValidArgumentType($name, [ObjectHelper::STRING])) {
+        if (ObjectHelper::isValidType($name, [ObjectHelper::STRING])) {
             $this->name = $name;
 
             return $this;
@@ -62,16 +62,6 @@ class NamedObject implements NamedObjectInterface
         return [
             'name' => $this->getName()
         ];
-    }
-
-    public function __toString()
-    {
-        $this->render();
-    }
-
-    public function render()
-    {
-        return $this->getName();
     }
 
     public static function getClass()

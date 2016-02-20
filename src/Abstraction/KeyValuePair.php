@@ -72,7 +72,7 @@ class KeyValuePair extends NamedObject
      */
     public function setCanBeShort($canBeShort)
     {
-        if (ObjectHelper::isValidArgumentType($canBeShort, [ObjectHelper::BOOL])) {
+        if (ObjectHelper::isValidType($canBeShort, [ObjectHelper::BOOL])) {
             $this->canBeShort = $canBeShort;
 
             return $this;
@@ -95,12 +95,12 @@ class KeyValuePair extends NamedObject
      */
     public function setValue($value)
     {
-        if (ObjectHelper::isValidArgumentType($value, [ObjectHelper::STRING])) {
+        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL])) {
             $this->value = $value;
 
             return $this;
         }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING], $value);
+        throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL], $value);
     }
 
     /**
@@ -118,7 +118,7 @@ class KeyValuePair extends NamedObject
      */
     public function setDelimiter($delimiter)
     {
-        if (ObjectHelper::isValidArgumentType($delimiter, [ObjectHelper::STRING])) {
+        if (ObjectHelper::isValidType($delimiter, [ObjectHelper::STRING])) {
             $this->delimiter = $delimiter;
 
             return $this;

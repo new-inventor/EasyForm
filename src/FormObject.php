@@ -2,38 +2,52 @@
 
 namespace NewInventor\EasyForm;
 
+use NewInventor\EasyForm\Abstraction\HtmlAttr;
 use NewInventor\EasyForm\Abstraction\KeyValuePair;
 use NewInventor\EasyForm\Abstraction\NamedObject;
-use NewInventor\EasyForm\Abstraction\ObjectList;
+use NewInventor\EasyForm\Abstraction\NamedObjectList;
 use NewInventor\EasyForm\Abstraction\TreeNode;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\FormObjectInterface;
+use NewInventor\EasyForm\Interfaces\NamedObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
+use NewInventor\EasyForm\Renderer\RenderableInterface;
+use NewInventor\EasyForm\Validator\ValidatableInterface;
+use NewInventor\EasyForm\Validator\ValidatorInterface;
 
-abstract class FormObject extends NamedObject implements FormObjectInterface
+abstract class FormObject extends NamedObject implements FormObjectInterface, ValidatableInterface, RenderableInterface
 {
     use TreeNode;
-    /** @var ObjectListInterface */
+    /** @var ObjectListInterface|RenderableInterface */
     private $attrs;
     /** @var string */
     private $title;
     /** @var bool */
     private $repeatable;
+    /** @var NamedObjectList */
+    protected $validators;
+    /** @var array */
+    protected $errors;
+    /** @var bool */
+    protected $isValid;
 
     function __construct($name, $title = '', $repeatable = false)
     {
+        $this->attrs = new NamedObjectList([KeyValuePair::getClass()]);
+        $this->attrs->setObjectsDelimiter(' ');
         parent::__construct($name);
-        $this->attrs = new ObjectList([KeyValuePair::getClass()]);
         $this->setTitle($title);
-        if (!ObjectHelper::isValidArgumentType($repeatable, [ObjectHelper::BOOL])) {
+        if (!ObjectHelper::isValidType($repeatable, [ObjectHelper::BOOL])) {
             throw new ArgumentTypeException('repeatable', [ObjectHelper::BOOL], $repeatable);
         }
         $this->repeatable = $repeatable;
+        $this->validators = new NamedObjectList(['NewInventor\EasyForm\Interfaces\ValidatorInterface']);
+        $this->isValid = true;
     }
 
     /**
-     * @return ObjectListInterface
+     * @return ObjectListInterface|RenderableInterface
      */
     public function attributes()
     {
@@ -42,7 +56,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface
 
     /**
      * @param $name
-     * @return ObjectListInterface
+     * @return NamedObjectInterface
      * @throws ArgumentTypeException
      */
     public function attribute($name)
@@ -93,7 +107,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface
      */
     public function setTitle($title)
     {
-        if (ObjectHelper::isValidArgumentType($title, [ObjectHelper::STRING])) {
+        if (ObjectHelper::isValidType($title, [ObjectHelper::STRING])) {
             $this->title = $title;
 
             return $this;
@@ -118,8 +132,6 @@ abstract class FormObject extends NamedObject implements FormObjectInterface
 
     public static function initFromArray(array $data){}
 
-    public function __toString(){}
-
     public function end()
     {
         return $this->getParent();
@@ -138,13 +150,53 @@ abstract class FormObject extends NamedObject implements FormObjectInterface
         return $res;
     }
 
-    public function render()
+    public function __toString()
     {
-        return '';
+        return $this->getString();
     }
 
-    public function show()
+    public function render()
     {
-        echo $this->render();
+        echo $this->getString();
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isValid()
+    {
+        return $this->isValid;
+    }
+
+    /**
+     * @return NamedObjectList
+     */
+    public function validators()
+    {
+        return $this->validators;
+    }
+
+    /**
+     * @param $name
+     * @return ValidatorInterface
+     * @throws ArgumentTypeException
+     */
+    public function validator($name)
+    {
+        return $this->validators->get($name);
+    }
+
+    public function addError($error){
+        if (ObjectHelper::isValidType($error, [ObjectHelper::STRING])) {
+            $this->errors[] = $error;
+
+            return $this;
+        }
+        throw new ArgumentTypeException('error', [ObjectHelper::STRING], $error);
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
     }
 }

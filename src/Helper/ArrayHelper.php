@@ -16,7 +16,7 @@ class ArrayHelper
         }
         $res = true;
         foreach($elements as $el){
-            $res = $res && ObjectHelper::isValidElementTypes($el, $types);
+            $res = $res && ObjectHelper::isValidType($el, $types);
         }
 
         return true;

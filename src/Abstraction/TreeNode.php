@@ -12,16 +12,21 @@ use NewInventor\EasyForm\Exception\ArgumentTypeException;
 trait TreeNode
 {
     private $parent = null;
-    /** @var null|ObjectList $children */
+    /** @var mixed $children */
     private $children = null;
 
 
     /**
-     * @return ObjectList|null
+     * @return mixed
      */
     public function children()
     {
         return $this->children;
+    }
+
+    public function initChildren($childrenContainer)
+    {
+        $this->children = $childrenContainer;
     }
 
     /**

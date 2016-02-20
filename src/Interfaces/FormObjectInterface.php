@@ -39,7 +39,20 @@ interface FormObjectInterface extends NamedObjectInterface
      */
     public function single();
 
-    public function validate();
+    /**
+     * @return ObjectListInterface
+     */
+    public function attributes();
 
-    public function show();
+    /**
+     * @param $name
+     * @return ObjectListInterface
+     * @throws ArgumentTypeException
+     */
+    public function attribute($name);
+
+    /**
+     * @return string
+     */
+    public function getFullName();
 }

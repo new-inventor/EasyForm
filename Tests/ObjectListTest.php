@@ -8,7 +8,7 @@
 namespace NewInventor\EasyForm\Tests;
 
 use NewInventor\EasyForm\Abstraction\HtmlAttr;
-use NewInventor\EasyForm\Abstraction\ObjectList;
+use NewInventor\EasyForm\Abstraction\NamedObjectList;
 use NewInventor\EasyForm\Abstraction\KeyValuePair;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 
@@ -20,7 +20,7 @@ class ObjectListTest extends \PHPUnit_Framework_TestCase
         $attr1->setDelimiter('=')->setNameComas('')->setValueComas('\'');
         $attr2 = new KeyValuePair('attach', 'value', false);
         $attr2->setDelimiter(': ')->setNameComas('')->setValueComas('\'');
-        $dict = new ObjectList([get_class($attr1)]);
+        $dict = new NamedObjectList([get_class($attr1)]);
         $dict->setObjectsDelimiter(' => ')->add($attr1)->add($attr2);
         $this->assertEquals('type=\'text\'', $dict->get('type')->render());
         $this->assertEquals('attach: \'value\'', $dict->get('attach')->render());
@@ -30,8 +30,8 @@ class ObjectListTest extends \PHPUnit_Framework_TestCase
 
     public function testGet()
     {
-        $list = new ObjectList([KeyValuePair::getClass()]);
-        $list->add(HtmlAttr::get('name', 'val'));
+        $list = new NamedObjectList([KeyValuePair::getClass()]);
+        $list->add(HtmlAttr::build('name', 'val'));
         $this->assertEquals('name="val"', $list->get('name')->render());
         $this->assertNull($list->get('hearer'));
         $this->setExpectedException('NewInventor\EasyForm\Exception\ArgumentTypeException');

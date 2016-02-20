@@ -1,27 +1,32 @@
 <?php
+/**
+ * User: Ionov George
+ * Date: 20.02.2016
+ * Time: 17:22
+ */
 
-namespace NewInventor\EasyForm;
+namespace NewInventor\EasyForm\Field;
 
-use Interfaces\ValidatorInterface;
-use NewInventor\EasyForm\Abstraction\ObjectList;
+use NewInventor\EasyForm\Abstraction\HtmlAttr;
+use NewInventor\EasyForm\Abstraction\NamedObjectList;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
+use NewInventor\EasyForm\FormObject;
 use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
+use NewInventor\EasyForm\Renderer\RenderableInterface;
+use NewInventor\EasyForm\Validator\ValidatableInterface;
+use NewInventor\EasyForm\Validator\ValidatorInterface;
 
-class AbstractField extends FormObject implements FieldInterface
+abstract class AbstractField extends FormObject implements FieldInterface, ValidatableInterface, RenderableInterface
 {
     /** @var array|string|null */
     private $value;
-    /** @var ObjectList */
-    private $validators;
-    /** @var array */
-    private $errors;
-    private $isValid;
+
 
     /**
      * AbstractField constructor.
      * @param string $name
-     * @param string $value
+     * @param string|array|null $value
      * @param string $title
      * @param bool $repeatable
      */
@@ -29,8 +34,18 @@ class AbstractField extends FormObject implements FieldInterface
     {
         parent::__construct($name, $title, $repeatable);
         $this->setValue($value);
-        $this->validators = new ObjectList([]);
-        $this->isValid = true;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     * @throws ArgumentTypeException
+     */
+    public function setName($name)
+    {
+        parent::setName($name);
+
+        return $this;
     }
 
     /**
@@ -48,7 +63,7 @@ class AbstractField extends FormObject implements FieldInterface
      */
     public function setValue($value)
     {
-        if (ObjectHelper::isValidArgumentType($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL])) {
+        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL])) {
             $this->value = $value;
 
             return $this;
@@ -64,36 +79,20 @@ class AbstractField extends FormObject implements FieldInterface
         return $res;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isValid()
-    {
-        return $this->isValid;
-    }
-
-    /**
-     * @return ObjectList
-     */
-    public function validators()
-    {
-        return $this->validators;
-    }
-
-    public function validator($name)
-    {
-        return $this->validators->get($name);
-    }
-
     public function validate()
     {
         /** @var ValidatorInterface $validator */
         foreach ($this->validators() as $validator) {
-            if ($validator->isValid()) {
+            if ($validator->isValid($this->getValue())) {
                 continue;
             }
             $this->isValid = false;
             $this->errors[] = $validator->getError();
         }
+    }
+
+    public function getString()
+    {
+        return '';
     }
 }

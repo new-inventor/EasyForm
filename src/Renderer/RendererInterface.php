@@ -2,8 +2,11 @@
 
 namespace NewInventor\EasyForm\Renderer;
 
+
+use NewInventor\EasyForm\Interfaces\FormInterface;
+
 interface RendererInterface
 {
-    public function render($context);
-    public function toString($context);
+    public function render(FormInterface $form);
+    public function toString(FormInterface $form);
 }

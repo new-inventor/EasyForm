@@ -9,7 +9,7 @@ namespace NewInventor\EasyForm\Abstraction;
 
 class HtmlAttr
 {
-    public static function get($name, $value = ''){
+    public static function build($name, $value = ''){
         $builder = new KeyValuePairBuilder('htmlAttribute');
 
         return $builder->build($name, $value);

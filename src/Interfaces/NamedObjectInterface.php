@@ -7,7 +7,7 @@
 
 namespace NewInventor\EasyForm\Interfaces;
 
-interface NamedObjectInterface
+interface NamedObjectInterface extends ObjectInterface
 {
     /**
      * @return string
@@ -25,23 +25,4 @@ interface NamedObjectInterface
      */
     public static function initFromArray(array $data);
 
-    /**
-     * @return mixed[]
-     */
-    public function toArray();
-
-    /**
-     * @return string
-     */
-    public function __toString();
-
-    /**
-     * @return string
-     */
-    public function render();
-
-    /**
-     * @return string
-     */
-    public static function getClass();
 }

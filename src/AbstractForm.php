@@ -2,6 +2,7 @@
 
 namespace NewInventor\EasyForm;
 
+use NewInventor\EasyForm\Abstraction\HtmlAttr;
 use NewInventor\EasyForm\Exception\ArgumentException;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\Helper\ObjectHelper;
@@ -33,14 +34,23 @@ class AbstractForm extends AbstractBlock implements FormInterface
      * @param string $action
      * @param string $method
      * @param string $encType
+     * @throws ArgumentException
+     * @throws ArgumentTypeException
      */
     public function __construct($name, $title, $action = '', $method = 'post', $encType = self::ENC_TYPE_URLENCODED)
     {
         parent::__construct($name, $title, false);
-        $this->setAction($action);
-        $this->setMethod($method);
-        $this->setEncType($encType);
-        $this->children()->setElementClasses([AbstractBlock::getClass(), AbstractField::getClass()]);
+        $this->attributes()->add(HtmlAttr::build('action', $action)->full());
+        $this->attributes()->add(HtmlAttr::build('method', $method)->full());
+        if (ObjectHelper::isValidType($encType, [ObjectHelper::STRING])) {
+            if (!array_key_exists($encType, $this->encTypes)) {
+                throw new ArgumentException('Кодировка формы должна быть "', implode('" или "', $this->encTypes) . '".', 'encType');
+            }
+            $this->attributes()->add(HtmlAttr::build('enctype', $encType)->full());
+        }else{
+            throw new ArgumentTypeException('encType', [ObjectHelper::STRING], $encType);
+        }
+        $this->children()->setElementClasses([AbstractBlock::getClass(), AbstractInputField::getClass()]);
     }
 
     public function isValidEncType($encType)
@@ -65,7 +75,7 @@ class AbstractForm extends AbstractBlock implements FormInterface
      */
     public function setMethod($method)
     {
-        if (ObjectHelper::isValidArgumentType($method, [ObjectHelper::STRING])) {
+        if (ObjectHelper::isValidType($method, [ObjectHelper::STRING])) {
             $this->method = $method;
 
             return $this;
@@ -88,7 +98,7 @@ class AbstractForm extends AbstractBlock implements FormInterface
      */
     public function setAction($action)
     {
-        if (ObjectHelper::isValidArgumentType($action, [ObjectHelper::STRING])) {
+        if (ObjectHelper::isValidType($action, [ObjectHelper::STRING])) {
             $this->action = $action;
 
             return $this;
@@ -112,13 +122,13 @@ class AbstractForm extends AbstractBlock implements FormInterface
      */
     public function setEncType($encType)
     {
-        if (ObjectHelper::isValidArgumentType($encType, [ObjectHelper::STRING])) {
+        if (ObjectHelper::isValidType($encType, [ObjectHelper::STRING])) {
             if (array_key_exists($encType, $this->encTypes)) {
                 $this->encType = $encType;
 
                 return $this;
             }
-            throw new ArgumentException('Кодировка формы должна быть "', implode('", "', $this->encTypes) . '".', 'encType');
+            throw new ArgumentException('Кодировка формы должна быть "', implode('" или "', $this->encTypes) . '".', 'encType');
         }
         throw new ArgumentTypeException('encType', [ObjectHelper::STRING], $encType);
     }
@@ -129,5 +139,22 @@ class AbstractForm extends AbstractBlock implements FormInterface
         $res['method'] = $this->getMethod();
         $res['action'] = $this->getAction();
         $res['encType'] = $this->getEncType();
+    }
+
+
+
+    public function tab()
+    {
+        // TODO: Implement tab() method.
+    }
+
+    public function repeatableBlock()
+    {
+        // TODO: Implement repeatedBlock() method.
+    }
+
+    public function repeatableField()
+    {
+        // TODO: Implement repeatedField() method.
     }
 }
