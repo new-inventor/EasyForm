@@ -5,11 +5,7 @@
  * Time: 18:29
  */
 require 'vendor/autoload.php';
-use \NewInventor\EasyForm\Abstraction\NamedObjectList;
-use \NewInventor\EasyForm\Abstraction\KeyValuePair;
-use \NewInventor\EasyForm\Abstraction\HtmlAttr;
-use \NewInventor\EasyForm\FormObject;
-
+use NewInventor\EasyForm\Abstraction\HtmlAttr;
 
 $field = new \NewInventor\EasyForm\Field\Password('test1', '123');
 $field->render();

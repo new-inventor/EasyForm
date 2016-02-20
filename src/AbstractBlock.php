@@ -9,8 +9,10 @@ namespace NewInventor\EasyForm;
 
 use NewInventor\EasyForm\Abstraction\NamedObjectList;
 use NewInventor\EasyForm\Field\AbstractField;
+use NewInventor\EasyForm\Field\Password;
 use NewInventor\EasyForm\Field\Text;
 use NewInventor\EasyForm\Interfaces\BlockInterface;
+use NewInventor\EasyForm\Interfaces\FieldInterface;
 
 /**
  * Class AbstractBlock
@@ -20,6 +22,9 @@ class AbstractBlock extends FormObject implements BlockInterface
 {
     /**
      * AbstractBlock constructor.
+     * @param string $name
+     * @param string $title
+     * @param bool $repeatable
      */
     public function __construct($name, $title = '', $repeatable = false)
     {
@@ -29,11 +34,6 @@ class AbstractBlock extends FormObject implements BlockInterface
     }
 
     public function validate()
-    {
-
-    }
-
-    public function field($type, $name, $value = '')
     {
 
     }
@@ -80,7 +80,21 @@ class AbstractBlock extends FormObject implements BlockInterface
 
     public function password($name, $value = '')
     {
-        // TODO: Implement password() method.
+        $field = new Password($name, $value);
+        $field->setParent($this);
+        $this->children()->add($field);
+
+        return $field;
+    }
+
+    protected function field($type, $name, $value = '')
+    {
+        /** @var FieldInterface $field */
+        $field = new $type($name, $value);
+        $field->setParent($this);
+        $this->children()->add($field);
+
+        return $field;
     }
 
     public function radio($name, $value = '')

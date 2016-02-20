@@ -3,6 +3,7 @@
 namespace NewInventor\EasyForm\Interfaces;
 
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
+use NewInventor\EasyForm\FormObject;
 
 interface FormObjectInterface extends NamedObjectInterface
 {
@@ -55,4 +56,25 @@ interface FormObjectInterface extends NamedObjectInterface
      * @return string
      */
     public function getFullName();
+
+    public function children();
+
+    public function initChildren($childrenContainer);
+
+    /**
+     * @param string $name
+     * @return \NewInventor\EasyForm\Interfaces\NamedObjectInterface
+     * @throws ArgumentTypeException
+     */
+    public function child($name);
+
+    /**
+     * @return mixed
+     */
+    public function getParent();
+
+    /**
+     * @param mixed $parent
+     */
+    public function setParent($parent);
 }
