@@ -2,14 +2,18 @@
 
 namespace NewInventor\EasyForm\Interfaces;
 
+use NewInventor\EasyForm\Abstraction\NamedObjectList;
 use NewInventor\EasyForm\Exception\ArgumentException;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 
 interface FormInterface extends BlockInterface
 {
 
-
-
+    /**
+     * @param string $encType
+     *
+     * @return bool
+     */
     public function isValidEncType($encType);
 
     /**
@@ -19,10 +23,11 @@ interface FormInterface extends BlockInterface
 
     /**
      * @param string $method
-     * @return $this
+     *
+     * @return FormInterface
      * @throws ArgumentTypeException
      */
-    public function setMethod($method);
+    public function method($method);
 
     /**
      * @return string
@@ -31,10 +36,11 @@ interface FormInterface extends BlockInterface
 
     /**
      * @param string $action
-     * @return $this
+     *
+     * @return FormInterface
      * @throws ArgumentTypeException
      */
-    public function setAction($action);
+    public function action($action);
 
     /**
      * @return string
@@ -43,9 +49,31 @@ interface FormInterface extends BlockInterface
 
     /**
      * @param string $encType
-     * @return $this
+     *
+     * @return FormInterface
      * @throws ArgumentException
      * @throws ArgumentTypeException
      */
-    public function setEncType($encType);
+    public function encType($encType);
+
+    /**
+     * @return NamedObjectList
+     */
+    public function handlers();
+
+    /**
+     * @param string $handler Handler type
+     *
+     * @return FormInterface
+     * @throws ArgumentException
+     * @throws ArgumentTypeException
+     */
+    public function handler($handler);
+
+    /**
+     * @param array|null $customData
+     *
+     * @return bool
+     */
+    public function save(array $customData = null);
 }

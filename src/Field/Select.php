@@ -25,9 +25,9 @@ class Select extends AbstractField implements FieldInterface
      * @param string $title
      * @param bool $repeatable
      */
-    public function __construct($name, $value = '', $title = '', array $options = [], $repeatable = false)
+    public function __construct($name, $value = '', $title = '', array $options = [])
     {
-        parent::__construct($name, null, $title, $repeatable);
+        parent::__construct($name, null, $title);
         if (is_string($value)) {
             $this->setValue([$value]);
         } elseif (is_array($value)) {
@@ -47,7 +47,7 @@ class Select extends AbstractField implements FieldInterface
      * @return $this
      * @throws ArgumentTypeException
      */
-    public function addOption($title, $value = '')
+    public function option($title, $value = '')
     {
         if (!ObjectHelper::isValidType($title, [ObjectHelper::STRING])) {
             throw new ArgumentTypeException('title', [ObjectHelper::STRING], $title);
@@ -73,7 +73,7 @@ class Select extends AbstractField implements FieldInterface
     public function addOptionArray(array $options = [])
     {
         foreach ($options as $value => $title) {
-            $this->addOption($title, $value);
+            $this->option($title, $value);
         }
 
         return $this;
@@ -92,7 +92,7 @@ class Select extends AbstractField implements FieldInterface
      * @return array|null
      * @throws ArgumentTypeException
      */
-    public function option($key)
+    public function getOption($key)
     {
         return $this->options()->get($key);
     }
@@ -116,6 +116,16 @@ class Select extends AbstractField implements FieldInterface
         return $res;
     }
 
+    public function getFullName()
+    {
+        $name = parent::getFullName();
+        if($this->getAttribute('multiple') !== null){
+            $name .= '[]';
+        }
+
+        return $name;
+    }
+
     /**
      * @param string $value
      * @return bool
@@ -123,5 +133,25 @@ class Select extends AbstractField implements FieldInterface
     protected function optionSelected($value)
     {
         return array_search($value, $this->getValue()) !== false;
+    }
+
+    /**
+     * @return $this
+     */
+    public function multiple()
+    {
+        $this->attribute('multiple');
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function single()
+    {
+        $this->attributes()->delete('multiple');
+
+        return $this;
     }
 }

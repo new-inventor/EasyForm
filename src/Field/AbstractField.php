@@ -7,8 +7,7 @@
 
 namespace NewInventor\EasyForm\Field;
 
-use NewInventor\EasyForm\Abstraction\HtmlAttr;
-use NewInventor\EasyForm\Abstraction\NamedObjectList;
+use NewInventor\EasyForm\AbstractBlock;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\FormObject;
 use NewInventor\EasyForm\Helper\ObjectHelper;
@@ -28,12 +27,23 @@ abstract class AbstractField extends FormObject implements FieldInterface, Valid
      * @param string $name
      * @param string|array|null $value
      * @param string $title
-     * @param bool $repeatable
      */
-    public function __construct($name, $value = '', $title = '', $repeatable = false)
+    public function __construct($name, $value = '', $title = '')
     {
-        parent::__construct($name, $title, $repeatable);
+        parent::__construct($name, $title);
         $this->setValue($value);
+    }
+
+    public function repeatable(){
+        $parent = $this->getParent();
+        $fieldName = $this->getName();
+        $block = new AbstractBlock($fieldName);
+        $this->setName('1');
+        $block->field($this);
+        $parent->children()->delete($fieldName);
+        $parent->children()->add($block);
+        print_r($this);
+        return $this;
     }
 
     /**
@@ -94,5 +104,15 @@ abstract class AbstractField extends FormObject implements FieldInterface, Valid
     public function getString()
     {
         return '';
+    }
+
+    public function children()
+    {
+        return null;
+    }
+
+    public function child($name)
+    {
+        return null;
     }
 }

@@ -6,48 +6,85 @@ use NewInventor\EasyForm\Abstraction\HtmlAttr;
 use NewInventor\EasyForm\Abstraction\KeyValuePair;
 use NewInventor\EasyForm\Abstraction\NamedObject;
 use NewInventor\EasyForm\Abstraction\NamedObjectList;
-use NewInventor\EasyForm\Abstraction\TreeNode;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
+use NewInventor\EasyForm\Field\AbstractField;
 use NewInventor\EasyForm\Helper\ObjectHelper;
+use NewInventor\EasyForm\Interfaces\BlockInterface;
+use NewInventor\EasyForm\Interfaces\FieldInterface;
+use NewInventor\EasyForm\Interfaces\FormInterface;
 use NewInventor\EasyForm\Interfaces\FormObjectInterface;
-use NewInventor\EasyForm\Interfaces\NamedObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 use NewInventor\EasyForm\Renderer\RenderableInterface;
 use NewInventor\EasyForm\Validator\ValidatableInterface;
-use NewInventor\EasyForm\Validator\ValidatorInterface;
 
 abstract class FormObject extends NamedObject implements FormObjectInterface, ValidatableInterface, RenderableInterface
 {
-    use TreeNode;
     /** @var ObjectListInterface|RenderableInterface */
     private $attrs;
     /** @var string */
     private $title;
-    /** @var bool */
-    private $repeatable;
     /** @var NamedObjectList */
     protected $validators;
     /** @var array */
     protected $errors;
     /** @var bool */
     protected $isValid;
+    /** @var FormInterface|BlockInterface|null */
+    private $parent = null;
+    /** @var NamedObjectList */
+    private $children = null;
 
-    function __construct($name, $title = '', $repeatable = false)
+    /**
+     * @param string $name
+     * @param string $title
+     *
+     * @throws ArgumentTypeException
+     */
+    function __construct($name, $title = '')
     {
         $this->attrs = new NamedObjectList([KeyValuePair::getClass()]);
         $this->attrs->setObjectsDelimiter(' ');
+        $this->children = new NamedObjectList([AbstractBlock::getClass(), AbstractField::getClass()]);
         parent::__construct($name);
-        $this->setTitle($title);
-        if (!ObjectHelper::isValidType($repeatable, [ObjectHelper::BOOL])) {
-            throw new ArgumentTypeException('repeatable', [ObjectHelper::BOOL], $repeatable);
-        }
-        $this->repeatable = $repeatable;
+        $this->title($title);
         $this->validators = new NamedObjectList(['NewInventor\EasyForm\Interfaces\ValidatorInterface']);
         $this->isValid = true;
     }
 
     /**
-     * @return ObjectListInterface|RenderableInterface
+     * @inheritdoc
+     */
+    public function children()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function child($name)
+    {
+        return $this->children()->get($name);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function attributes()
     {
@@ -55,45 +92,25 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     }
 
     /**
-     * @param $name
-     * @return NamedObjectInterface
-     * @throws ArgumentTypeException
+     * @inheritdoc
      */
-    public function attribute($name)
+    public function getAttribute($name)
     {
         return $this->attrs->get($name);
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
-    public function isRepeatable()
+    public function attribute($name, $value = '')
     {
-        return $this->repeatable;
-    }
-
-    /**
-     * @return static
-     */
-    public function repeatable()
-    {
-        $this->repeatable = true;
+        $this->attributes()->add(HtmlAttr::build($name, $value));
 
         return $this;
     }
 
     /**
-     * @return static
-     */
-    public function single()
-    {
-        $this->repeatable = false;
-
-        return $this;
-    }
-
-    /**
-     * @return string
+     * @inheritdoc
      */
     public function getTitle()
     {
@@ -101,11 +118,9 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     }
 
     /**
-     * @param string $title
-     * @return static
-     * @throws ArgumentTypeException
+     * @inheritdoc
      */
-    public function setTitle($title)
+    public function title($title)
     {
         if (ObjectHelper::isValidType($title, [ObjectHelper::STRING])) {
             $this->title = $title;
@@ -116,7 +131,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getFullName()
     {
@@ -130,8 +145,13 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         return $objectName;
     }
 
-    public static function initFromArray(array $data){}
+    public static function initFromArray(array $data)
+    {
+    }
 
+    /**
+     * @inheritdoc
+     */
     public function end()
     {
         return $this->getParent();
@@ -142,7 +162,6 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         $res = parent::toArray();
         $res = array_merge($res, [
             'title' => $this->getTitle(),
-            'repeatable' => $this->isRepeatable(),
             'fullName' => $this->getFullName(),
             'attrs' => $this->attributes()->toArray()
         ]);
@@ -150,18 +169,24 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         return $res;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function __toString()
     {
         return $this->getString();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function render()
     {
         echo $this->getString();
     }
 
     /**
-     * @return boolean
+     * @inheritdoc
      */
     public function isValid()
     {
@@ -169,7 +194,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     }
 
     /**
-     * @return NamedObjectList
+     * @inheritdoc
      */
     public function validators()
     {
@@ -177,16 +202,18 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     }
 
     /**
-     * @param $name
-     * @return ValidatorInterface
-     * @throws ArgumentTypeException
+     * @inheritdoc
      */
     public function validator($name)
     {
-        return $this->validators->get($name);
+        return $this->validators()->get($name);
     }
 
-    public function addError($error){
+    /**
+     * @inheritdoc
+     */
+    public function addError($error)
+    {
         if (ObjectHelper::isValidType($error, [ObjectHelper::STRING])) {
             $this->errors[] = $error;
 
@@ -195,8 +222,32 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         throw new ArgumentTypeException('error', [ObjectHelper::STRING], $error);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDataArray()
+    {
+        if ($this instanceof FieldInterface) {
+            return [$this->getName() => $this->getValue()];
+        }
+
+        $res = [];
+        foreach ($this->children() as $child) {
+            if ($child instanceof FieldInterface) {
+                $res[$child->getName()] = $child->getValue();
+            } elseif ($child instanceof BlockInterface) {
+                $res[$child->getName()] = $child->getDataArray();
+            }
+        }
+
+        return $res;
     }
 }
