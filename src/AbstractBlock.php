@@ -7,13 +7,19 @@
 
 namespace NewInventor\EasyForm;
 
+use DeepCopy\DeepCopy;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
+use NewInventor\EasyForm\Field\AbstractField;
+use NewInventor\EasyForm\Field\CheckBox;
+use NewInventor\EasyForm\Field\CheckBoxSet;
 use NewInventor\EasyForm\Field\Input;
+use NewInventor\EasyForm\Field\RadioSet;
 use NewInventor\EasyForm\Field\Select;
 use NewInventor\EasyForm\Field\TextArea;
 use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\BlockInterface;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
+use NewInventor\EasyForm\Renderer\RenderableInterface;
 
 /**
  * Class AbstractBlock
@@ -21,12 +27,12 @@ use NewInventor\EasyForm\Interfaces\FieldInterface;
  */
 class AbstractBlock extends FormObject implements BlockInterface
 {
+    private $repeatable;
     /**
      * AbstractBlock constructor.
      *
      * @param string $name
      * @param string $title
-     * @param bool   $repeatable
      */
     public function __construct($name, $title = '')
     {
@@ -64,9 +70,10 @@ class AbstractBlock extends FormObject implements BlockInterface
     /**
      * @inheritdoc
      */
-    public function checkbox($name, $value = '')
+    public function checkbox($name, $value = false)
     {
-        return $this->addInputField('checkbox', $name, $value);
+        $checkbox = new CheckBox($name, $value);
+        return $this->field($checkbox);
     }
 
     /**
@@ -107,6 +114,17 @@ class AbstractBlock extends FormObject implements BlockInterface
     public function radio($name, $value = '')
     {
         return $this->addInputField('radio', $name, $value);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function radioSet($name, $value = '')
+    {
+        $set = new RadioSet($name, $value);
+        $this->field($set);
+
+        return $set;
     }
 
     /**
@@ -268,6 +286,16 @@ class AbstractBlock extends FormObject implements BlockInterface
     /**
      * @inheritdoc
      */
+    public function checkBoxSet($name, $value = null)
+    {
+        $checkBoxSet = new CheckBoxSet($name, $value);
+
+        return $this->field($checkBoxSet);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function field($field)
     {
         $field->setParent($this);
@@ -279,9 +307,103 @@ class AbstractBlock extends FormObject implements BlockInterface
     /**
      * @inheritdoc
      */
+    public function repeatable($object, $values)
+    {
+        if (!ObjectHelper::isValidType($object, [AbstractBlock::getClass(), AbstractField::getClass()])){
+            throw new ArgumentTypeException('object', [AbstractBlock::getClass(), AbstractField::getClass()], $object);
+        }
+        if (!ObjectHelper::isValidType($values, [ObjectHelper::ARR])){
+            throw new ArgumentTypeException('values', [ObjectHelper::ARR], $values);
+        }
+        $repeatableBlockName = $object->getName();
+        $repeatableBlock = new AbstractBlock($repeatableBlockName);
+        $repeatableBlock->setRepeatable(true);
+        $i = 0;
+        $deepCopy = new DeepCopy();
+        if(count($values) > 0){
+            foreach($values as $value){
+                $objectClone = $deepCopy->copy($object);
+                $objectClone->setName((string)$i);
+                $objectClone->attribute('data-repeatable');
+                if($object instanceof AbstractBlock){
+                    $objectClone->load($value);
+                }else{
+                    $objectClone->setValue($value);
+                }
+                $objectClone->setParent($repeatableBlock);
+                $repeatableBlock->children()->add($objectClone);
+                $i++;
+            }
+        }
+        if(empty($values)) {
+            $objectClone = $deepCopy->copy($object);
+            $objectClone->setParent($repeatableBlock);
+            $objectClone->setName((string)$i);
+            $objectClone->attribute('data-repeatable');
+            $repeatableBlock->children()->add($objectClone);
+        }
+
+        $repeatableBlock->setParent($this);
+        $this->children()->add($repeatableBlock);
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getString()
     {
-        $res = $this->children()->getString();
+        $isRepeatBlock = $this->getParent() !== null && $this->getParent()->isRepeatable();
+        $res = '<div';
+        if($this->getParent() !== null && $this->getParent()->isRepeatable()){
+            $res .= ' data-repeat-block';
+        }elseif($this->isRepeatable()){
+            $res .= ' data-repeat-container';
+        }
+        $res .= '>';
+        var_dump($isRepeatBlock);
+        $res .= $this->children()->getString();
+        if ($isRepeatBlock) {
+            if ((int)$this->getName() != 0) {
+                $res .= '<span data-repeat-block-delete-' . $this->getParent()->getName() . '>-</span>';
+            }
+            var_dump($this->getName(), count($this->getParent()->children()));
+            if ((int)$this->getName() == count($this->getParent()->children())) {
+                $res .= '<span data-repeat-block-add-' . $this->getParent()->getName() . '>+</span>';
+            }
+        }
+        $res .='</div>';
+        if($this->isRepeatable()){
+            $deepCopy = new DeepCopy();
+            /** @var BlockInterface|FieldInterface|RenderableInterface $childCopy */
+            $childCopy = $deepCopy->copy($this->child('0'));
+            $childCopy->setName('#IND#');
+            $childCopy->setParent($this);
+            $childCopy->clear();
+            $res .= '<script>
+$(document).on("click", "[data-repeat-block-delete-' . $this->getName() . ']", function(e){
+    e.preventDefault();
+    var $this = $(this);
+    $this.closest("[data-repeat-block]").remove();
+});
+$(document).on("click", "[data-repeat-block-add-' . $this->getName() . ']", function(e){
+    e.preventDefault();
+    var $this = $(this);
+    var $container = $this.closest("[data-repeat-container]");
+    var dummy = \'' . $childCopy . '\';
+    var index = $container.find("[data-repeat-block]").length;
+    dummy = dummy.replace(/#IND#/g, index);
+    $container.append(dummy);
+    var cloneAdd = $this.clone();
+    var cloneDelete = $this.prev().clone();
+    $container.find("[data-repeat-block]:last").append(cloneDelete);
+    $container.find("[data-repeat-block]:last").append(cloneAdd);
+    $this.remove();
+});
+</script>';
+            unset($childCopy);
+        }
 
         return $res;
     }
@@ -300,15 +422,64 @@ class AbstractBlock extends FormObject implements BlockInterface
             return false;
         }
 
+        $deepCopy = new DeepCopy();
         foreach ($data as $name => $value) {
             $child = $this->child($name);
             if ($child instanceof FieldInterface) {
                 $child->setValue($value);
-            } elseif ($child instanceof BlockInterface) {
+            } elseif ($child instanceof BlockInterface && !$child->isRepeatable()) {
+                $child->load($value);
+            } elseif ($child instanceof BlockInterface && $child->isRepeatable()) {
+                $value = array_values($value);
+                $childrenCount = count($child->children());
+                $childrenMaxIndex = $childrenCount - 1;
+                $childrenDelta = count($value) - $childrenCount;
+                if($childrenDelta > 0){
+                    for($i = 0; $i < $childrenDelta; $i++) {
+                        /** @var BlockInterface|FieldInterface $objectClone */
+                        $objectClone = $deepCopy->copy($child->child('0'));
+                        $objectClone->setName((string)($childrenCount + $i));
+                        $objectClone->attribute('data-repeatable');
+                        $child->children()->add($objectClone);
+                    }
+                }elseif($childrenDelta < 0){
+                    for ($i = 0; $i < abs($childrenDelta); $i++){
+                        $child->children()->delete(($childrenMaxIndex - $i));
+                    }
+                }
                 $child->load($value);
             }
         }
 
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isRepeatable()
+    {
+        return $this->repeatable;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setRepeatable($repeatable)
+    {
+        $this->repeatable = $repeatable;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function clear(){
+        foreach($this->children() as $child){
+            $child->clear();
+        }
+
+        return $this;
     }
 }

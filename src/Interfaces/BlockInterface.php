@@ -4,6 +4,8 @@ namespace NewInventor\EasyForm\Interfaces;
 
 use NewInventor\EasyForm\Field\Select;
 use NewInventor\EasyForm\Field\TextArea;
+use NewInventor\EasyForm\Field\CheckBoxSet;
+use NewInventor\EasyForm\Exception\ArgumentTypeException;
 
 interface BlockInterface extends FormObjectInterface
 {
@@ -14,6 +16,15 @@ interface BlockInterface extends FormObjectInterface
      * @return BlockInterface
      */
     public function block($name, $title = '');
+
+    /**
+     * @param BlockInterface|FieldInterface $object
+     * @param array $values
+     *
+     * @return BlockInterface|FormInterface
+     * @throws ArgumentTypeException
+     */
+    public function repeatable($object, $values);
 
     /**
      * @param FieldInterface $field
@@ -77,6 +88,14 @@ interface BlockInterface extends FormObjectInterface
      * @return FieldInterface
      */
     public function radio($name, $value = '');
+
+    /**
+     * @param string $name
+     * @param string $value
+     *
+     * @return FieldInterface
+     */
+    public function radioSet($name, $value = '');
 
     /**
      * @param string $name
@@ -224,9 +243,35 @@ interface BlockInterface extends FormObjectInterface
     public function textArea($name, $value = '');
 
     /**
+     * @param string $name
+     * @param string $value
+     *
+     * @return CheckBoxSet
+     */
+    public function checkBoxSet($name, $value = null);
+
+    /**
      * @param null|array $data
      *
      * @return bool
      */
     public function load($data = null);
+
+
+    /**
+     * @return bool
+     */
+    public function isRepeatable();
+
+    /**
+     * @param $repeatable
+     *
+     * @return $this
+     */
+    public function setRepeatable($repeatable);
+
+    /**
+     * @return $this
+     */
+    public function clear();
 }

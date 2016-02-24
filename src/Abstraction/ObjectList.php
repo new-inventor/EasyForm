@@ -14,7 +14,7 @@ use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\ObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 
-class ObjectList extends Object implements \Iterator, ObjectListInterface
+class ObjectList extends Object implements \Iterator, ObjectListInterface, \Countable
 {
     /** @var ObjectInterface[] */
     protected $objects;
@@ -93,12 +93,12 @@ class ObjectList extends Object implements \Iterator, ObjectListInterface
         if (ObjectHelper::isValidType($index, [ObjectHelper::INT, ObjectHelper::STRING])) {
             if (isset($this->objects[$index])) {
                 unset($this->objects[$index]);
-
-                return $this;
             }
+
+            return $this;
         }
 
-        throw new ArgumentTypeException('index', [ObjectHelper::INT], $index);
+        throw new ArgumentTypeException('index', [ObjectHelper::INT, ObjectHelper::STRING], $index);
     }
 
     /**
@@ -172,5 +172,19 @@ class ObjectList extends Object implements \Iterator, ObjectListInterface
         }
 
         return $list;
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     */
+    public function count()
+    {
+        return count($this->objects);
     }
 }

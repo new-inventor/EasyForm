@@ -204,7 +204,7 @@ class AbstractForm extends AbstractBlock implements FormInterface
     {
 
         $data = $customData;
-        if($data === null){
+        if($data === null && isset($_REQUEST[$this->getName()])){
             $data = $_REQUEST[$this->getName()];
         }
         if($data === null){

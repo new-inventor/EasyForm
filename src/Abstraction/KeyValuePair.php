@@ -97,7 +97,6 @@ class KeyValuePair extends NamedObject
     {
         if (ObjectHelper::isValidType($value, [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL])) {
             $this->value = $value;
-
             return $this;
         }
         throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL], $value);

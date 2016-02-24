@@ -7,7 +7,6 @@
 
 namespace NewInventor\EasyForm\Field;
 
-use NewInventor\EasyForm\AbstractBlock;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\FormObject;
 use NewInventor\EasyForm\Helper\ObjectHelper;
@@ -25,25 +24,13 @@ abstract class AbstractField extends FormObject implements FieldInterface, Valid
     /**
      * AbstractField constructor.
      * @param string $name
-     * @param string|array|null $value
+     * @param mixed $value
      * @param string $title
      */
-    public function __construct($name, $value = '', $title = '')
+    public function __construct($name, $value, $title = '')
     {
         parent::__construct($name, $title);
         $this->setValue($value);
-    }
-
-    public function repeatable(){
-        $parent = $this->getParent();
-        $fieldName = $this->getName();
-        $block = new AbstractBlock($fieldName);
-        $this->setName('1');
-        $block->field($this);
-        $parent->children()->delete($fieldName);
-        $parent->children()->add($block);
-        print_r($this);
-        return $this;
     }
 
     /**
@@ -73,12 +60,12 @@ abstract class AbstractField extends FormObject implements FieldInterface, Valid
      */
     public function setValue($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL])) {
+        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::BOOL])) {
             $this->value = $value;
 
             return $this;
         }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL], $value);
+        throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::BOOL], $value);
     }
 
     public function toArray()
@@ -114,5 +101,13 @@ abstract class AbstractField extends FormObject implements FieldInterface, Valid
     public function child($name)
     {
         return null;
+    }
+
+    public function clear(){
+        $this->value = null;
+        $type = $this->getAttribute('type');
+        if($type !== null && $type != 'checkbox' && $type != 'radio') {
+            $this->attribute('value', '');
+        }
     }
 }

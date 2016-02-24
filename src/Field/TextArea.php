@@ -18,7 +18,7 @@ class TextArea extends AbstractField implements FieldInterface
      */
     public function getString()
     {
-        return '<textarea name="' . $this->getFullName() . '" ' . $this->attributes() . ' />' . $this->getValue() . '</textarea>';
+        return '<textarea name="' . $this->getFullName() . '" ' . $this->attributes() . '>' . $this->getValue() . '</textarea>';
     }
 
     /**

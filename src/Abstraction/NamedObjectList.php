@@ -13,7 +13,7 @@ use NewInventor\EasyForm\Interfaces\NamedObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 use NewInventor\EasyForm\Renderer\RenderableInterface;
 
-class NamedObjectList extends ObjectList implements \Iterator, ObjectListInterface, RenderableInterface
+class NamedObjectList extends ObjectList implements \Iterator, ObjectListInterface, RenderableInterface, \Countable
 {
 
     /** @var string */
@@ -70,13 +70,7 @@ class NamedObjectList extends ObjectList implements \Iterator, ObjectListInterfa
      */
     public function getString()
     {
-        $res = '';
-        /** @var KeyValuePair $object */
-        foreach($this->objects as $object){
-            $res .= $object . $this->getObjectsDelimiter();
-        }
-
-        return $res;
+        return implode($this->getObjectsDelimiter(), $this->objects);
     }
 
     /**

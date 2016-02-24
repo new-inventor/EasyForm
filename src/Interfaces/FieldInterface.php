@@ -7,7 +7,7 @@ use NewInventor\EasyForm\Exception\ArgumentTypeException;
 interface FieldInterface extends FormObjectInterface
 {
     /**
-     * @return array|string|null
+     * @return mixed
      */
     public function getValue();
 
@@ -17,4 +17,9 @@ interface FieldInterface extends FormObjectInterface
      * @throws ArgumentTypeException
      */
     public function setValue($value);
+
+    /**
+     * @return $this
+     */
+    public function clear();
 }

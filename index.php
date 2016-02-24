@@ -1,3 +1,6 @@
+<head>
+    <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+</head>
 <?php
 /**
  * User: Ionov George
@@ -10,15 +13,33 @@ use \NewInventor\EasyForm\AbstractForm;
 
 $form = new AbstractForm('form1', null, AbstractForm::METHOD_POST, 'title1', AbstractForm::ENC_TYPE_MULTIPART);
 $form
+    ->radioSet('name1', 1)
+        ->addOptionArray(['0' => 'value0', '1' => 'value1', '2' => 'value2'])
+    ->end()
+    ->checkBoxSet('che')
+        ->addOptionArray(['value1' => 'title1', 'value2' => 'title2', 'value3' => 'title3'])
+    ->end()
+    ->checkbox('cccc', false)
+        ->attribute('value', 'Yes')
+    ->end()
+    ->checkbox('cccc3', false)
+        ->attribute('value', 'Yes1')
+    ->end()
+    ->checkbox('cccc4', false)
+        ->attribute('value', 'Yes2')
+    ->end()
     ->password('qwee', '123')
         ->title('titleeee')
         ->attribute('class', 'special')
         ->attribute('id', 'qwe1')
     ->end()
-    ->text('test', 'qwe')
-        ->title('QWE')
-        ->attribute('readonly')
-        ->attribute('class', 'show')
+    //->repeatable(new \NewInventor\EasyForm\Field\Input('testRepeat', '', 'repeat title'), [])
+    ->block('test')
+        ->text('0', 'qwe')
+            ->title('QWE')
+            ->attribute('readonly')
+            ->attribute('class', 'show')
+        ->end()
     ->end()
     ->block('innerBlock')
         ->text('city')
@@ -37,6 +58,10 @@ $form
             ->end()
         ->end()
     ->end()
+    ->repeatable((new \NewInventor\EasyForm\AbstractBlock('fullName'))
+        ->text('name')->end()
+        ->text('surname')->end()
+        ->text('family')->end(), [])
     ->handler(\NewInventor\EasyForm\Handler\AbstractHandler::getClass())
     ->handler(\NewInventor\EasyForm\Handler\ResetHandler::getClass())
 ->end();
