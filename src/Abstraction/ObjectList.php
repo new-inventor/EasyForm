@@ -54,7 +54,7 @@ class ObjectList extends Object implements \Iterator, ObjectListInterface, \Coun
     public function get($index)
     {
         if (ObjectHelper::isValidType($index, [ObjectHelper::INT, ObjectHelper::STRING])) {
-            if (isset($this->objects[$index])) {
+            if (array_key_exists($index, $this->objects)) {
                 return $this->objects[$index];
             }
 

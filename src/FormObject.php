@@ -196,22 +196,6 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     /**
      * @inheritdoc
      */
-    public function validators()
-    {
-        return $this->validators;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function validator($name)
-    {
-        return $this->validators()->get($name);
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function addError($error)
     {
         if (ObjectHelper::isValidType($error, [ObjectHelper::STRING])) {

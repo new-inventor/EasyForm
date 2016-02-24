@@ -19,12 +19,11 @@ interface BlockInterface extends FormObjectInterface
 
     /**
      * @param BlockInterface|FieldInterface $object
-     * @param array $values
      *
      * @return BlockInterface|FormInterface
      * @throws ArgumentTypeException
      */
-    public function repeatable($object, $values);
+    public function repeatable($object);
 
     /**
      * @param FieldInterface $field
@@ -274,4 +273,14 @@ interface BlockInterface extends FormObjectInterface
      * @return $this
      */
     public function clear();
+
+    /**
+     * @return BlockInterface|FieldInterface
+     */
+    public function getRepeatObject();
+
+    /**
+     * @param BlockInterface|FieldInterface $repeatObject
+     */
+    public function setRepeatObject($repeatObject);
 }

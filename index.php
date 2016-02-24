@@ -44,6 +44,11 @@ $form
     ->block('innerBlock')
         ->text('city')
             ->title('Город')
+//            ->validator('email')
+//            ->validator('unique')
+//            ->validator(function () {
+//
+//            })
             ->attribute('data-city-input')
         ->end()
         ->select('selectBox1', ['1', '2', '3'])
@@ -59,11 +64,15 @@ $form
         ->end()
     ->end()
     ->repeatable((new \NewInventor\EasyForm\AbstractBlock('fullName'))
+        ->attribute('data-repeatable')
         ->text('name')->end()
         ->text('surname')->end()
         ->text('family')->end(), [])
     ->handler(\NewInventor\EasyForm\Handler\AbstractHandler::getClass())
     ->handler(\NewInventor\EasyForm\Handler\ResetHandler::getClass())
+//    ->validators(
+//
+//    )
 ->end();
 $form->load();
 $form->save();

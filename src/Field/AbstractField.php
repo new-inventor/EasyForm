@@ -15,7 +15,7 @@ use NewInventor\EasyForm\Renderer\RenderableInterface;
 use NewInventor\EasyForm\Validator\ValidatableInterface;
 use NewInventor\EasyForm\Validator\ValidatorInterface;
 
-abstract class AbstractField extends FormObject implements FieldInterface, ValidatableInterface, RenderableInterface
+abstract class AbstractField extends FormObject implements FieldInterface, RenderableInterface
 {
     /** @var array|string|null */
     private $value;
@@ -109,5 +109,22 @@ abstract class AbstractField extends FormObject implements FieldInterface, Valid
         if($type !== null && $type != 'checkbox' && $type != 'radio') {
             $this->attribute('value', '');
         }
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function validators()
+    {
+        return $this->validators;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validator($name)
+    {
+        return $this->validators()->get($name);
     }
 }

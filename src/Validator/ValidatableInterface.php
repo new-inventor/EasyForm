@@ -17,18 +17,6 @@ interface ValidatableInterface
     public function isValid();
 
     /**
-     * @return NamedObjectList
-     */
-    public function validators();
-
-
-    /**
-     * @param string $name
-     * @return ValidatorInterface
-     */
-    public function validator($name);
-
-    /**
      * @return void
      */
     public function validate();
