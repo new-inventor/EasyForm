@@ -7,18 +7,22 @@
 
 namespace NewInventor\EasyForm\Field;
 
+use NewInventor\EasyForm\Abstraction\ObjectList;
+use NewInventor\EasyForm\Exception\ArgumentException;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\FormObject;
 use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
-use NewInventor\EasyForm\Renderer\RenderableInterface;
-use NewInventor\EasyForm\Validator\ValidatableInterface;
+use NewInventor\EasyForm\Interfaces\ObjectListInterface;
+use NewInventor\EasyForm\Validator\AbstractValidator;
 use NewInventor\EasyForm\Validator\ValidatorInterface;
 
-abstract class AbstractField extends FormObject implements FieldInterface, RenderableInterface
+abstract class AbstractField extends FormObject implements FieldInterface
 {
     /** @var array|string|null */
     private $value;
+    /** @var ObjectListInterface */
+    protected $validators;
 
 
     /**
@@ -31,6 +35,7 @@ abstract class AbstractField extends FormObject implements FieldInterface, Rende
     {
         parent::__construct($name, $title);
         $this->setValue($value);
+        $this->validators = new ObjectList(['NewInventor\EasyForm\Validator\ValidatorInterface']);
     }
 
     /**
@@ -103,10 +108,11 @@ abstract class AbstractField extends FormObject implements FieldInterface, Rende
         return null;
     }
 
-    public function clear(){
+    public function clear()
+    {
         $this->value = null;
         $type = $this->getAttribute('type');
-        if($type !== null && $type != 'checkbox' && $type != 'radio') {
+        if ($type !== null && $type != 'checkbox' && $type != 'radio') {
             $this->attribute('value', '');
         }
     }
@@ -121,10 +127,65 @@ abstract class AbstractField extends FormObject implements FieldInterface, Rende
     }
 
     /**
-     * @inheritdoc
+     * @param $name
+     * @return ValidatorInterface|null
+     * @throws ArgumentTypeException
      */
-    public function validator($name)
+    public function getValidator($name)
     {
         return $this->validators()->get($name);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validator($validator, array $options = [])
+    {
+        $validatorObj = null;
+        if (is_string($validator)) {
+           $validatorObj = $this->generateInnerValidator($validator);
+        } elseif ($validator instanceof \Closure) {
+            $validatorObj = $this->generateCustomValidator($validator);
+        } elseif($validator instanceof ValidatorInterface){
+            $validatorObj = $validator;
+        }else{
+            throw new ArgumentException('Передан неправильный валидатор.', 'validator');
+        }
+        $validatorObj->field($this);
+        $validatorObj->setOptions($options);
+        $this->validators()->add($validatorObj);
+
+        return $this;
+    }
+
+    protected function generateInnerValidator($validator)
+    {
+        $validatorClassName = 'NewInventor\EasyForm\Validator\Validators\\' . ucfirst($validator) . 'Validator';
+        if (class_exists($validatorClassName)) {
+            /** @var ValidatorInterface $validatorObj */
+            $validatorObj = new $validatorClassName();
+        }else{
+            throw new ArgumentException('Класс для валидатора не найден.', 'validator');
+        }
+
+        return $validatorObj;
+    }
+
+    protected function generateCustomValidator($validator)
+    {
+        $validatorObj = new AbstractValidator();
+        $validatorObj->setCustomValidateMethod($validator);
+
+        return $validatorObj;
+    }
+
+    public function prepareErrors(array $errors = [])
+    {
+        foreach($errors as &$error){
+            $replacement = !empty($this->getTitle()) ? $this->getTitle() : $this->getName();
+            $error = preg_replace('/\{f\}/', $replacement, $error);
+        }
+
+        return $errors;
     }
 }

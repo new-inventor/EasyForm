@@ -16,7 +16,7 @@ use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 
 class ObjectList extends Object implements \Iterator, ObjectListInterface, \Countable
 {
-    /** @var ObjectInterface[] */
+    /** @var mixed[] */
     protected $objects;
     /** @var string */
     private $elementClasses;

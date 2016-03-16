@@ -3,6 +3,7 @@
 namespace NewInventor\EasyForm\Interfaces;
 
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
+use NewInventor\EasyForm\Validator\ValidatorInterface;
 
 interface FieldInterface extends FormObjectInterface
 {
@@ -22,4 +23,11 @@ interface FieldInterface extends FormObjectInterface
      * @return $this
      */
     public function clear();
+
+    /**
+     * @param \Closure|string $validator
+     * @param array $options
+     * @return $this
+     */
+    public function validator($validator, array $options = []);
 }

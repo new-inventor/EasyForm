@@ -23,10 +23,8 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     private $attrs;
     /** @var string */
     private $title;
-    /** @var NamedObjectList */
-    protected $validators;
     /** @var array */
-    protected $errors;
+    protected $errors = [];
     /** @var bool */
     protected $isValid;
     /** @var FormInterface|BlockInterface|null */
@@ -47,7 +45,6 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         $this->children = new NamedObjectList([AbstractBlock::getClass(), AbstractField::getClass()]);
         parent::__construct($name);
         $this->title($title);
-        $this->validators = new NamedObjectList(['NewInventor\EasyForm\Interfaces\ValidatorInterface']);
         $this->isValid = true;
     }
 
@@ -185,11 +182,26 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         echo $this->getString();
     }
 
+    public function validate()
+    {
+        if($this->children() !== null) {
+            foreach ($this->children() as $child) {
+                $child->validate();
+            }
+        }
+    }
+
     /**
      * @inheritdoc
      */
     public function isValid()
     {
+        if($this->children() !== null) {
+            foreach ($this->children() as $child) {
+                $this->isValid = $this->isValid && $child->isValid();
+            }
+        }
+
         return $this->isValid;
     }
 
@@ -211,7 +223,19 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function getErrors()
     {
-        return $this->errors;
+        $errors = $this->prepareErrors($this->errors);
+        if($this->children() !== null) {
+            foreach ($this->children() as $child) {
+                $errors = array_merge($errors, $child->getErrors());
+            }
+        }
+
+        return $errors;
+    }
+
+    public function prepareErrors(array $errors = [])
+    {
+        return $errors;
     }
 
     /**

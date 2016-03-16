@@ -33,22 +33,25 @@ $form
         ->attribute('class', 'special')
         ->attribute('id', 'qwe1')
     ->end()
-    //->repeatable(new \NewInventor\EasyForm\Field\Input('testRepeat', '', 'repeat title'), [])
+    ->repeatable(new \NewInventor\EasyForm\Field\Input('testRepeat', '', 'repeat title'))
     ->block('test')
         ->text('0', 'qwe')
             ->title('QWE')
-            ->attribute('readonly')
             ->attribute('class', 'show')
+            ->validator('string', ['minLength' => 6, 'maxLength' => 12])
+            ->validator(
+                function ($value){
+                    return substr($value, 0, 2) == 'as';
+                },
+                ['message' => 'Значение поля "{f}" должно начинаться с "as"']
+            )
         ->end()
     ->end()
     ->block('innerBlock')
         ->text('city')
             ->title('Город')
-//            ->validator('email')
-//            ->validator('unique')
-//            ->validator(function () {
-//
-//            })
+            ->validator('required')
+            ->validator('integer', ['min' => 5, 'max' => 10])
             ->attribute('data-city-input')
         ->end()
         ->select('selectBox1', ['1', '2', '3'])
@@ -67,13 +70,12 @@ $form
         ->attribute('data-repeatable')
         ->text('name')->end()
         ->text('surname')->end()
-        ->text('family')->end(), [])
+        ->text('family')->end())
     ->handler(\NewInventor\EasyForm\Handler\AbstractHandler::getClass())
     ->handler(\NewInventor\EasyForm\Handler\ResetHandler::getClass())
-//    ->validators(
-//
-//    )
 ->end();
 $form->load();
+$form->validate();
+var_dump($form->isValid());
 $form->save();
 echo $form;

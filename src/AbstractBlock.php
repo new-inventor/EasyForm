@@ -7,7 +7,6 @@
 
 namespace NewInventor\EasyForm;
 
-use NewInventor\EasyForm\Abstraction\Cloned;
 use DeepCopy\DeepCopy;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\Field\AbstractField;
@@ -40,14 +39,6 @@ class AbstractBlock extends FormObject implements BlockInterface
     public function __construct($name, $title = '')
     {
         parent::__construct($name, $title);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function validate()
-    {
-        return true;
     }
 
     /**

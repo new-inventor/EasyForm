@@ -12,19 +12,19 @@ interface ObjectListInterface extends ObjectInterface
 
     /**
      * @param string|int $index
-     * @return ObjectInterface
+     * @return mixed
      */
     public function get($index);
 
     /**
-     * @param ObjectInterface $object
+     * @param mixed $object
      * @throws \Exception
      * @return static
      */
     public function add($object);
 
     /**
-     * @return ObjectInterface[]
+     * @return mixed[]
      */
     public function getAll();
 
@@ -35,7 +35,7 @@ interface ObjectListInterface extends ObjectInterface
     public function delete($name);
 
     /**
-     * @param ObjectInterface[] $pairs
+     * @param mixed[] $pairs
      * @throws \Exception
      * @return static
      */

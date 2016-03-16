@@ -1,4 +1,4 @@
 <?php
 return[
-    'renderer' => 'php',
+    'renderer' => 'NewInventor\EasyForm\Renderer\Renderers\PHPRenderer',
 ];

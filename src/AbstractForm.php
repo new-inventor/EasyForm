@@ -50,7 +50,7 @@ class AbstractForm extends AbstractBlock implements FormInterface
      */
     public function __construct($name, $action = '', $method = 'post', $title = '', $encType = self::ENC_TYPE_URLENCODED)
     {
-        parent::__construct($name, $title, false);
+        parent::__construct($name, $title);
         if (!is_null($action)) {
             $this->action($action);
         }
@@ -160,7 +160,7 @@ class AbstractForm extends AbstractBlock implements FormInterface
 
     public function getString()
     {
-        $form = '<form name="' . $this->getFullName() . '" ' . $this->attributes() . '>';
+        $form = implode('<br>', $this->getErrors()) . '<form name="' . $this->getFullName() . '" ' . $this->attributes() . '>';
         $form .= $this->children();
         $form .= $this->handlers();
         $form .= '</form>';
@@ -202,7 +202,6 @@ class AbstractForm extends AbstractBlock implements FormInterface
      */
     public function save(array $customData = null)
     {
-
         $data = $customData;
         if($data === null && isset($_REQUEST[$this->getName()])){
             $data = $_REQUEST[$this->getName()];
