@@ -17,14 +17,6 @@ class Input extends AbstractField implements FieldInterface
     }
 
     /**
-     * @return string
-     */
-    public function getString()
-    {
-        return '<input name="' . $this->getFullName() . '" ' . $this->attributes() . '/>';
-    }
-
-    /**
      * @param string $type
      *
      * @return $this

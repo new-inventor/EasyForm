@@ -14,14 +14,6 @@ use NewInventor\EasyForm\Interfaces\FieldInterface;
 class TextArea extends AbstractField implements FieldInterface
 {
     /**
-     * @return string
-     */
-    public function getString()
-    {
-        return '<textarea name="' . $this->getFullName() . '" ' . $this->attributes() . '>' . $this->getValue() . '</textarea>';
-    }
-
-    /**
      * @param int $count
      *
      * @return $this

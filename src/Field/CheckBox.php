@@ -40,18 +40,4 @@ class CheckBox extends AbstractField implements FieldInterface
         }
         throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::BOOL, ObjectHelper::NULL], $value);
     }
-
-    /**
-     * @return string
-     */
-    public function getString()
-    {
-        $res = '<input name="' . $this->getFullName() . '" ' . $this->attributes();
-        if($this->getValue()){
-            $res .= ' checked';
-        }
-        $res .= '/>';
-
-        return $res;
-    }
 } 

@@ -93,11 +93,6 @@ abstract class AbstractField extends FormObject implements FieldInterface
         }
     }
 
-    public function getString()
-    {
-        return '';
-    }
-
     public function children()
     {
         return null;
@@ -179,8 +174,17 @@ abstract class AbstractField extends FormObject implements FieldInterface
         return $validatorObj;
     }
 
+    /** @inheritdoc */
     public function prepareErrors(array $errors = [])
     {
         return $errors;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isRepeatable()
+    {
+        return $this->getParent() !== null && $this->getParent()->isRepeatableContainer();
     }
 }

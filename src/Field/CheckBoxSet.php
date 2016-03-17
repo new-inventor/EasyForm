@@ -31,24 +31,6 @@ class CheckBoxSet extends ListField implements FieldInterface
     /**
      * @inheritdoc
      */
-    public function getString()
-    {
-        $res = '';
-        foreach ($this->options() as $option) {
-            $res .= '<input type="checkbox" name="' . $this->getFullName() . '[]" ' . $this->attributes();
-            $res .= 'value="' . $option['value'] . '"';
-            if ($this->optionSelected($option['value'])) {
-                $res .= ' checked';
-            }
-            $res .= '/>';
-        }
-
-        return $res;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function setValue($value)
     {
         if (!ObjectHelper::isValidType($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL])) {
@@ -70,7 +52,7 @@ class CheckBoxSet extends ListField implements FieldInterface
      *
      * @return bool
      */
-    protected function optionSelected($value)
+    public function optionSelected($value)
     {
         return array_search($value, $this->getValue()) !== false;
     }

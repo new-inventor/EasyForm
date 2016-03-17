@@ -7,7 +7,9 @@
 
 namespace NewInventor\EasyForm\Interfaces;
 
-interface ObjectListInterface extends ObjectInterface
+use NewInventor\EasyForm\Renderer\RenderableInterface;
+
+interface ObjectListInterface extends \Countable, ObjectInterface
 {
 
     /**

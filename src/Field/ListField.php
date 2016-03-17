@@ -33,10 +33,6 @@ abstract class ListField extends AbstractField {
         }
     }
 
-    public function getString(){
-        return '';
-    }
-
     /**
      * @param string $title
      * @param string $value
@@ -101,7 +97,7 @@ abstract class ListField extends AbstractField {
      *
      * @return bool
      */
-    protected function optionSelected($value)
+    public function optionSelected($value)
     {
         return $value == $this->getValue();
     }

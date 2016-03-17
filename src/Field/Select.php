@@ -12,25 +12,6 @@ use NewInventor\EasyForm\Interfaces\FieldInterface;
 class Select extends CheckBoxSet implements FieldInterface
 {
     /**
-     * @return string
-     */
-    public function getString()
-    {
-        $res = '<select name="' . $this->getFullName() . '" ' . $this->attributes() . '>';
-        foreach ($this->options() as $option) {
-            $optionString = '<option value="' . $option['value'] . '"';
-            if ($this->optionSelected($option['value'])) {
-                $optionString .= ' selected="selected"';
-            }
-            $optionString .= '>' . $option['title'] . '</option>';
-            $res .= $optionString;
-        }
-        $res .= '</select>';
-
-        return $res;
-    }
-
-    /**
      * @inheritdoc
      */
     public function getFullName()

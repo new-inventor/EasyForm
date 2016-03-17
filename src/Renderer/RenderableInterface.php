@@ -7,7 +7,9 @@
 
 namespace NewInventor\EasyForm\Renderer;
 
-interface RenderableInterface
+use NewInventor\EasyForm\Interfaces\ObjectInterface;
+
+interface RenderableInterface extends ObjectInterface
 {
     /**
      * Преобразовать объект в строку автоматически при конкатенации

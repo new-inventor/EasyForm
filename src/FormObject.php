@@ -15,6 +15,7 @@ use NewInventor\EasyForm\Interfaces\FormInterface;
 use NewInventor\EasyForm\Interfaces\FormObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 use NewInventor\EasyForm\Renderer\RenderableInterface;
+use NewInventor\EasyForm\Renderer\RendererInterface;
 use NewInventor\EasyForm\Validator\ValidatableInterface;
 
 abstract class FormObject extends NamedObject implements FormObjectInterface, ValidatableInterface, RenderableInterface
@@ -42,7 +43,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         $this->attrs = new NamedObjectList([KeyValuePair::getClass()]);
         $this->attrs->setObjectsDelimiter(' ');
-        $this->children = new NamedObjectList([AbstractBlock::getClass(), AbstractField::getClass()]);
+        $this->children = new NamedObjectList([Block::getClass(), AbstractField::getClass()]);
         parent::__construct($name);
         $this->title($title);
         $this->isValid = true;
@@ -180,6 +181,30 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     public function render()
     {
         echo $this->getString();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getString()
+    {
+        $rendererParams = Settings::getInstance()->getSetting('renderer');
+        if (isset($rendererParams) && isset($rendererParams['class'])) {
+            /** @var RendererInterface $renderer */
+            $renderer = call_user_func([$rendererParams['class'], 'getInstance']);
+
+            if(in_array('NewInventor\EasyForm\Interfaces\FormInterface', class_implements($this))){
+                /** @var FormInterface $this */
+                return $renderer->form($this);
+            }elseif(in_array('NewInventor\EasyForm\Interfaces\BlockInterface', class_implements($this))) {
+                /** @var BlockInterface $this */
+                return $renderer->block($this);
+            }elseif(in_array('NewInventor\EasyForm\Interfaces\FieldInterface', class_implements($this))){
+                /** @var FieldInterface $this */
+                return $renderer->field($this);
+            }
+        }
+        return '';
     }
 
     public function validate()

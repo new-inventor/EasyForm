@@ -19,17 +19,17 @@ use NewInventor\EasyForm\Field\TextArea;
 use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\BlockInterface;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
-use NewInventor\EasyForm\Renderer\RenderableInterface;
 
 /**
  * Class AbstractBlock
  * @package NewInventor\EasyForm
  */
-class AbstractBlock extends FormObject implements BlockInterface
+class Block extends FormObject implements BlockInterface
 {
     private $repeatable;
 
     private $repeatObject;
+
     /**
      * AbstractBlock constructor.
      *
@@ -46,7 +46,7 @@ class AbstractBlock extends FormObject implements BlockInterface
      */
     public function block($name, $title = '')
     {
-        $block = new AbstractBlock($name, $title);
+        $block = new Block($name, $title);
         $block->setParent($this);
         $this->children()->add($block);
 
@@ -67,6 +67,7 @@ class AbstractBlock extends FormObject implements BlockInterface
     public function checkbox($name, $value = false)
     {
         $checkbox = new CheckBox($name, $value);
+
         return $this->field($checkbox);
     }
 
@@ -303,12 +304,14 @@ class AbstractBlock extends FormObject implements BlockInterface
      */
     public function repeatable($object)
     {
-        if (!ObjectHelper::isValidType($object, [AbstractBlock::getClass(), AbstractField::getClass()])){
-            throw new ArgumentTypeException('object', [AbstractBlock::getClass(), AbstractField::getClass()], $object);
+        if (!ObjectHelper::isValidType($object, [Block::getClass(), AbstractField::getClass()])) {
+            throw new ArgumentTypeException('object', [Block::getClass(), AbstractField::getClass()], $object);
         }
 
         $repeatableBlockName = $object->getName();
-        $repeatableBlock = new AbstractBlock($repeatableBlockName);
+        $repeatableBlockTitle = $object->getTitle();
+        $object->title('');
+        $repeatableBlock = new Block($repeatableBlockName, $repeatableBlockTitle);
         $repeatableBlock->setRepeatable(true);
         $object->setName('#IND#');
         $repeatableBlock->setRepeatObject($object);
@@ -328,67 +331,6 @@ class AbstractBlock extends FormObject implements BlockInterface
     /**
      * @inheritdoc
      */
-    public function getString()
-    {
-        $isRepeatBlock = $this->getParent() !== null && $this->getParent()->isRepeatable();
-        $res = '<div';
-        if($this->getParent() !== null && $this->getParent()->isRepeatable()){
-            $res .= ' data-repeat-block';
-        }elseif($this->isRepeatable()){
-            $res .= ' data-repeat-container';
-        }
-        $res .= '>';
-        $res .= $this->children()->getString();
-        if ($isRepeatBlock) {
-            if ((int)$this->getName() != 0) {
-                $res .= '<span data-repeat-block-delete="' . $this->getParent()->getName() . '">-</span>';
-            }
-            if ((int)$this->getName() == count($this->getParent()->children()) - 1) {
-                $res .= '<span data-repeat-block-add="' . $this->getParent()->getName() . '">+</span>';
-            }
-        }
-        $res .='</div>';
-        if($this->isRepeatable()){
-            $deepCopy = new DeepCopy();
-            /** @var BlockInterface|FieldInterface|RenderableInterface $childCopy */
-
-            $childCopy = $deepCopy->copy($this->getRepeatObject());
-            $childCopy->clear();
-            $childCopy->setParent($this);
-            $res .= '<script>
-$(document).on("click", "[data-repeat-block-delete=\'' . $this->getName() . '\']", function(e){
-    e.preventDefault();
-    var $this = $(this);
-    var $block = $this.closest("[data-repeat-block]");
-    var cloneAdd = $block.find("[data-repeat-block-add=\'' . $this->getName() . '\']").clone();
-    $block.prev().append(cloneAdd);
-    $block.remove();
-});
-$(document).on("click", "[data-repeat-block-add=\'' . $this->getName() . '\']", function(e){
-    e.preventDefault();
-    var $this = $(this);
-    var $container = $this.closest("[data-repeat-container]");
-    var dummy = \'' . $childCopy . '\';
-    var $block = $container.find("[data-repeat-block]");
-    var index = $container.find("[data-repeat-block]").length;
-    dummy = dummy.replace(/#IND#/g, index);
-    $container.append(dummy);
-    var cloneAdd = $block.find("[data-repeat-block-add=\'' . $this->getName() . '\']").clone();
-    var cloneDelete = $block.find("[data-repeat-block-delete=\'' . $this->getName() . '\']").clone();
-    $container.find("[data-repeat-block]:last").append(cloneDelete);
-    $container.find("[data-repeat-block]:last").append(cloneAdd);
-    $this.remove();
-});
-</script>';
-            //unset($childCopy);
-        }
-
-        return $res;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function load($data = null)
     {
         if (!ObjectHelper::isValidType($data, [ObjectHelper::ARR, ObjectHelper::NULL])) {
@@ -396,7 +338,7 @@ $(document).on("click", "[data-repeat-block-add=\'' . $this->getName() . '\']", 
         }
         if ($data === null && isset($_REQUEST[$this->getName()])) {
             $data = $_REQUEST[$this->getName()];
-        }elseif($data === null){
+        } elseif ($data === null) {
             return false;
         }
 
@@ -405,23 +347,30 @@ $(document).on("click", "[data-repeat-block-add=\'' . $this->getName() . '\']", 
             $child = $this->child($name);
             if ($child instanceof FieldInterface) {
                 $child->setValue($value);
-            } elseif ($child instanceof BlockInterface && !$child->isRepeatable()) {
+            } elseif ($child instanceof BlockInterface && !$child->isRepeatableContainer()) {
                 $child->load($value);
-            } elseif ($child instanceof BlockInterface && $child->isRepeatable()) {
+            } elseif ($child instanceof BlockInterface && $child->isRepeatableContainer()) {
                 $value = array_values($value);
                 $childrenCount = count($child->children());
                 $childrenMaxIndex = $childrenCount - 1;
                 $childrenDelta = count($value) - $childrenCount;
-                if($childrenDelta > 0){
-                    for($i = 0; $i < $childrenDelta; $i++) {
+                if ($childrenDelta > 0) {
+                    for ($i = 0; $i <= $childrenDelta; $i++) {
                         /** @var BlockInterface $objectClone */
                         $objectClone = $deepCopy->copy($child->getRepeatObject());
+                        $objectValue = $objectClone->getValue();
+                        if($value[$i] == $objectValue){
+                            $childrenDelta--;
+                            array_splice($value, $i, 1);
+                            $i--;
+                            continue;
+                        }
                         $objectClone->setParent($child);
                         $objectClone->setName((string)($childrenCount + $i));
                         $child->children()->add($objectClone);
                     }
-                }elseif($childrenDelta < 0){
-                    for ($i = 0; $i < abs($childrenDelta); $i++){
+                } elseif ($childrenDelta < 0) {
+                    for ($i = 0; $i < abs($childrenDelta); $i++) {
                         $child->children()->delete(($childrenMaxIndex - $i));
                     }
                 }
@@ -435,9 +384,30 @@ $(document).on("click", "[data-repeat-block-add=\'' . $this->getName() . '\']", 
     /**
      * @inheritdoc
      */
-    public function isRepeatable()
+    public function getValue()
+    {
+        $value = [];
+        foreach ($this->children() as $child) {
+            $value[$child->getName()] = $child->getValue();
+        }
+
+        return $value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isRepeatableContainer()
     {
         return $this->repeatable;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isRepeatable()
+    {
+        return $this->getParent() !== null && $this->getParent()->isRepeatableContainer();
     }
 
     /**
@@ -453,8 +423,9 @@ $(document).on("click", "[data-repeat-block-add=\'' . $this->getName() . '\']", 
     /**
      * @inheritdoc
      */
-    public function clear(){
-        foreach($this->children() as $child){
+    public function clear()
+    {
+        foreach ($this->children() as $child) {
             $child->clear();
         }
 

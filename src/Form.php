@@ -4,15 +4,15 @@ namespace NewInventor\EasyForm;
 
 use NewInventor\EasyForm\Abstraction\HtmlAttr;
 use NewInventor\EasyForm\Abstraction\NamedObjectList;
-use NewInventor\EasyForm\Handler\AbstractHandler;
 use NewInventor\EasyForm\Exception\ArgumentException;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\Field\AbstractField;
+use NewInventor\EasyForm\Handler\AbstractHandler;
 use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\FormInterface;
 use NewInventor\EasyForm\Interfaces\HandlerInterface;
 
-class AbstractForm extends AbstractBlock implements FormInterface
+class Form extends Block implements FormInterface
 {
     const ENC_TYPE_URLENCODED = 'urlencoded';
     const ENC_TYPE_MULTIPART = 'multipart';
@@ -62,7 +62,7 @@ class AbstractForm extends AbstractBlock implements FormInterface
         }
         $this->handlers = new NamedObjectList();
         $this->handlers->setElementClasses([AbstractHandler::getClass()]);
-        $this->children()->setElementClasses([AbstractBlock::getClass(), AbstractField::getClass()]);
+        $this->children()->setElementClasses([Block::getClass(), AbstractField::getClass()]);
     }
 
     public function isValidEncType($encType)
@@ -158,16 +158,6 @@ class AbstractForm extends AbstractBlock implements FormInterface
         $res['encType'] = $this->getEncType();
     }
 
-    public function getString()
-    {
-        $form = implode('<br>', $this->getErrors()) . '<form name="' . $this->getFullName() . '" ' . $this->attributes() . '>';
-        $form .= $this->children();
-        $form .= $this->handlers();
-        $form .= '</form>';
-
-        return $form;
-    }
-
     /**
      * @return NamedObjectList
      */
@@ -185,7 +175,7 @@ class AbstractForm extends AbstractBlock implements FormInterface
      */
     public function handler($handler)
     {
-        if(!class_exists($handler) && $handler instanceof HandlerInterface) {
+        if (!class_exists($handler) && $handler instanceof HandlerInterface) {
             throw new ArgumentException('Класс обработчика формы не существует.', 'handler');
         }
         /** @var HandlerInterface $handler */
@@ -203,21 +193,22 @@ class AbstractForm extends AbstractBlock implements FormInterface
     public function save(array $customData = null)
     {
         $data = $customData;
-        if($data === null && isset($_REQUEST[$this->getName()])){
+        if ($data === null && isset($_REQUEST[$this->getName()])) {
             $data = $_REQUEST[$this->getName()];
         }
-        if($data === null){
+        if ($data === null) {
             return false;
         }
         /**
          * @var string $key
          * @var HandlerInterface $handler
          */
-        foreach($this->handlers() as $key => $handler){
-            if(array_key_exists($key, $data)){
+        foreach ($this->handlers() as $key => $handler) {
+            if (array_key_exists($key, $data)) {
                 return $handler->process();
             }
         }
+
         return false;
     }
 }

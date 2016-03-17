@@ -14,7 +14,7 @@ use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\ObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 
-class ObjectList extends Object implements \Iterator, ObjectListInterface, \Countable
+class ObjectList extends Object implements \Iterator, ObjectListInterface
 {
     /** @var mixed[] */
     protected $objects;

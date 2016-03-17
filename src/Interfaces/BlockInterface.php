@@ -6,8 +6,10 @@ use NewInventor\EasyForm\Field\Select;
 use NewInventor\EasyForm\Field\TextArea;
 use NewInventor\EasyForm\Field\CheckBoxSet;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
+use NewInventor\EasyForm\Renderer\RenderableInterface;
+use NewInventor\EasyForm\Validator\ValidatableInterface;
 
-interface BlockInterface extends FormObjectInterface
+interface BlockInterface extends FormObjectInterface, RenderableInterface, ValidatableInterface
 {
     /**
      * @param string $name
@@ -256,11 +258,15 @@ interface BlockInterface extends FormObjectInterface
      */
     public function load($data = null);
 
-
     /**
      * @return bool
      */
     public function isRepeatable();
+
+    /**
+     * @return bool
+     */
+    public function isRepeatableContainer();
 
     /**
      * @param $repeatable
@@ -283,4 +289,9 @@ interface BlockInterface extends FormObjectInterface
      * @param BlockInterface|FieldInterface $repeatObject
      */
     public function setRepeatObject($repeatObject);
+
+    /**
+     * @return array
+     */
+    public function getValue();
 }

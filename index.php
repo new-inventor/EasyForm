@@ -9,9 +9,9 @@
  */
 require 'vendor/autoload.php';
 
-use \NewInventor\EasyForm\AbstractForm;
+use \NewInventor\EasyForm\Form;
 
-$form = new AbstractForm('form1', null, AbstractForm::METHOD_POST, 'title1', AbstractForm::ENC_TYPE_MULTIPART);
+$form = new Form('form1', null, Form::METHOD_POST, 'title1', Form::ENC_TYPE_MULTIPART);
 $form
     ->radioSet('name1', 1)
         ->addOptionArray(['0' => 'value0', '1' => 'value1', '2' => 'value2'])
@@ -38,7 +38,7 @@ $form
         ->text('0', 'qwe')
             ->title('QWE')
             ->attribute('class', 'show')
-            ->validator('string', ['minLength' => 6, 'maxLength' => 12, 'dfsdfsdf' => 324])
+            ->validator('string', ['minLength' => 6, 'maxLength' => 12])
             ->validator(
                 function ($value){
                     return substr($value, 0, 2) == 'as';
@@ -66,7 +66,7 @@ $form
             ->end()
         ->end()
     ->end()
-    ->repeatable((new \NewInventor\EasyForm\AbstractBlock('fullName'))
+    ->repeatable((new \NewInventor\EasyForm\Block('fullName', 'Полное имя участника.'))
         ->attribute('data-repeatable')
         ->text('name')->end()
         ->text('surname')->end()
