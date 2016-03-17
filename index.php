@@ -38,7 +38,7 @@ $form
         ->text('0', 'qwe')
             ->title('QWE')
             ->attribute('class', 'show')
-            ->validator('string', ['minLength' => 6, 'maxLength' => 12])
+            ->validator('string', ['minLength' => 6, 'maxLength' => 12, 'dfsdfsdf' => 324])
             ->validator(
                 function ($value){
                     return substr($value, 0, 2) == 'as';

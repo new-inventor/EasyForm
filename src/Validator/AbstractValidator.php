@@ -106,9 +106,4 @@ class AbstractValidator implements ValidatorInterface
     {
         $this->field = $field;
     }
-
-    public function __call($name, $params)
-    {
-        throw new \Exception("Не найден параметр '{$name}' в классе.");
-    }
 }
