@@ -81,7 +81,7 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
 
     public function getError()
     {
-        return $this->error;
+        return $this->replaceFieldName($this->error);
     }
 
     /**

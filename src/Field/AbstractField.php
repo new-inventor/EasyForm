@@ -181,11 +181,6 @@ abstract class AbstractField extends FormObject implements FieldInterface
 
     public function prepareErrors(array $errors = [])
     {
-        foreach($errors as &$error){
-            $replacement = !empty($this->getTitle()) ? $this->getTitle() : $this->getName();
-            $error = preg_replace('/\{f\}/', $replacement, $error);
-        }
-
         return $errors;
     }
 }

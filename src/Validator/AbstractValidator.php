@@ -51,8 +51,15 @@ class AbstractValidator implements ValidatorInterface
 
     public function getError()
     {
-        return $this->message;
+        return $this->replaceFieldName($this->message);
     }
+
+    protected function replaceFieldName($message)
+    {
+        $name = !empty($this->field->getTitle()) ? $this->field->getTitle() : $this->field->getName();
+        return preg_replace('/\{f\}/', $name, $message);
+    }
+
 
     /**
      * @param \Closure $customValidateMethod
