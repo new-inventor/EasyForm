@@ -34,6 +34,9 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
 
     public function validateValue($value)
     {
+        if(empty($value)){
+            return true;
+        }
         if (!is_numeric($value)) {
             $this->error = $this->message;
 
@@ -45,9 +48,6 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
             $this->error = $this->message;
 
             return false;
-        }
-        if(empty($value) && is_numeric($value)){
-            return true;
         }
         $value = (int)$value;
         if (isset($this->min) && isset($this->max) && ($value < $this->min || $value > $this->max)) {

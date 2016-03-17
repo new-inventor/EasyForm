@@ -74,8 +74,8 @@ $form
     ->handler(\NewInventor\EasyForm\Handler\AbstractHandler::getClass())
     ->handler(\NewInventor\EasyForm\Handler\ResetHandler::getClass())
 ->end();
-$form->load();
-$form->validate();
-var_dump($form->isValid());
-$form->save();
+if($form->load()){
+    $form->validate();
+    $form->save();
+}
 echo $form;
