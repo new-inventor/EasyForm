@@ -304,7 +304,7 @@ class Block extends FormObject implements BlockInterface
      */
     public function repeatable($object)
     {
-        if (!ObjectHelper::isValidType($object, [Block::getClass(), AbstractField::getClass()])) {
+        if (!ObjectHelper::is($object, [Block::getClass(), AbstractField::getClass()])) {
             throw new ArgumentTypeException('object', [Block::getClass(), AbstractField::getClass()], $object);
         }
 
@@ -333,7 +333,7 @@ class Block extends FormObject implements BlockInterface
      */
     public function load($data = null)
     {
-        if (!ObjectHelper::isValidType($data, [ObjectHelper::ARR, ObjectHelper::NULL])) {
+        if (!ObjectHelper::is($data, [ObjectHelper::ARR, ObjectHelper::NULL])) {
             throw new ArgumentTypeException('data', [ObjectHelper::ARR, ObjectHelper::NULL], $data);
         }
         if ($data === null && isset($_REQUEST[$this->getName()])) {

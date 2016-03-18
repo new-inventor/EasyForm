@@ -1,6 +1,6 @@
 <?php
 
-namespace NewInventor\EasyForm\Renderer\Renderers;
+namespace NewInventor\EasyForm\Renderer;
 
 use DeepCopy\DeepCopy;
 use NewInventor\EasyForm\Abstraction\Object;
@@ -14,34 +14,19 @@ use NewInventor\EasyForm\Interfaces\FieldInterface;
 use NewInventor\EasyForm\Interfaces\FormInterface;
 use NewInventor\EasyForm\Renderer\RenderableInterface;
 use NewInventor\EasyForm\Renderer\RendererInterface;
+use NewInventor\EasyForm\Settings;
 
-class PHPRenderer extends Object implements RendererInterface
+class Renderer extends Object implements RendererInterface
 {
     use SingletonTrait;
+    const FIELD = 'field';
+    const BLOCK = 'block';
+    const FORM = 'form';
 
-    public $reBlock = 'data-repeat-block';
-    public $reContainer = 'data-repeat-container';
-    public $reActionsBlock = 'data-repeat-actions';
-    public $reDeleteAction = 'data-delete';
-    public $reAddAction = 'data-add';
-
-    public function __construct(array $options)
+    public function __construct()
     {
-        if(!ArrayHelper::isValidElementsTypes($options, [ObjectHelper::STRING])){
-            throw new ArgumentException('', 'options');
-        }
-        foreach($options as $optionName => $option){
-            $this->$optionName = $option;
-        }
-    }
-
-    public static function getInstance(array $options = [])
-    {
-        if (null === self::$instance) {
-            self::$instance = new static($options);
-        }
-
-        return self::$instance;
+        $default = include __DIR__ . '/defaultSettings.php';
+        Settings::getInstance()->merge(['renderer'], $default);
     }
 
     /**
@@ -49,7 +34,8 @@ class PHPRenderer extends Object implements RendererInterface
      */
     public function form(FormInterface $form)
     {
-        $formStr = '<form name="' . $form->getFullName() . '" ' . $form->attributes() . '>';
+        $formStr = '';
+        $formStr .= '<form name="' . $form->getFullName() . '" ' . $form->attributes() . '>';
         $formStr .= $form->children();
         $formStr .= $form->handlers();
         $formStr .= '</form>';
@@ -175,43 +161,91 @@ $(document).on("click", "[' . $this->reActionsBlock . '=\'' . $block->getName() 
      */
     public function field(FieldInterface $field)
     {
-        $res = '';
+        $template = Settings::getInstance()->get(['renderer', 'templates', 'field'], self::DEFAULT_FIELD_TEMPLATE);
+        $label = $this->getFieldLabel($field);
+        $fieldStr = $this->getFieldStr($field);
         if($field->isRepeatable()){
-            $res .= "<div {$this->reBlock}>";
-        }else{
-            $res .= "<span>{$field->getTitle()}</span>";
+            $fieldStr = "<div {$this->reBlock}>{$fieldStr}{$this->getBlockRepeatActions($field)}</div>";
         }
+        $errors = $this->getErrorsStr($field, $template, self::FIELD);
+
+
+        $template = preg_replace('/\{' . self::PLACEHOLDER_FIELD . '\}/u', $fieldStr, $template);
+        $template = preg_replace('/\{' . self::PLACEHOLDER_LABEL . '\}/u', $label, $template);
+        $template = preg_replace('/\{' . self::PLACEHOLDER_ERRORS . '\}/u', $errors, $template);
+
+        return $template;
+    }
+
+    /**
+     * @param FieldInterface $field
+     * @return string
+     */
+    protected function getFieldLabel(FieldInterface $field)
+    {
+        $template = Settings::getInstance()->get(['renderer', 'label', 'template', 'field']);
+        if($field->isRepeatable()&& strpos($template, $this->getPlaceholder('title')) === false){
+            return '';
+        }
+        if($field->getTitle() == ''){
+            return '';
+        }
+        $forField = '';
+        if(strpos($template, $this->getPlaceholder('forField')) !== false){
+            $forField = 'for="' . ($field->attributes()->get('id') != null ?: $field->getName()) . '"';
+        }
+        $template = preg_replace('/' . $this->getPlaceholderRegexp('title') . '/u', $field->getTitle(), $template);
+        $template = preg_replace('/' . $this->getPlaceholderRegexp('forField') . '/u', (string)$forField, $template);
+
+        return $template;
+    }
+
+    /**
+     * @param FieldInterface|BlockInterface|FormInterface $formObject
+     * @param string $template
+     * @param string $type
+     * @return string
+     */
+    protected function getErrorsStr(FieldInterface $formObject, $template, $type = self::FIELD)
+    {
+        $errors = '';
+        if(strpos($template, $this->getPlaceholder('errors')) !== false && !empty($formObject->getErrors())) {
+            $errorDelimiter = Settings::getInstance()->get(['renderer', 'error', 'template', 'delimiter']);
+            $errors = implode($errorDelimiter, $formObject->getErrors());
+        }
+        Settings::getInstance()->get(['renderer', 'error', 'template', $type]);
+        return $errors;
+    }
+
+    /**
+     * @param FieldInterface $field
+     * @return string
+     */
+    protected function getFieldStr(FieldInterface $field)
+    {
+        $fieldStr = '';
         if ($field instanceof Field\CheckBox) {
-            $res .= $this->checkBox($field);
+            $fieldStr = $this->checkBox($field);
         } elseif ($field instanceof Field\Select) {
-            $res .= $this->select($field);
+            $fieldStr = $this->select($field);
         } elseif ($field instanceof Field\CheckBoxSet) {
-            $res .= $this->checkBoxSet($field);
+            $fieldStr = $this->checkBoxSet($field);
         } elseif ($field instanceof Field\Input) {
-            $res .= $this->input($field);
+            $fieldStr = $this->input($field);
         } elseif ($field instanceof Field\RadioSet) {
-            $res .= $this->radioSet($field);
+            $fieldStr = $this->radioSet($field);
         } elseif ($field instanceof Field\TextArea) {
-            $res .= $this->textArea($field);
+            $fieldStr = $this->textArea($field);
         }
 
-        if($field->isRepeatable()){
-            $res .= $this->getBlockRepeatActions($field) . '</div>';
-        }
-        $res .= implode('<br>', $field->getErrors());
-
-        return $res;
+        return $fieldStr;
     }
 
     protected function checkBox(Field\CheckBox $field)
     {
-        $res = '<input name="' . $field->getFullName() . '" ' . $field->attributes();
-        if ($field->getValue()) {
-            $res .= ' checked';
-        }
-        $res .= '/>';
+        $checked = $field->getValue() ? ' checked' : '';
 
-        return $res;
+        return "<input name=\"{$field->getFullName()}\" {$field->attributes()}{$checked} />";
     }
 
     protected function checkBoxSet(Field\CheckBoxSet $field)
@@ -232,14 +266,12 @@ $(document).on("click", "[' . $this->reActionsBlock . '=\'' . $block->getName() 
     protected function checkSet(Field\ListField $field, $type)
     {
         $res = '';
+        $asArray = ($type == 'checkbox') ? '[]' : '';
         $start = /** @lang text */
-            "<input type=\"{$type}\" name=\"{$field->getFullName()}\"{$field->attributes()}";
+            "<input type=\"{$type}\" name=\"{$field->getFullName()}{$asArray}\"{$field->attributes()}";
         foreach ($field->options() as $option) {
-            $res .= "{$start}value=\"{$option['value']}\"";
-            if ($field->optionSelected($option['value'])) {
-                $res .= ' checked';
-            }
-            $res .= '/>';
+            $checked = $field->optionSelected($option['value']) ? ' checked' : '';
+            $res .= "{$option['title']}{$start} value=\"{$option['value']}\"{$checked} />";
         }
 
         return $res;
@@ -269,5 +301,23 @@ $(document).on("click", "[' . $this->reActionsBlock . '=\'' . $block->getName() 
     protected function textArea(Field\TextArea $field)
     {
         return '<textarea name="' . $field->getFullName() . '" ' . $field->attributes() . '>' . $field->getValue() . '</textarea>';
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    protected function getPlaceholder($name)
+    {
+        return '{' . Settings::getInstance()->get(['renderer', 'placeholder', $name]) . '}';
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    protected function getPlaceholderRegexp($name)
+    {
+        return '\{' . Settings::getInstance()->get(['renderer', 'placeholder', $name]) . '\}';
     }
 }

@@ -53,7 +53,7 @@ class ObjectList extends Object implements \Iterator, ObjectListInterface
      */
     public function get($index)
     {
-        if (ObjectHelper::isValidType($index, [ObjectHelper::INT, ObjectHelper::STRING])) {
+        if (ObjectHelper::is($index, [ObjectHelper::INT, ObjectHelper::STRING])) {
             if (array_key_exists($index, $this->objects)) {
                 return $this->objects[$index];
             }
@@ -69,7 +69,7 @@ class ObjectList extends Object implements \Iterator, ObjectListInterface
      */
     public function add($object)
     {
-        if (ObjectHelper::isValidType($object, $this->getElementClasses())) {
+        if (ObjectHelper::is($object, $this->getElementClasses())) {
             $this->objects[] = $object;
 
             return $this;
@@ -90,7 +90,7 @@ class ObjectList extends Object implements \Iterator, ObjectListInterface
      */
     public function delete($index)
     {
-        if (ObjectHelper::isValidType($index, [ObjectHelper::INT, ObjectHelper::STRING])) {
+        if (ObjectHelper::is($index, [ObjectHelper::INT, ObjectHelper::STRING])) {
             if (isset($this->objects[$index])) {
                 unset($this->objects[$index]);
             }

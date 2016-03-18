@@ -29,7 +29,7 @@ class CheckBox extends AbstractField implements FieldInterface
 
     public function setValue($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::BOOL, ObjectHelper::NULL])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::BOOL, ObjectHelper::NULL])) {
             if(is_string($value)){
                 parent::setValue(true);
             }else {

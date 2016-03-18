@@ -18,7 +18,7 @@ class ObjectHelper
     const RESOURCE = 'resource';
     const NULL = 'NULL';
 
-    public static function isValidType($value, $expectedTypes)
+    public static function is($value, $expectedTypes)
     {
         if(empty($expectedTypes)){
             return true;

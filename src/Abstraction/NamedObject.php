@@ -41,7 +41,7 @@ class NamedObject extends Object implements NamedObjectInterface
      */
     public function setName($name)
     {
-        if (ObjectHelper::isValidType($name, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($name, [ObjectHelper::STRING])) {
             $this->name = $name;
 
             return $this;

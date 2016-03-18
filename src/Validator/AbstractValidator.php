@@ -7,11 +7,13 @@
 
 namespace NewInventor\EasyForm\Validator;
 
+use NewInventor\EasyForm\Abstraction\Object;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
+use NewInventor\EasyForm\Settings;
 
-class AbstractValidator implements ValidatorInterface
+class AbstractValidator extends Object implements ValidatorInterface
 {
     /** @var mixed */
     public $lastValidated;
@@ -22,6 +24,9 @@ class AbstractValidator implements ValidatorInterface
     /** @var FieldInterface */
     protected $field;
 
+    /** @var bool */
+    protected static $settingsInitialised = false;
+
     /**
      * AbstractValidator constructor.
      * @param string $message
@@ -31,6 +36,24 @@ class AbstractValidator implements ValidatorInterface
     {
         $this->message = $message;
         $this->customValidateMethod = $customValidateMethod;
+    }
+
+    /**
+     * @return void
+     */
+    public static function initSettings()
+    {
+        $default = __DIR__ . '/defaultSettings.php';
+        Settings::getInstance()->merge('validator', $default);
+        self::$settingsInitialised = true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSettingsInitialised()
+    {
+        return self::$settingsInitialised;
     }
 
     /** @inheritdoc */
@@ -57,6 +80,7 @@ class AbstractValidator implements ValidatorInterface
     protected function replaceFieldName($message)
     {
         $name = !empty($this->field->getTitle()) ? $this->field->getTitle() : $this->field->getName();
+
         return preg_replace('/\{f\}/', $name, $message);
     }
 
@@ -91,7 +115,7 @@ class AbstractValidator implements ValidatorInterface
      */
     public function setMessage($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
             $this->message = $value;
 
             return $this;

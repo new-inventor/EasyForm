@@ -9,7 +9,7 @@ namespace NewInventor\EasyForm;
 
 use NewInventor\EasyForm\Abstraction\SingletonTrait;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
+use NewInventor\EasyForm\Helper\ArrayHelper;
 
 class Settings
 {
@@ -22,16 +22,36 @@ class Settings
         self::$settings = include(dirname(__FILE__) . '/config/main.php');
     }
 
-    public function getSetting($name, $default = null)
+    /**
+     * @param string|int|array $route
+     * @param mixed $default
+     * @return mixed
+     * @throws ArgumentTypeException
+     */
+    public function get($route, $default = null)
     {
-        if (!ObjectHelper::isValidType($name, [ObjectHelper::STRING])) {
-            throw new ArgumentTypeException('name', [ObjectHelper::STRING], $name);
-        }
+        return ArrayHelper::get(self::$settings, $route, $default);
+    }
 
-        if (isset($name)) {
-            return self::$settings[$name];
-        }
+    /**
+     * @param string|int|array $route
+     * @param mixed $value
+     * @throws ArgumentTypeException
+     */
+    public function set($route, $value)
+    {
+        self::$settings = ArrayHelper::set(self::$settings, $route, $value);
+    }
 
-        return $default;
+    /**
+     * @param string|int|array $route
+     * @param array $data
+     * @throws ArgumentTypeException
+     */
+    public function merge($route, array $data)
+    {
+        $custom = $this->get($route, []);
+        $res = array_replace_recursive($data, $custom);
+        $this->set($route, $res);
     }
 }

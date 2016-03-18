@@ -14,6 +14,7 @@ use NewInventor\EasyForm\FormObject;
 use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
+use NewInventor\EasyForm\Settings;
 use NewInventor\EasyForm\Validator\AbstractValidator;
 use NewInventor\EasyForm\Validator\ValidatorInterface;
 
@@ -65,7 +66,7 @@ abstract class AbstractField extends FormObject implements FieldInterface
      */
     public function setValue($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::BOOL])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::BOOL])) {
             $this->value = $value;
 
             return $this;
@@ -153,14 +154,15 @@ abstract class AbstractField extends FormObject implements FieldInterface
         return $this;
     }
 
-    protected function generateInnerValidator($validator)
+    protected function generateInnerValidator($validatorName)
     {
-        $validatorClassName = 'NewInventor\EasyForm\Validator\Validators\\' . ucfirst($validator) . 'Validator';
-        if (class_exists($validatorClassName)) {
+        AbstractValidator::initSettings();
+        $validatorClassName = Settings::getInstance()->get(['validator', $validatorName]);
+        if (class_exists($validatorClassName) && in_array('NewInventor\EasyForm\Validator\ValidatorInterface', class_implements($validatorClassName))) {
             /** @var ValidatorInterface $validatorObj */
             $validatorObj = new $validatorClassName();
         }else{
-            throw new ArgumentException('Класс для валидатора не найден.', 'validator');
+            throw new ArgumentException('Класс для валидатора не найден.', 'validatorName');
         }
 
         return $validatorObj;

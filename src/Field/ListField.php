@@ -42,10 +42,10 @@ abstract class ListField extends AbstractField {
      */
     public function option($title, $value = '')
     {
-        if (!ObjectHelper::isValidType($title, [ObjectHelper::STRING])) {
+        if (!ObjectHelper::is($title, [ObjectHelper::STRING])) {
             throw new ArgumentTypeException('title', [ObjectHelper::STRING], $title);
         }
-        if (!ObjectHelper::isValidType($value, [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL])) {
+        if (!ObjectHelper::is($value, [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL])) {
             throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL], $value);
         }
         $option = [

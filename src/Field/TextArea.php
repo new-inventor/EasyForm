@@ -22,7 +22,7 @@ class TextArea extends AbstractField implements FieldInterface
      */
     public function cols($count)
     {
-        if (!ObjectHelper::isValidType($count, [ObjectHelper::INT])) {
+        if (!ObjectHelper::is($count, [ObjectHelper::INT])) {
             throw new ArgumentTypeException('count', [ObjectHelper::INT], $count);
         }
         $this->attribute('cols', $count);
@@ -39,7 +39,7 @@ class TextArea extends AbstractField implements FieldInterface
      */
     public function rows($count)
     {
-        if (!ObjectHelper::isValidType($count, [ObjectHelper::INT])) {
+        if (!ObjectHelper::is($count, [ObjectHelper::INT])) {
             throw new ArgumentTypeException('count', [ObjectHelper::INT], $count);
         }
         $this->attribute('rows', $count);

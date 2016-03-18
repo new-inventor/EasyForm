@@ -72,7 +72,7 @@ class KeyValuePair extends NamedObject
      */
     public function setCanBeShort($canBeShort)
     {
-        if (ObjectHelper::isValidType($canBeShort, [ObjectHelper::BOOL])) {
+        if (ObjectHelper::is($canBeShort, [ObjectHelper::BOOL])) {
             $this->canBeShort = $canBeShort;
 
             return $this;
@@ -95,7 +95,7 @@ class KeyValuePair extends NamedObject
      */
     public function setValue($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL])) {
             $this->value = $value;
             return $this;
         }
@@ -117,7 +117,7 @@ class KeyValuePair extends NamedObject
      */
     public function setDelimiter($delimiter)
     {
-        if (ObjectHelper::isValidType($delimiter, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($delimiter, [ObjectHelper::STRING])) {
             $this->delimiter = $delimiter;
 
             return $this;

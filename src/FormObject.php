@@ -16,6 +16,7 @@ use NewInventor\EasyForm\Interfaces\FormObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 use NewInventor\EasyForm\Renderer\RenderableInterface;
 use NewInventor\EasyForm\Renderer\RendererInterface;
+use NewInventor\EasyForm\Renderer\Renderers\PHPRenderer;
 use NewInventor\EasyForm\Validator\ValidatableInterface;
 
 abstract class FormObject extends NamedObject implements FormObjectInterface, ValidatableInterface, RenderableInterface
@@ -120,7 +121,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function title($title)
     {
-        if (ObjectHelper::isValidType($title, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($title, [ObjectHelper::STRING])) {
             $this->title = $title;
 
             return $this;
@@ -188,10 +189,10 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function getString()
     {
-        $rendererParams = Settings::getInstance()->getSetting('renderer');
-        if (isset($rendererParams) && isset($rendererParams['class'])) {
+        $rendererClass = Settings::getInstance()->get(['renderer', 'class'], PHPRenderer::getClass());
+        if (isset($rendererClass)) {
             /** @var RendererInterface $renderer */
-            $renderer = call_user_func([$rendererParams['class'], 'getInstance']);
+            $renderer = call_user_func([$rendererClass, 'getInstance']);
 
             if(in_array('NewInventor\EasyForm\Interfaces\FormInterface', class_implements($this))){
                 /** @var FormInterface $this */
@@ -235,7 +236,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function addError($error)
     {
-        if (ObjectHelper::isValidType($error, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($error, [ObjectHelper::STRING])) {
             $this->errors[] = $error;
 
             return $this;

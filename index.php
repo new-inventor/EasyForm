@@ -10,6 +10,9 @@
 require 'vendor/autoload.php';
 
 use \NewInventor\EasyForm\Form;
+use \NewInventor\EasyForm\Field\Input;
+use \NewInventor\EasyForm\Block;
+use \NewInventor\EasyForm\Handler;
 
 $form = new Form('form1', null, Form::METHOD_POST, 'title1', Form::ENC_TYPE_MULTIPART);
 $form
@@ -20,6 +23,7 @@ $form
         ->addOptionArray(['value1' => 'title1', 'value2' => 'title2', 'value3' => 'title3'])
     ->end()
     ->checkbox('cccc', false)
+        ->title('Lfff')
         ->attribute('value', 'Yes')
     ->end()
     ->checkbox('cccc3', false)
@@ -33,7 +37,7 @@ $form
         ->attribute('class', 'special')
         ->attribute('id', 'qwe1')
     ->end()
-    ->repeatable(new \NewInventor\EasyForm\Field\Input('testRepeat', '', 'repeat title'))
+    ->repeatable(new Input('testRepeat', '', 'repeat title'))
     ->block('test')
         ->text('0', 'qwe')
             ->title('QWE')
@@ -66,13 +70,15 @@ $form
             ->end()
         ->end()
     ->end()
-    ->repeatable((new \NewInventor\EasyForm\Block('fullName', 'Полное имя участника.'))
-        ->attribute('data-repeatable')
-        ->text('name')->end()
-        ->text('surname')->end()
-        ->text('family')->end())
-    ->handler(\NewInventor\EasyForm\Handler\AbstractHandler::getClass())
-    ->handler(\NewInventor\EasyForm\Handler\ResetHandler::getClass())
+    ->repeatable(
+        (new Block('fullName', 'Полное имя участника.'))
+            ->attribute('data-repeatable')
+            ->text('name')->end()
+            ->text('surname')->end()
+            ->text('family')->end()
+    )
+    ->handler(Handler\AbstractHandler::getClass())
+    ->handler(Handler\ResetHandler::getClass())
 ->end();
 if($form->load()){
     $form->validate();

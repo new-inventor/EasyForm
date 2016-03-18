@@ -34,7 +34,7 @@ class NamedObjectList extends ObjectList implements \Iterator, ObjectListInterfa
      */
     public function setObjectsDelimiter($objectsDelimiter)
     {
-        if (ObjectHelper::isValidType($objectsDelimiter, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($objectsDelimiter, [ObjectHelper::STRING])) {
             $this->objectsDelimiter = $objectsDelimiter;
 
             return $this;
@@ -49,7 +49,7 @@ class NamedObjectList extends ObjectList implements \Iterator, ObjectListInterfa
      */
     public function add($object)
     {
-        if (ObjectHelper::isValidType($object, $this->getElementClasses())) {
+        if (ObjectHelper::is($object, $this->getElementClasses())) {
             $this->objects[$object->getName()] = $object;
 
             return $this;

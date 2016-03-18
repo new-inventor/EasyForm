@@ -33,7 +33,7 @@ class CheckBoxSet extends ListField implements FieldInterface
      */
     public function setValue($value)
     {
-        if (!ObjectHelper::isValidType($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL])) {
+        if (!ObjectHelper::is($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL])) {
             throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL], $value);
         }
         if (is_string($value)) {

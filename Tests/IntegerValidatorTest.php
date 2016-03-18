@@ -14,7 +14,6 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
         $validator->setMin(0);
 
         $this->assertFalse($validator->isValid('-1'));
-        $this->assertFalse($validator->isValid(''));
         $this->assertFalse($validator->isValid('dfsdfsdf'));
         $this->assertFalse($validator->isValid(null));
         $this->assertFalse($validator->isValid([]));
@@ -22,6 +21,7 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($validator->isValid(12312.231));
         $this->assertFalse($validator->isValid(12312.231));
 
+        $this->assertTrue($validator->isValid(''));
         $this->assertTrue($validator->isValid(1));
         $this->assertTrue($validator->isValid(1432));
     }
@@ -30,7 +30,6 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
         $validator = new IntegerValidator();
         $validator->setMax(100);
 
-        $this->assertFalse($validator->isValid(''));
         $this->assertFalse($validator->isValid('dfsdfsdf'));
         $this->assertFalse($validator->isValid(null));
         $this->assertFalse($validator->isValid([]));
@@ -39,6 +38,7 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($validator->isValid(12312.231));
         $this->assertFalse($validator->isValid(1432));
 
+        $this->assertTrue($validator->isValid(''));
         $this->assertTrue($validator->isValid(1));
         $this->assertTrue($validator->isValid('-1'));
     }
@@ -48,7 +48,6 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
         $validator->setMin(0);
         $validator->setMax(100);
 
-        $this->assertFalse($validator->isValid(''));
         $this->assertFalse($validator->isValid('dfsdfsdf'));
         $this->assertFalse($validator->isValid(null));
         $this->assertFalse($validator->isValid([]));
@@ -59,6 +58,7 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($validator->isValid('101'));
         $this->assertFalse($validator->isValid('-1'));
 
+        $this->assertTrue($validator->isValid(''));
         $this->assertTrue($validator->isValid(1));
         $this->assertTrue($validator->isValid('100'));
     }

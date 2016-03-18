@@ -34,7 +34,7 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
 
     public function validateValue($value)
     {
-        if(empty($value)){
+        if(empty($value) && is_string($value)){
             return true;
         }
         if (!is_numeric($value)) {
@@ -81,7 +81,7 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
      * @throws ArgumentTypeException
      */
     public function setMin($value){
-        if (ObjectHelper::isValidType($value, [ObjectHelper::INT])) {
+        if (ObjectHelper::is($value, [ObjectHelper::INT])) {
             $this->min = $value;
 
             return $this;
@@ -95,7 +95,7 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
      * @throws ArgumentTypeException
      */
     public function setMax($value){
-        if (ObjectHelper::isValidType($value, [ObjectHelper::INT])) {
+        if (ObjectHelper::is($value, [ObjectHelper::INT])) {
             $this->max = $value;
 
             return $this;
@@ -110,7 +110,7 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMinMessage($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
             $this->minMessage = $value;
 
             return $this;
@@ -125,7 +125,7 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMaxMessage($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
             $this->maxMessage = $value;
 
             return $this;
@@ -140,7 +140,7 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMinMaxMessage($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
             $this->minMaxMessage = $value;
 
             return $this;

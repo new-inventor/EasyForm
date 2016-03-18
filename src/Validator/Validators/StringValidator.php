@@ -90,7 +90,7 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @throws ArgumentTypeException
      */
     public function setMinLength($value){
-        if (ObjectHelper::isValidType($value, [ObjectHelper::INT])) {
+        if (ObjectHelper::is($value, [ObjectHelper::INT])) {
             $this->minLength = $value;
 
             return $this;
@@ -104,7 +104,7 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @throws ArgumentTypeException
      */
     public function setMaxLength($value){
-        if (ObjectHelper::isValidType($value, [ObjectHelper::INT])) {
+        if (ObjectHelper::is($value, [ObjectHelper::INT])) {
             $this->maxLength = $value;
 
             return $this;
@@ -118,7 +118,7 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @throws ArgumentTypeException
      */
     public function setLength($value){
-        if (ObjectHelper::isValidType($value, [ObjectHelper::INT])) {
+        if (ObjectHelper::is($value, [ObjectHelper::INT])) {
             $this->length = $value;
 
             return $this;
@@ -132,7 +132,7 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @throws ArgumentTypeException
      */
     public function setRegexp($value){
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
             $this->regexp = $value;
 
             return $this;
@@ -147,7 +147,7 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setLengthMessage($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
             $this->lengthMessage = $value;
 
             return $this;
@@ -162,7 +162,7 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMinLengthMessage($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
             $this->minLengthMessage = $value;
 
             return $this;
@@ -177,7 +177,7 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMaxLengthMessage($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
             $this->maxLengthMessage = $value;
 
             return $this;
@@ -192,7 +192,7 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMinMaxLengthMessage($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
             $this->minMaxLengthMessage = $value;
 
             return $this;
@@ -207,7 +207,7 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setRegexpMessage($value)
     {
-        if (ObjectHelper::isValidType($value, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
             $this->regexpMessage = $value;
 
             return $this;

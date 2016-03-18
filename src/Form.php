@@ -88,7 +88,7 @@ class Form extends Block implements FormInterface
      */
     public function method($method)
     {
-        if (ObjectHelper::isValidType($method, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($method, [ObjectHelper::STRING])) {
             $this->method = $method;
             $this->attributes()->add(HtmlAttr::build('method', $method)->full());
 
@@ -113,7 +113,7 @@ class Form extends Block implements FormInterface
      */
     public function action($action)
     {
-        if (ObjectHelper::isValidType($action, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($action, [ObjectHelper::STRING])) {
             $this->action = $action;
             $this->attributes()->add(HtmlAttr::build('action', $action)->full());
 
@@ -139,7 +139,7 @@ class Form extends Block implements FormInterface
      */
     public function encType($encType)
     {
-        if (ObjectHelper::isValidType($encType, [ObjectHelper::STRING])) {
+        if (ObjectHelper::is($encType, [ObjectHelper::STRING])) {
             if (array_key_exists($encType, $this->encTypes)) {
                 $this->encType = $encType;
 
