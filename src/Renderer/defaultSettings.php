@@ -7,42 +7,19 @@
 
 return [
     'form' => [
-        'template' => '{errors}<div>{formStart}{children}{formEnd}</div>'
+        'template' => '{errors}<div>{formStart}{children}{formEnd}</div>',
     ],
     'block' => [
         'template' => '{label}<div>{children}</div>'
     ],
     'field' => [
-        'template' => '<div>{label}{field}</div>{errors}'
+        'template' => /** @lang text */'<div><label {forField}>{title}</label>{field}</div>{errors}'
     ],
-    'error' => [
+    'checkSet' => [
         'template' => [
-            'field' => '<span>{errors}</span>',
-            'block' => '<span>{errors}</span>',
-            'form' => '<div>{errors}</div>',
-            'delimiter' => '<br>',
-        ]
-    ],
-    'label' => [
-        'template' => [
-            'field' => /** @lang text */'<label {forField}>{title}</label>',
-            'block' => '<div>{label}</div>'
-        ]
-    ],
-    'radioSet' => [
-        'template' => [
-            'radioset' => '<div>{options}{errors}</div>',
-            'option' => '<span>{label}{option}</span>'
-        ]
-    ],
-    'checkBoxSet' => [
-        'template' => [
-            'radioset' => '<div>{options}{errors}</div>',
-            'option' => '<span>{label}{option}</span>'
+            'set' => '<div>{options}</div>{errors}',
+            'option' => '<span><label>{title}{option}</label></span>',
         ],
-        'placeholders' => [
-
-        ]
     ],
     'repeatBlock' => [
         'block' => 'data-repeat-block',
@@ -51,26 +28,39 @@ return [
         'deleteAction' => 'data-delete',
         'addAction' => 'data-add',
         'template' => [
-            'block' => /** @lang text */'<div {selector}>{children}{actions}</div>',
+            'block' => /** @lang text */'<div {selector}>{title}{children}{actions}</div>',
             'container' => /** @lang text */'<div {selector}>{blocks}</div>',
             'actionsBlock' => /** @lang text */'<div {selector}>{delete}{add}</div>',
             'deleteAction' => /** @lang text */'<span {selector}>-</span>',
             'addAction' => /** @lang text */'<span {selector}>+</span>',
         ]
     ],
-    'placeholder' => [
-        'errors' => 'errors',
-        'forField' => 'forField',
-        'children' => 'children',
-        'handlers' => 'handlers',
-        'title' => 'title',
-        'label' => 'label',
-        'field' => 'field',
-        'options' => 'options',
-        'option' => 'option',
-        'selector' => 'selector',
-        'actions' => 'actions',
-        'delete' => 'delete',
-        'add' => 'add',
+    'errors' => [
+        'delimiter' => '<br>',
+        'template' => [
+            'field' => '<span>{errors}</span>',
+            'block' => '<span>{errors}</span>',
+            'form' => '<div>{errors}</div>',
+        ]
+    ],
+    'placeholders' => [
+        'available' => [
+            'errors',
+            'forField',
+            'children',
+            'handlers',
+            'title',
+            'label',
+            'field',
+            'options',
+            'option',
+            'selector',
+            'actions',
+            'delete',
+            'add',
+            'formEnd',
+            'formStart',
+        ],
+        'borders' => ['{', '}']
     ]
 ];

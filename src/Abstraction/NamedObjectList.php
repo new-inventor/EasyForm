@@ -8,14 +8,12 @@
 namespace NewInventor\EasyForm\Abstraction;
 
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\NamedObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 use NewInventor\EasyForm\Renderer\RenderableInterface;
 
 class NamedObjectList extends ObjectList implements \Iterator, ObjectListInterface, RenderableInterface, \Countable
 {
-
     /** @var string */
     private $objectsDelimiter;
 
@@ -34,12 +32,12 @@ class NamedObjectList extends ObjectList implements \Iterator, ObjectListInterfa
      */
     public function setObjectsDelimiter($objectsDelimiter)
     {
-        if (ObjectHelper::is($objectsDelimiter, [ObjectHelper::STRING])) {
-            $this->objectsDelimiter = $objectsDelimiter;
+        TypeChecker::getInstance()
+            ->isString($objectsDelimiter, 'objectsDelimiter')
+            ->throwTypeErrorIfNotValid();
+        $this->objectsDelimiter = $objectsDelimiter;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('objectsDelimiter', [ObjectHelper::STRING], $objectsDelimiter);
+        return $this;
     }
 
     /**
@@ -49,12 +47,12 @@ class NamedObjectList extends ObjectList implements \Iterator, ObjectListInterfa
      */
     public function add($object)
     {
-        if (ObjectHelper::is($object, $this->getElementClasses())) {
-            $this->objects[$object->getName()] = $object;
+        TypeChecker::getInstance()
+            ->check($object, $this->getElementClasses(), 'object')
+            ->throwTypeErrorIfNotValid();
+        $this->objects[$object->getName()] = $object;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('object', $this->getElementClasses(), $object);
+        return $this;
     }
 
     /**
@@ -87,6 +85,10 @@ class NamedObjectList extends ObjectList implements \Iterator, ObjectListInterfa
     public function toArray()
     {
         $res = [];
+        /**
+         * @var string $name
+         * @var Object $obj
+         */
         foreach ($this->getAll() as $name => $obj) {
             $res[$name] = $obj->toArray();
         }

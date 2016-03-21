@@ -8,8 +8,8 @@
 
 namespace NewInventor\EasyForm\Field;
 
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
+use NewInventor\EasyForm\Abstraction\SimpleTypes;
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
 
 class CheckBoxSet extends ListField implements FieldInterface
@@ -17,10 +17,10 @@ class CheckBoxSet extends ListField implements FieldInterface
     /**
      * Select constructor.
      *
-     * @param array|null        $options
-     * @param string            $name
+     * @param array|null $options
+     * @param string $name
      * @param string|array|null $value
-     * @param string            $title
+     * @param string $title
      */
     public function __construct($name, $value = '', $title = '', array $options = [])
     {
@@ -33,9 +33,9 @@ class CheckBoxSet extends ListField implements FieldInterface
      */
     public function setValue($value)
     {
-        if (!ObjectHelper::is($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL])) {
-            throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL], $value);
-        }
+        TypeChecker::getInstance()
+            ->check($value, [SimpleTypes::STRING, SimpleTypes::ARR, SimpleTypes::NULL], 'value')
+            ->throwTypeErrorIfNotValid();
         if (is_string($value)) {
             parent::setValue([$value]);
         } elseif (is_array($value)) {

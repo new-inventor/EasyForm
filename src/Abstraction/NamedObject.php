@@ -9,7 +9,6 @@ namespace NewInventor\EasyForm\Abstraction;
 
 use NewInventor\EasyForm\Exception\ArgumentException;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\NamedObjectInterface;
 
 class NamedObject extends Object implements NamedObjectInterface
@@ -41,12 +40,12 @@ class NamedObject extends Object implements NamedObjectInterface
      */
     public function setName($name)
     {
-        if (ObjectHelper::is($name, [ObjectHelper::STRING])) {
-            $this->name = $name;
+        TypeChecker::getInstance()
+            ->isString($name, 'name')
+            ->throwTypeErrorIfNotValid();
+        $this->name = $name;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('name', [ObjectHelper::STRING], $name);
+        return $this;
     }
 
     public static function initFromArray(array $data)

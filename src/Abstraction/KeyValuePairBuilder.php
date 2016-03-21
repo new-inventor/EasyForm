@@ -8,7 +8,6 @@
 namespace NewInventor\EasyForm\Abstraction;
 
 use NewInventor\EasyForm\Exception\ArgumentException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 
 class KeyValuePairBuilder
 {
@@ -47,16 +46,16 @@ class KeyValuePairBuilder
 
     protected function loadSettings($type = '', $settingsPath = '')
     {
-        if($this->badKeyValueType($type)){
-            throw new ArgumentException('Неверный или пустой тип пары ключ-значение.', 'type');
-        }
+        TypeChecker::getInstance()
+            ->isString($type, 'type')
+            ->throwCustomErrorIfNotValid('Неверный или пустой тип пары ключ-значение.');
         $defaultSettings = include dirname(__DIR__) . '/config/key-value-types.php';
 
         $additionalSettings = [];
-        if($this->badSettingsPath($settingsPath)){
-            throw new ArgumentException('Путь до дополнительного файла настроек неверный. Проверьте существование файла.', 'settingsPath');
-        }elseif(!empty($settingsPath)){
+        if($this->settingsPathExists($settingsPath)){
             $additionalSettings = include $settingsPath;
+        }elseif(!empty($settingsPath)){
+            throw new ArgumentException('Путь до дополнительного файла настроек неверный. Проверьте существование файла.', 'settingsPath');
         }
 
         $allSettings = array_merge($defaultSettings, $additionalSettings);
@@ -73,13 +72,8 @@ class KeyValuePairBuilder
         $this->settings = $settings;
     }
 
-    protected function badKeyValueType($type)
+    protected function settingsPathExists($settingsPath)
     {
-        return !ObjectHelper::is($type, [ObjectHelper::STRING]) || empty($type);
-    }
-
-    protected function badSettingsPath($settingsPath)
-    {
-        return !empty($settingsPath) && (!ObjectHelper::is($settingsPath, [ObjectHelper::STRING]) || !file_exists($settingsPath));
+        return TypeChecker::getInstance()->isString($settingsPath)->result() && !empty($settingsPath) && file_exists($settingsPath);
     }
 }

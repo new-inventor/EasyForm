@@ -8,10 +8,11 @@
 namespace NewInventor\EasyForm\Field;
 
 use NewInventor\EasyForm\Abstraction\ObjectList;
+use NewInventor\EasyForm\Abstraction\SimpleTypes;
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Exception\ArgumentException;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\FormObject;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 use NewInventor\EasyForm\Settings;
@@ -66,12 +67,12 @@ abstract class AbstractField extends FormObject implements FieldInterface
      */
     public function setValue($value)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::BOOL])) {
-            $this->value = $value;
+        TypeChecker::getInstance()
+            ->check($value, [SimpleTypes::STRING, SimpleTypes::ARR, SimpleTypes::NULL, SimpleTypes::INT, SimpleTypes::FLOAT, SimpleTypes::BOOL], 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->value = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::NULL, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::BOOL], $value);
+        return $this;
     }
 
     public function toArray()

@@ -8,8 +8,8 @@
 
 namespace NewInventor\EasyForm\Field;
 
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
+use NewInventor\EasyForm\Abstraction\SimpleTypes;
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
 
 class CheckBox extends AbstractField implements FieldInterface
@@ -17,9 +17,9 @@ class CheckBox extends AbstractField implements FieldInterface
     /**
      * AbstractField constructor.
      *
-     * @param string            $name
-     * @param bool|null         $value
-     * @param string            $title
+     * @param string $name
+     * @param bool|null $value
+     * @param string $title
      */
     public function __construct($name, $value = false, $title = '')
     {
@@ -29,15 +29,15 @@ class CheckBox extends AbstractField implements FieldInterface
 
     public function setValue($value)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::BOOL, ObjectHelper::NULL])) {
-            if(is_string($value)){
-                parent::setValue(true);
-            }else {
-                parent::setValue($value);
-            }
-
-            return $this;
+        TypeChecker::getInstance()
+            ->check($value, [SimpleTypes::STRING, SimpleTypes::ARR, SimpleTypes::BOOL, SimpleTypes::NULL], 'value')
+            ->throwTypeErrorIfNotValid();
+        if (is_string($value)) {
+            parent::setValue(true);
+        } else {
+            parent::setValue($value);
         }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::BOOL, ObjectHelper::NULL], $value);
+
+        return $this;
     }
 } 

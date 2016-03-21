@@ -9,20 +9,21 @@
 namespace NewInventor\EasyForm\Field;
 
 use NewInventor\EasyForm\Abstraction\ObjectList;
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
+use NewInventor\EasyForm\Abstraction\SimpleTypes;
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 
-abstract class ListField extends AbstractField {
+abstract class ListField extends AbstractField
+{
     /** @var ObjectList */
     private $options;
 
     /**
      * RadioSet constructor.
      *
-     * @param array|null  $options
-     * @param string      $name
+     * @param array|null $options
+     * @param string $name
      * @param string|null $value
-     * @param string      $title
+     * @param string $title
      */
     public function __construct($name, $value = '', $title = '', array $options = null)
     {
@@ -42,12 +43,12 @@ abstract class ListField extends AbstractField {
      */
     public function option($title, $value = '')
     {
-        if (!ObjectHelper::is($title, [ObjectHelper::STRING])) {
-            throw new ArgumentTypeException('title', [ObjectHelper::STRING], $title);
-        }
-        if (!ObjectHelper::is($value, [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL])) {
-            throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL], $value);
-        }
+        TypeChecker::getInstance()
+            ->isString($title, 'title')
+            ->throwTypeErrorIfNotValid();
+        TypeChecker::getInstance()
+            ->check($value, [SimpleTypes::STRING, SimpleTypes::INT, SimpleTypes::FLOAT, SimpleTypes::NULL], 'title')
+            ->throwTypeErrorIfNotValid();
         $option = [
             'title' => $title,
             'value' => $value

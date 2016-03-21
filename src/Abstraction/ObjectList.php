@@ -7,10 +7,6 @@
 
 namespace NewInventor\EasyForm\Abstraction;
 
-use NewInventor\EasyForm\Exception\ArgumentException;
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ArrayHelper;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\ObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 
@@ -32,12 +28,12 @@ class ObjectList extends Object implements \Iterator, ObjectListInterface
      */
     public function setElementClasses(array $elementClasses = [])
     {
-        if (ArrayHelper::isValidElementsTypes($elementClasses, [ObjectHelper::STRING])) {
-            $this->elementClasses = $elementClasses;
+        TypeChecker::getInstance()
+            ->checkArray($elementClasses, [SimpleTypes::STRING], 'elementClasses')
+            ->throwCustomErrorIfNotValid('Переданы  неправильные классы');
+        $this->elementClasses = $elementClasses;
 
-            return $this;
-        }
-        throw new ArgumentException('Переданы  неправильные классы', 'elementClasses');
+        return $this;
     }
 
     /**
@@ -53,15 +49,14 @@ class ObjectList extends Object implements \Iterator, ObjectListInterface
      */
     public function get($index)
     {
-        if (ObjectHelper::is($index, [ObjectHelper::INT, ObjectHelper::STRING])) {
-            if (array_key_exists($index, $this->objects)) {
-                return $this->objects[$index];
-            }
-
-            return null;
+        TypeChecker::getInstance()
+            ->check($index, [SimpleTypes::INT, SimpleTypes::STRING], 'index')
+            ->throwTypeErrorIfNotValid();
+        if (array_key_exists($index, $this->objects)) {
+            return $this->objects[$index];
         }
 
-        throw new ArgumentTypeException('index', [ObjectHelper::INT, ObjectHelper::STRING], $index);
+        return null;
     }
 
     /**
@@ -69,12 +64,12 @@ class ObjectList extends Object implements \Iterator, ObjectListInterface
      */
     public function add($object)
     {
-        if (ObjectHelper::is($object, $this->getElementClasses())) {
-            $this->objects[] = $object;
+        TypeChecker::getInstance()
+            ->check($object, $this->getElementClasses(), 'object')
+            ->throwTypeErrorIfNotValid();
+        $this->objects[] = $object;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('object', $this->getElementClasses(), $object);
+        return $this;
     }
 
     /**
@@ -90,15 +85,14 @@ class ObjectList extends Object implements \Iterator, ObjectListInterface
      */
     public function delete($index)
     {
-        if (ObjectHelper::is($index, [ObjectHelper::INT, ObjectHelper::STRING])) {
-            if (isset($this->objects[$index])) {
-                unset($this->objects[$index]);
-            }
-
-            return $this;
+        TypeChecker::getInstance()
+            ->check($index, [SimpleTypes::INT, SimpleTypes::STRING], 'index')
+            ->throwTypeErrorIfNotValid();
+        if (isset($this->objects[$index])) {
+            unset($this->objects[$index]);
         }
 
-        throw new ArgumentTypeException('index', [ObjectHelper::INT, ObjectHelper::STRING], $index);
+        return $this;
     }
 
     /**
@@ -164,10 +158,10 @@ class ObjectList extends Object implements \Iterator, ObjectListInterface
     public static function initFromArray(array $data)
     {
         $list = new static();
-        if(isset($data['elementClasses'])){
+        if (isset($data['elementClasses'])) {
             $list->setElementClasses($data['elementClasses']);
         }
-        if(isset($data['objects'])){
+        if (isset($data['objects'])) {
             $list->addArray($data['objects']);
         }
 

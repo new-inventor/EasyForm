@@ -11,10 +11,9 @@ use NewInventor\EasyForm\Interfaces\ObjectInterface;
 
 class Object implements ObjectInterface
 {
-
     public static function initFromArray(array $data)
     {
-            return new static();
+        return new static();
     }
 
     public function toArray()

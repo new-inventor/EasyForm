@@ -7,8 +7,8 @@
 
 namespace NewInventor\EasyForm\Validator\Validators;
 
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Validator\AbstractValidator;
 use NewInventor\EasyForm\Validator\ValidatorInterface;
 
@@ -34,7 +34,7 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
 
     public function validateValue($value)
     {
-        if(empty($value) && is_string($value)){
+        if (empty($value) && is_string($value)) {
             return true;
         }
         if (!is_numeric($value)) {
@@ -44,7 +44,7 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
         }
         $value = (string)$value;
         $testValue = (string)((int)((string)$value));
-        if(mb_strlen($value) != mb_strlen($testValue)){
+        if (mb_strlen($value) != mb_strlen($testValue)) {
             $this->error = $this->message;
 
             return false;
@@ -80,13 +80,14 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
      * @return $this
      * @throws ArgumentTypeException
      */
-    public function setMin($value){
-        if (ObjectHelper::is($value, [ObjectHelper::INT])) {
-            $this->min = $value;
+    public function setMin($value)
+    {
+        TypeChecker::getInstance()
+            ->isInt($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->min = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::INT], $value);
+        return $this;
     }
 
     /**
@@ -94,13 +95,14 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
      * @return $this
      * @throws ArgumentTypeException
      */
-    public function setMax($value){
-        if (ObjectHelper::is($value, [ObjectHelper::INT])) {
-            $this->max = $value;
+    public function setMax($value)
+    {
+        TypeChecker::getInstance()
+            ->isInt($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->max = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::INT], $value);
+        return $this;
     }
 
     /**
@@ -110,12 +112,12 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMinMessage($value)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
-            $this->minMessage = $value;
+        TypeChecker::getInstance()
+            ->isInt($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->minMessage = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING], $value);
+        return $this;
     }
 
     /**
@@ -125,12 +127,12 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMaxMessage($value)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
-            $this->maxMessage = $value;
+        TypeChecker::getInstance()
+            ->isString($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->maxMessage = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING], $value);
+        return $this;
     }
 
     /**
@@ -140,11 +142,11 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMinMaxMessage($value)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
-            $this->minMaxMessage = $value;
+        TypeChecker::getInstance()
+            ->isString($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->minMaxMessage = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING], $value);
+        return $this;
     }
 }

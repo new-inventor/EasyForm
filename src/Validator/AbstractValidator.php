@@ -8,8 +8,9 @@
 namespace NewInventor\EasyForm\Validator;
 
 use NewInventor\EasyForm\Abstraction\Object;
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
+use NewInventor\EasyForm\Helper\SimpleTypes;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
 use NewInventor\EasyForm\Settings;
 
@@ -43,7 +44,7 @@ class AbstractValidator extends Object implements ValidatorInterface
      */
     public static function initSettings()
     {
-        $default = __DIR__ . '/defaultSettings.php';
+        $default = include __DIR__ . '/defaultSettings.php';
         Settings::getInstance()->merge('validator', $default);
         self::$settingsInitialised = true;
     }
@@ -100,27 +101,27 @@ class AbstractValidator extends Object implements ValidatorInterface
     public function setOptions(array $options)
     {
         foreach ($options as $argName => $arg) {
-            if (!is_string($argName)) {
-                throw new ArgumentTypeException('argName', [ObjectHelper::STRING], $argName);
-            }
+            TypeChecker::getInstance()
+                ->isString($argName, 'argName')
+                ->throwTypeErrorIfNotValid();
             $argName = 'set' . ucfirst($argName);
             $this->$argName($arg);
         }
     }
 
     /**
-     * @param string $value
+     * @param string $message
      * @return $this
      * @throws ArgumentTypeException
      */
-    public function setMessage($value)
+    public function setMessage($message)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
-            $this->message = $value;
+        TypeChecker::getInstance()
+            ->isString($message, 'message')
+            ->throwTypeErrorIfNotValid();
+        $this->message = $message;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING], $value);
+        return $this;
     }
 
     /**

@@ -7,8 +7,8 @@
 
 namespace NewInventor\EasyForm\Field;
 
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
 
 class TextArea extends AbstractField implements FieldInterface
@@ -22,9 +22,7 @@ class TextArea extends AbstractField implements FieldInterface
      */
     public function cols($count)
     {
-        if (!ObjectHelper::is($count, [ObjectHelper::INT])) {
-            throw new ArgumentTypeException('count', [ObjectHelper::INT], $count);
-        }
+        TypeChecker::getInstance()->isInt($count, 'count')->throwTypeErrorIfNotValid();
         $this->attribute('cols', $count);
 
         return $this;
@@ -39,9 +37,7 @@ class TextArea extends AbstractField implements FieldInterface
      */
     public function rows($count)
     {
-        if (!ObjectHelper::is($count, [ObjectHelper::INT])) {
-            throw new ArgumentTypeException('count', [ObjectHelper::INT], $count);
-        }
+        TypeChecker::getInstance()->isInt($count, 'count')->throwTypeErrorIfNotValid();
         $this->attribute('rows', $count);
 
         return $this;

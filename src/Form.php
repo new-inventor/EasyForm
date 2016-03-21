@@ -4,11 +4,11 @@ namespace NewInventor\EasyForm;
 
 use NewInventor\EasyForm\Abstraction\HtmlAttr;
 use NewInventor\EasyForm\Abstraction\NamedObjectList;
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Exception\ArgumentException;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\Field\AbstractField;
 use NewInventor\EasyForm\Handler\AbstractHandler;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\FormInterface;
 use NewInventor\EasyForm\Interfaces\HandlerInterface;
 
@@ -88,13 +88,13 @@ class Form extends Block implements FormInterface
      */
     public function method($method)
     {
-        if (ObjectHelper::is($method, [ObjectHelper::STRING])) {
-            $this->method = $method;
-            $this->attributes()->add(HtmlAttr::build('method', $method)->full());
+        TypeChecker::getInstance()
+            ->isString($method, 'method')
+            ->throwTypeErrorIfNotValid();
+        $this->method = $method;
+        $this->attributes()->add(HtmlAttr::build('method', $method)->full());
 
-            return $this;
-        }
-        throw new ArgumentTypeException('method', [ObjectHelper::STRING], $method);
+        return $this;
     }
 
     /**
@@ -113,13 +113,13 @@ class Form extends Block implements FormInterface
      */
     public function action($action)
     {
-        if (ObjectHelper::is($action, [ObjectHelper::STRING])) {
-            $this->action = $action;
-            $this->attributes()->add(HtmlAttr::build('action', $action)->full());
+        TypeChecker::getInstance()
+            ->isString($action, 'action')
+            ->throwTypeErrorIfNotValid();
+        $this->action = $action;
+        $this->attributes()->add(HtmlAttr::build('action', $action)->full());
 
-            return $this;
-        }
-        throw new ArgumentTypeException('action', [ObjectHelper::STRING], $action);
+        return $this;
     }
 
     /**
@@ -139,15 +139,15 @@ class Form extends Block implements FormInterface
      */
     public function encType($encType)
     {
-        if (ObjectHelper::is($encType, [ObjectHelper::STRING])) {
-            if (array_key_exists($encType, $this->encTypes)) {
-                $this->encType = $encType;
+        TypeChecker::getInstance()
+            ->isString($encType, 'encType')
+            ->throwTypeErrorIfNotValid();
+        if (array_key_exists($encType, $this->encTypes)) {
+            $this->encType = $encType;
 
-                return $this;
-            }
-            throw new ArgumentException('Кодировка формы должна быть "', implode('" или "', $this->encTypes) . '".', 'encType');
+            return $this;
         }
-        throw new ArgumentTypeException('encType', [ObjectHelper::STRING], $encType);
+        throw new ArgumentException('Кодировка формы должна быть "', implode('" или "', $this->encTypes) . '".', 'encType');
     }
 
     public function toArray()

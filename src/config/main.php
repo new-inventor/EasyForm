@@ -7,7 +7,7 @@
 
 return [
     'renderer' => [
-        'class' => 'NewInventor\EasyForm\Renderer\Renderers\PHPRenderer',
+        'class' => 'NewInventor\EasyForm\Renderer\Renderer',
         'form' => [
             'template' => '{errors}<div>{children}</div>'
         ],

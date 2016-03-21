@@ -6,17 +6,17 @@ use NewInventor\EasyForm\Abstraction\HtmlAttr;
 use NewInventor\EasyForm\Abstraction\KeyValuePair;
 use NewInventor\EasyForm\Abstraction\NamedObject;
 use NewInventor\EasyForm\Abstraction\NamedObjectList;
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\Field\AbstractField;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Interfaces\BlockInterface;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
 use NewInventor\EasyForm\Interfaces\FormInterface;
 use NewInventor\EasyForm\Interfaces\FormObjectInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
 use NewInventor\EasyForm\Renderer\RenderableInterface;
+use NewInventor\EasyForm\Renderer\Renderer;
 use NewInventor\EasyForm\Renderer\RendererInterface;
-use NewInventor\EasyForm\Renderer\Renderers\PHPRenderer;
 use NewInventor\EasyForm\Validator\ValidatableInterface;
 
 abstract class FormObject extends NamedObject implements FormObjectInterface, ValidatableInterface, RenderableInterface
@@ -121,12 +121,12 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function title($title)
     {
-        if (ObjectHelper::is($title, [ObjectHelper::STRING])) {
-            $this->title = $title;
+        TypeChecker::getInstance()
+            ->isString($title, 'title')
+            ->throwTypeErrorIfNotValid();
+        $this->title = $title;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('title', [ObjectHelper::STRING], $title);
+        return $this;
     }
 
     /**
@@ -189,28 +189,29 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function getString()
     {
-        $rendererClass = Settings::getInstance()->get(['renderer', 'class'], PHPRenderer::getClass());
+        $rendererClass = Settings::getInstance()->get(['renderer', 'class'], Renderer::getClass());
         if (isset($rendererClass)) {
             /** @var RendererInterface $renderer */
             $renderer = call_user_func([$rendererClass, 'getInstance']);
 
-            if(in_array('NewInventor\EasyForm\Interfaces\FormInterface', class_implements($this))){
+            if (in_array('NewInventor\EasyForm\Interfaces\FormInterface', class_implements($this))) {
                 /** @var FormInterface $this */
                 return $renderer->form($this);
-            }elseif(in_array('NewInventor\EasyForm\Interfaces\BlockInterface', class_implements($this))) {
+            } elseif (in_array('NewInventor\EasyForm\Interfaces\BlockInterface', class_implements($this))) {
                 /** @var BlockInterface $this */
                 return $renderer->block($this);
-            }elseif(in_array('NewInventor\EasyForm\Interfaces\FieldInterface', class_implements($this))){
+            } elseif (in_array('NewInventor\EasyForm\Interfaces\FieldInterface', class_implements($this))) {
                 /** @var FieldInterface $this */
                 return $renderer->field($this);
             }
         }
+
         return '';
     }
 
     public function validate()
     {
-        if($this->children() !== null) {
+        if ($this->children() !== null) {
             foreach ($this->children() as $child) {
                 $child->validate();
             }
@@ -222,7 +223,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function isValid()
     {
-        if($this->children() !== null) {
+        if ($this->children() !== null) {
             foreach ($this->children() as $child) {
                 $this->isValid = $this->isValid && $child->isValid();
             }
@@ -236,12 +237,12 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function addError($error)
     {
-        if (ObjectHelper::is($error, [ObjectHelper::STRING])) {
-            $this->errors[] = $error;
+        TypeChecker::getInstance()
+            ->isString($error, 'error')
+            ->throwTypeErrorIfNotValid();
+        $this->errors[] = $error;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('error', [ObjectHelper::STRING], $error);
+        return $this;
     }
 
     /**
@@ -250,7 +251,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     public function getErrors()
     {
         $errors = $this->prepareErrors($this->errors);
-        if($this->children() !== null) {
+        if ($this->children() !== null) {
             foreach ($this->children() as $child) {
                 $errors = array_merge($errors, $child->getErrors());
             }

@@ -7,8 +7,8 @@
 
 namespace NewInventor\EasyForm\Validator\Validators;
 
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 use NewInventor\EasyForm\Validator\AbstractValidator;
 use NewInventor\EasyForm\Validator\ValidatorInterface;
 
@@ -90,12 +90,12 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @throws ArgumentTypeException
      */
     public function setMinLength($value){
-        if (ObjectHelper::is($value, [ObjectHelper::INT])) {
-            $this->minLength = $value;
+        TypeChecker::getInstance()
+            ->isInt($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->minLength = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::INT], $value);
+        return $this;
     }
 
     /**
@@ -104,12 +104,12 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @throws ArgumentTypeException
      */
     public function setMaxLength($value){
-        if (ObjectHelper::is($value, [ObjectHelper::INT])) {
-            $this->maxLength = $value;
+        TypeChecker::getInstance()
+            ->isInt($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->maxLength = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::INT], $value);
+        return $this;
     }
 
     /**
@@ -118,12 +118,12 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @throws ArgumentTypeException
      */
     public function setLength($value){
-        if (ObjectHelper::is($value, [ObjectHelper::INT])) {
-            $this->length = $value;
+        TypeChecker::getInstance()
+            ->isInt($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->length = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::INT], $value);
+        return $this;
     }
 
     /**
@@ -132,12 +132,12 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @throws ArgumentTypeException
      */
     public function setRegexp($value){
-        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
-            $this->regexp = $value;
+        TypeChecker::getInstance()
+            ->isString($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->regexp = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING], $value);
+        return $this;
     }
 
     /**
@@ -147,12 +147,12 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setLengthMessage($value)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
-            $this->lengthMessage = $value;
+        TypeChecker::getInstance()
+            ->isString($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->lengthMessage = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING], $value);
+        return $this;
     }
 
     /**
@@ -162,12 +162,12 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMinLengthMessage($value)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
-            $this->minLengthMessage = $value;
+        TypeChecker::getInstance()
+            ->isString($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->minLengthMessage = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING], $value);
+        return $this;
     }
 
     /**
@@ -177,12 +177,12 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMaxLengthMessage($value)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
-            $this->maxLengthMessage = $value;
+        TypeChecker::getInstance()
+            ->isString($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->maxLengthMessage = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING], $value);
+        return $this;
     }
 
     /**
@@ -192,12 +192,12 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setMinMaxLengthMessage($value)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
-            $this->minMaxLengthMessage = $value;
+        TypeChecker::getInstance()
+            ->isString($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->minMaxLengthMessage = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING], $value);
+        return $this;
     }
 
     /**
@@ -207,11 +207,11 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      */
     public function setRegexpMessage($value)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING])) {
-            $this->regexpMessage = $value;
+        TypeChecker::getInstance()
+            ->isString($value, 'value')
+            ->throwTypeErrorIfNotValid();
+        $this->regexpMessage = $value;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING], $value);
+        return $this;
     }
 }

@@ -8,7 +8,6 @@
 namespace NewInventor\EasyForm\Abstraction;
 
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\ObjectHelper;
 
 class KeyValuePair extends NamedObject
 {
@@ -72,12 +71,13 @@ class KeyValuePair extends NamedObject
      */
     public function setCanBeShort($canBeShort)
     {
-        if (ObjectHelper::is($canBeShort, [ObjectHelper::BOOL])) {
-            $this->canBeShort = $canBeShort;
-
-            return $this;
+        $typeChecker = TypeChecker::getInstance();
+        if (!$typeChecker->isBool($canBeShort, 'canBeShort')) {
+            $typeChecker->throwTypeError();
         }
-        throw new ArgumentTypeException('canBeShort', [ObjectHelper::BOOL], $canBeShort);
+        $this->canBeShort = $canBeShort;
+
+        return $this;
     }
 
     /**
@@ -95,11 +95,13 @@ class KeyValuePair extends NamedObject
      */
     public function setValue($value)
     {
-        if (ObjectHelper::is($value, [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL])) {
-            $this->value = $value;
-            return $this;
+        $typeChecker = TypeChecker::getInstance();
+        if (!$typeChecker->check($value, [SimpleTypes::STRING, SimpleTypes::INT, SimpleTypes::FLOAT, SimpleTypes::NULL], 'value')) {
+            $typeChecker->throwTypeError();
         }
-        throw new ArgumentTypeException('value', [ObjectHelper::STRING, ObjectHelper::INT, ObjectHelper::FLOAT, ObjectHelper::NULL], $value);
+        $this->value = $value;
+
+        return $this;
     }
 
     /**
@@ -117,12 +119,10 @@ class KeyValuePair extends NamedObject
      */
     public function setDelimiter($delimiter)
     {
-        if (ObjectHelper::is($delimiter, [ObjectHelper::STRING])) {
-            $this->delimiter = $delimiter;
+        TypeChecker::getInstance()->isString($delimiter, 'delimiter')->throwTypeErrorIfNotValid();
+        $this->delimiter = $delimiter;
 
-            return $this;
-        }
-        throw new ArgumentTypeException('delimiter', [ObjectHelper::STRING], $delimiter);
+        return $this;
     }
 
     /**

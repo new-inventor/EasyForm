@@ -7,35 +7,18 @@
 
 namespace NewInventor\EasyForm\Helper;
 
+use NewInventor\EasyForm\Abstraction\SimpleTypes;
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Exception\ArgumentException;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
 
 class ArrayHelper
 {
-    /**
-     * @param array $elements
-     * @param array $types
-     * @return bool
-     */
-    public static function isValidElementsTypes(array $elements, array $types = [])
-    {
-        if (empty($types)) {
-            return true;
-        }
-        $res = true;
-        foreach ($elements as $el) {
-            $res = $res && ObjectHelper::is($el, $types);
-        }
-
-        return true;
-    }
-
-
     public static function get(array $elements, $route, $default = null)
     {
-        if (!ObjectHelper::is($route, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::INT])) {
-            throw new ArgumentTypeException('route', [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::INT], $route);
-        }
+        TypeChecker::getInstance()
+            ->check($route, [SimpleTypes::STRING, SimpleTypes::ARR, SimpleTypes::INT], 'route')
+            ->throwTypeErrorIfNotValid();
 
         if (is_array($route)) {
             return self::getByRoute($elements, $route, $default);
@@ -53,9 +36,9 @@ class ArrayHelper
      */
     public static function getByRoute(array $elements, array $route = [], $default = null)
     {
-        if (!self::isValidElementsTypes($route, [ObjectHelper::STRING, ObjectHelper::INT])) {
-            throw new ArgumentException('Елементы должны быть или целыми числами или строками.', 'route');
-        }
+        TypeChecker::getInstance()
+            ->checkArray($route, [SimpleTypes::STRING, SimpleTypes::INT], 'route')
+            ->throwCustomErrorIfNotValid('Елементы должны быть или целыми числами или строками.');
 
         foreach ($route as $levelName) {
             if (!isset($elements[$levelName])) {
@@ -76,9 +59,9 @@ class ArrayHelper
      */
     public static function getByIndex(array $elements, $name, $default = null)
     {
-        if (!ObjectHelper::is($name, [ObjectHelper::STRING, ObjectHelper::INT])) {
-            throw new ArgumentTypeException('name', [ObjectHelper::STRING, ObjectHelper::INT], $name);
-        }
+        TypeChecker::getInstance()
+            ->check($name, [SimpleTypes::STRING, SimpleTypes::INT], 'name')
+            ->throwTypeErrorIfNotValid();
 
         if (isset($elements[$name])) {
             return $elements[$name];
@@ -90,17 +73,17 @@ class ArrayHelper
 
     public static function set(array $elements, $route, $value)
     {
-        if (!ObjectHelper::is($route, [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::INT])) {
-            throw new ArgumentTypeException('route', [ObjectHelper::STRING, ObjectHelper::ARR, ObjectHelper::INT], $route);
-        }
+        TypeChecker::getInstance()
+            ->check($route, [SimpleTypes::STRING, SimpleTypes::ARR, SimpleTypes::INT], 'route')
+            ->throwTypeErrorIfNotValid();
 
-        if(is_array($route)) {
+        if (is_array($route)) {
             $resArrayRoute = '';
             foreach ($route as $levelName) {
                 $resArrayRoute .= '[' . (is_int($levelName) ? $levelName : "'$levelName'") . ']';
             }
             eval('$elements' . $resArrayRoute . ' = $value;');
-        }else{
+        } else {
             $elements[$route] = $value;
         }
 
