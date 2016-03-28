@@ -1,5 +1,6 @@
 <head>
     <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script src="src/assets/default.js"></script>
 </head>
 <?php
 /**

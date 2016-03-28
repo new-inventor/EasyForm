@@ -89,10 +89,11 @@ class BaseRenderer extends Object implements RendererInterface
 
     /**
      * @param string $template
+     * @param mixed $options
      * @param FormObjectInterface $object
      * @return mixed
      */
-    protected function replacePlaceholders($template = '', FormObjectInterface $object = null, array $options = []){
+    protected function replacePlaceholders($template = '', FormObjectInterface $object = null, $options = null){
         $placeholders = $this->getTemplatePlaceholders($template);
         $res = $template;
         foreach ($placeholders as $placeholder) {

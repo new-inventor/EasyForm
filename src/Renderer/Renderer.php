@@ -179,13 +179,14 @@ class Renderer extends BaseRenderer implements RendererInterface
 
     /**
      * @param BlockInterface|FieldInterface $block
+     * @param bool $check
      * @return string
      */
-    protected function actions($block)
+    protected function actions($block, $check = true)
     {
         $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'repeatActionsBlock']);
         TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
-        $res = $this->replacePlaceholders($template, $block);
+        $res = $this->replacePlaceholders($template, $block, $check);
 
         return $res;
     }
@@ -198,7 +199,7 @@ class Renderer extends BaseRenderer implements RendererInterface
     protected function addButton($block, $check = true)
     {
         $res = '';
-        if (((int)$block->getName() == count($block->getParent()->children()) - 1) && $check) {
+        if (((int)$block->getName() == count($block->getParent()->children()) - 1) || !$check) {
             $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'addButton']);
             TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
             $res = $this->replacePlaceholders($template, $block);
@@ -215,7 +216,7 @@ class Renderer extends BaseRenderer implements RendererInterface
     protected function deleteButton($block, $check = true)
     {
         $res = '';
-        if (((int)$block->getName() != 0 || count($block->getParent()->children()) > 1) && $check) {
+        if (((int)$block->getName() != 0 || count($block->getParent()->children()) > 1) || !$check) {
             $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'deleteButton']);
             TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
             $res = $this->replacePlaceholders($template, $block);
@@ -269,37 +270,16 @@ class Renderer extends BaseRenderer implements RendererInterface
         $childCopy->clear();
         $childCopy->setParent($block);
         $res = '<script>
-$(document).on("click", "[' . $this->actionsBlockSelector() . '=\'' . $block->getName() . '\'] [' . $this->deleteActionSelector() . ']", function(e){
-    e.preventDefault();
-    var $this = $(this);
-    var $container = $this.closest("[' . $this->containerSelector() . ']");
-    if($container.find("[' . $this->blockSelector() . ']").length < 1){
-        return;
-    }
-    var $block = $this.closest("[' . $this->blockSelector() . ']");
-    if($block.find("[' . $this->addActionSelector() . ']").length > 0){
-        $block.prev().find("[' . $this->actionsBlockSelector() . ']").append(\'' . $this->addButton($block) . '\');
-    }
-    $block.remove();
-    if($container.find("[' . $this->blockSelector() . ']").length == 1){
-        $container.find("[' . $this->blockSelector() . ']:first [' . $this->deleteActionSelector() . ']").remove();
-    }
-});
-$(document).on("click", "[' . $this->actionsBlockSelector() . '=\'' . $block->getName() . '\'] [' . $this->addActionSelector() . ']", function(e){
-    e.preventDefault();
-    var $this = $(this);
-    var $container = $this.closest("[' . $this->containerSelector() . ']");
-    var dummy = \'' . $childCopy . '\';
-    var $block = $this.closest("[' . $this->blockSelector() . ']");
-    var index = $container.find("[' . $this->blockSelector() . ']").length;
-    var $dummy = $(dummy.replace(/#IND#/g, index));
-    if($block.find("[' . $this->deleteActionSelector() . ']").length == 0){
-        $block.find("[' . $this->actionsBlockSelector() . ']").append(\'' . $this->deleteButton($block) . '\');
-    }
-    $dummy.find("[' . $this->actionsBlockSelector() . ']").remove();
-    $dummy.append(\'' . $this->deleteButton($block, false) . $this->addButton($block, false) . '\');
-    $container.append($dummy);
-    $this.remove();
+$("[' . $this->containerSelector() . ']").repeatContainer({
+    containerSelector : \'[' . $this->containerSelector() . ']\',
+    blockSelector : \'[' . $this->blockSelector() . ']\',
+    actionsSelector : \'[' . $this->actionsBlockSelector() . '="' . $block->getName() . '"]\',
+    addSelector : \'[' . $this->addActionSelector() . ']\',
+    deleteSelector : \'[' . $this->deleteActionSelector() . ']\',
+    dummyObject: \'' . $childCopy . '\',
+    addButton: \'' . $this->addButton($block, false) . '\',
+    deleteButton: \'' . $this->deleteButton($block, false) . '\',
+    fullActionsBlock: \'' . $this->actions($block->child(0), false) . '\'
 });
 </script>';
 

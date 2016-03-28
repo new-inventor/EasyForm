@@ -24,7 +24,7 @@ return [
             'checkSetOption' => '<span><label>{optionTitle}{option}</label></span>',
             'repeatFiled' => /** @lang text */'<div {blockSelector}>{fieldStr}{actions}{errors}</div>',
             'repeatBlock' => /** @lang text */'<div {blockSelector}>{children}{actions}</div>',
-            'repeatContainer' => /** @lang text */'<div {containerSelector}>{label}{children}{repeatScript}</div>',
+            'repeatContainer' => /** @lang text */'<div {containerSelector}>{label}{children}</div>{repeatScript}',
             'repeatActionsBlock' => /** @lang text */'<div {actionsBlockSelector}="{name}">{deleteButton}{addButton}</div>',
             'deleteButton' => /** @lang text */'<span {deleteActionSelector}>-</span>',
             'addButton' => /** @lang text */'<span {addActionSelector}>+</span>',
