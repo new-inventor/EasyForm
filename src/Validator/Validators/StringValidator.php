@@ -43,33 +43,32 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
 
             return false;
         }
-        if(mb_strlen($value) == 0){
+        if (mb_strlen($value) == 0) {
             return true;
         }
         if (!is_null($this->length) && mb_strlen($value) !== $this->length) {
-            $this->error = preg_replace('/\{length\}/u', $this->length, $this->lengthMessage);
+            $this->error = str_replace('{length}', $this->length, $this->lengthMessage);
 
             return false;
         }
         if (!is_null($this->maxLength) && !is_null($this->minLength) && (mb_strlen($value) > $this->maxLength || mb_strlen($value) < $this->minLength)) {
-            $this->error = preg_replace(['/\{minLength\}/u'], $this->minLength, $this->minMaxLengthMessage);
-            $this->error = preg_replace(['/\{maxLength\}/u'], $this->maxLength, $this->error);
+            $this->error = str_replace(['{minLength}', '{maxLength}'], [$this->minLength, $this->maxLength], $this->minMaxLengthMessage);
 
             return false;
         }
         if (!is_null($this->minLength) && mb_strlen($value) < $this->minLength) {
-            $this->error = preg_replace('/\{minLength\}/u', $this->minLength, $this->minLengthMessage);
+            $this->error = str_replace('{minLength}', $this->minLength, $this->minLengthMessage);
 
             return false;
         }
         if (!is_null($this->maxLength) && mb_strlen($value) > $this->maxLength) {
-            $this->error = preg_replace('/\{maxLength\}/u', $this->maxLength, $this->maxLengthMessage);
+            $this->error = str_replace('{maxLength}', $this->maxLength, $this->maxLengthMessage);
 
             return false;
         }
         if (!is_null($this->regexp)) {
             preg_match($this->regexp, $value, $matches);
-            if(count($matches) > 1 || empty($matches)){
+            if (count($matches) > 1 || empty($matches)) {
                 $this->error = $this->regexpMessage;
 
                 return false;
@@ -89,7 +88,8 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @return $this
      * @throws ArgumentTypeException
      */
-    public function setMinLength($value){
+    public function setMinLength($value)
+    {
         TypeChecker::getInstance()
             ->isInt($value, 'value')
             ->throwTypeErrorIfNotValid();
@@ -103,7 +103,8 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @return $this
      * @throws ArgumentTypeException
      */
-    public function setMaxLength($value){
+    public function setMaxLength($value)
+    {
         TypeChecker::getInstance()
             ->isInt($value, 'value')
             ->throwTypeErrorIfNotValid();
@@ -117,7 +118,8 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @return $this
      * @throws ArgumentTypeException
      */
-    public function setLength($value){
+    public function setLength($value)
+    {
         TypeChecker::getInstance()
             ->isInt($value, 'value')
             ->throwTypeErrorIfNotValid();
@@ -131,7 +133,8 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @return $this
      * @throws ArgumentTypeException
      */
-    public function setRegexp($value){
+    public function setRegexp($value)
+    {
         TypeChecker::getInstance()
             ->isString($value, 'value')
             ->throwTypeErrorIfNotValid();

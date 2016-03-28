@@ -54,4 +54,27 @@ class Settings
         $res = array_replace_recursive($data, $custom);
         $this->set($route, $res);
     }
+
+    public function find($baseRoute, $route, $className = '', $default = null)
+    {
+        $data = $this->get($baseRoute);
+        $el = ArrayHelper::get($data, $route);
+        if(is_string($el)){
+            return $el;
+        }elseif(is_array($el)){
+            if(in_array($className, $el)){
+                return $el[$className];
+            }
+            if($alias = ArrayHelper::get($data, 'alias') !== null){
+                if(isset($el[$alias])){
+                    return $el[$alias];
+                }else{
+                    return $el['default'];
+                }
+            }else{
+                return $el['default'];
+            }
+        }
+        return $default;
+    }
 }

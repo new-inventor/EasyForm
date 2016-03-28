@@ -20,16 +20,6 @@ class ResetHandler extends AbstractHandler
         $this->oldValues = $this->getParent()->getDataArray();
     }
 
-    /**
-     * Преобразовать объект в строку
-     * @return string
-     */
-    public function getString()
-    {
-        $button = new Input($this->getFullName(), $this->getTitle());
-        return $button->type('submit')->getString();
-    }
-
     public function process()
     {
         $this->getParent()->load($this->oldValues);

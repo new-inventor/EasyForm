@@ -10,7 +10,6 @@ namespace NewInventor\EasyForm\Validator;
 use NewInventor\EasyForm\Abstraction\Object;
 use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Helper\SimpleTypes;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
 use NewInventor\EasyForm\Settings;
 
@@ -82,7 +81,7 @@ class AbstractValidator extends Object implements ValidatorInterface
     {
         $name = !empty($this->field->getTitle()) ? $this->field->getTitle() : $this->field->getName();
 
-        return preg_replace('/\{f\}/', $name, $message);
+        return str_replace('{f}', $name, $message);
     }
 
 

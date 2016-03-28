@@ -51,18 +51,17 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
         }
         $value = (int)$value;
         if (isset($this->min) && isset($this->max) && ($value < $this->min || $value > $this->max)) {
-            $this->error = preg_replace('/\{min\}/u', $this->min, $this->minMaxMessage);
-            $this->error = preg_replace('/\{max\}/u', $this->max, $this->error);
+            $this->error = str_replace(['{min}', '{max}'], [$this->min, $this->max], $this->minMaxMessage);
 
             return false;
         }
         if (isset($this->min) && $value < $this->min) {
-            $this->error = preg_replace('/\{min\}/u', $this->min, $this->minMessage);
+            $this->error = str_replace('{min}', $this->min, $this->minMessage);
 
             return false;
         }
         if (isset($this->max) && $value > $this->max) {
-            $this->error = preg_replace('/\{max\}/u', $this->max, $this->maxMessage);
+            $this->error = str_replace('{max}', $this->max, $this->maxMessage);
 
             return false;
         }

@@ -33,6 +33,10 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     private $parent = null;
     /** @var NamedObjectList */
     private $children = null;
+    /** @var string */
+    protected $templateName;
+
+    const DEFAULT_TEMPLATE = 'default';
 
     /**
      * @param string $name
@@ -48,6 +52,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         parent::__construct($name);
         $this->title($title);
         $this->isValid = true;
+        $this->templateName = self::DEFAULT_TEMPLATE;
     }
 
     /**
@@ -103,7 +108,9 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function attribute($name, $value = '')
     {
-        $this->attributes()->add(HtmlAttr::build($name, $value));
+        if ($name != 'name') {
+            $this->attributes()->add(HtmlAttr::build($name, $value));
+        }
 
         return $this;
     }
@@ -194,18 +201,14 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
             /** @var RendererInterface $renderer */
             $renderer = call_user_func([$rendererClass, 'getInstance']);
 
-            if (in_array('NewInventor\EasyForm\Interfaces\FormInterface', class_implements($this))) {
-                /** @var FormInterface $this */
-                return $renderer->form($this);
-            } elseif (in_array('NewInventor\EasyForm\Interfaces\BlockInterface', class_implements($this))) {
-                /** @var BlockInterface $this */
-                return $renderer->block($this);
-            } elseif (in_array('NewInventor\EasyForm\Interfaces\FieldInterface', class_implements($this))) {
-                /** @var FieldInterface $this */
-                return $renderer->field($this);
-            }
+            return $this->renderObject($renderer);
         }
 
+        return '';
+    }
+
+    protected function renderObject(RendererInterface $renderer)
+    {
         return '';
     }
 
@@ -284,5 +287,32 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         }
 
         return $res;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isRepeatable()
+    {
+        return $this->getParent() !== null && $this->getParent()->isRepeatableContainer();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function template($name)
+    {
+        TypeChecker::getInstance()->isString($name, 'name')->throwTypeErrorIfNotValid();
+        $this->templateName = $name;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTemplate()
+    {
+        return $this->templateName;
     }
 }

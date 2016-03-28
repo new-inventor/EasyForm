@@ -3,40 +3,110 @@
 namespace NewInventor\EasyForm\Renderer;
 
 use DeepCopy\DeepCopy;
-use NewInventor\EasyForm\Abstraction\Object;
-use NewInventor\EasyForm\Abstraction\SingletonTrait;
+use NewInventor\EasyForm\Abstraction\TypeChecker;
 use NewInventor\EasyForm\Field;
 use NewInventor\EasyForm\Interfaces\BlockInterface;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
 use NewInventor\EasyForm\Interfaces\FormInterface;
+use NewInventor\EasyForm\Interfaces\FormObjectInterface;
+use NewInventor\EasyForm\Interfaces\HandlerInterface;
 use NewInventor\EasyForm\Settings;
 
-// TODO label for repeat objects
-class Renderer extends Object implements RendererInterface
+class Renderer extends BaseRenderer implements RendererInterface
 {
-    use SingletonTrait;
-    const FIELD = 'field';
-    const BLOCK = 'block';
-    const FORM = 'form';
-
-    public function __construct()
-    {
-        $default = include __DIR__ . '/defaultSettings.php';
-        Settings::getInstance()->merge(['renderer'], $default);
-    }
-
     /**
      * @inheritdoc
      */
     public function form(FormInterface $form)
     {
-        $formStr = '';
-        $formStr .= '<form name="' . $form->getFullName() . '" ' . $form->attributes() . '>';
-        $formStr .= $form->children();
-        $formStr .= $form->handlers();
-        $formStr .= '</form>';
+        $template = Settings::getInstance()->get(['renderer', 'templates', $form->getTemplate(), 'form']);
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+        $res = $this->replacePlaceholders($template, $form);
 
-        return $formStr;
+        return $res;
+    }
+
+    /**
+     * @param FormInterface $form
+     * @return string
+     */
+    public function formStart(FormInterface $form)
+    {
+        return '<form name="' . $form->getFullName() . '" ' . $form->attributes() . '>';
+    }
+
+    /**
+     * @return string
+     * @internal param FormInterface $form
+     */
+    public function formEnd()
+    {
+        return '</form>';
+    }
+
+    /**
+     * @param FormInterface|BlockInterface $object
+     * @return string
+     */
+    public function children($object)
+    {
+        return '' . $object->children();
+    }
+
+    /**
+     * @param FormInterface $form
+     * @return string
+     */
+    public function handlers(FormInterface $form)
+    {
+        return '' . $form->handlers();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function handler(HandlerInterface $handler)
+    {
+        $template = Settings::getInstance()->get(['renderer', 'templates', $handler->getTemplate(), 'handler']);
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+        $res = $this->replacePlaceholders($template, $handler);
+
+        return $res;
+    }
+
+    protected function handlerStr(HandlerInterface $handler)
+    {
+        return $this->input($handler->attribute('type', 'submit'));
+    }
+
+    /**
+     * @param FormInterface|BlockInterface|FieldInterface $object
+     * @return string
+     */
+    public function errors($object)
+    {
+        $errors = $object->getErrors();
+        if (empty($errors)) {
+            return '';
+        }
+        $template = Settings::getInstance()->find(['renderer'], ['templates', $object->getTemplate(), 'errors'], $object->getClass(), '');
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+
+        $res = $this->replacePlaceholders($template, $object);
+
+        return $res;
+    }
+
+    /**
+     * @param FormInterface|BlockInterface|FieldInterface $object
+     * @return string
+     */
+    public function errorsStr($object)
+    {
+        $errorDelimiter = Settings::getInstance()->get(['renderer', 'errors', 'delimiter']);
+        $errorsStr = implode($errorDelimiter, $object->getErrors());
+
+        return $errorsStr;
     }
 
     /**
@@ -44,22 +114,94 @@ class Renderer extends Object implements RendererInterface
      */
     public function block(BlockInterface $block)
     {
-        $res = "<div";
         if ($block->isRepeatable()) {
-            $res .= ' ' . $this->reBlock;
+            return $this->repeatableBlock($block);
         } elseif ($block->isRepeatableContainer()) {
-            $res = "<span>{$block->getTitle()}</span><div " . $this->reContainer;
+            return $this->repeatableContainer($block);
         } else {
-            $res = "<span>{$block->getTitle()}</span><div";
+            return $this->singleBlock($block);
         }
-        $res .= '>';
-        $res .= $block->children();
-        if ($block->isRepeatable()) {
-            $res .= $this->getBlockRepeatActions($block);
-        }
-        $res .= '</div>';
-        if ($block->isRepeatableContainer()) {
-            $res .= $this->repeatableBlockScript($block);
+    }
+
+    protected function singleBlock(BlockInterface $block)
+    {
+        $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'block']);
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+        $res = $this->replacePlaceholders($template, $block);
+
+        return $res;
+    }
+
+    protected function repeatableBlock(BlockInterface $block)
+    {
+        $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'repeatBlock']);
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+        $res = $this->replacePlaceholders($template, $block);
+
+        return $res;
+    }
+
+    /**
+     * @param FormInterface|BlockInterface|FieldInterface $object
+     * @return string
+     */
+    protected function label($object)
+    {
+        $template = Settings::getInstance()->find(['renderer'], ['templates', $object->getTemplate(), 'label'], $object->getClass(), '');
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+        $res = $this->replacePlaceholders($template, $object);
+
+        return $res;
+    }
+
+    /**
+     * @param FormInterface|BlockInterface|FieldInterface $object
+     * @return string
+     */
+    protected function title($object)
+    {
+        return $object->getTitle();
+    }
+
+    protected function repeatableContainer(BlockInterface $block)
+    {
+        $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'repeatContainer']);
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+        $res = $this->replacePlaceholders($template, $block);
+
+        return $res;
+    }
+
+    protected function getRepeatableMark(BlockInterface $block)
+    {
+        return ' ' . Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'repeatBlock']);
+    }
+
+    /**
+     * @param BlockInterface|FieldInterface $block
+     * @return string
+     */
+    protected function actions($block)
+    {
+        $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'repeatActionsBlock']);
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+        $res = $this->replacePlaceholders($template, $block);
+
+        return $res;
+    }
+
+    /**
+     * @param BlockInterface|FieldInterface $block
+     * @param bool $check
+     * @return string
+     */
+    protected function addButton($block, $check = true)
+    {
+        $res = '';
+        if (((int)$block->getName() == count($block->getParent()->children()) - 1) && $check) {
+            $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'addButton']);
+            TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+            $res = $this->replacePlaceholders($template, $block);
         }
 
         return $res;
@@ -67,47 +209,59 @@ class Renderer extends Object implements RendererInterface
 
     /**
      * @param BlockInterface|FieldInterface $block
+     * @param bool $check
      * @return string
      */
-    protected function getBlockRepeatActions($block)
+    protected function deleteButton($block, $check = true)
     {
-        $add = false;
-        $delete = false;
-        if ((int)$block->getName() != 0 || count($block->getParent()->children()) > 1) {
-            $delete = true;
+        $res = '';
+        if (((int)$block->getName() != 0 || count($block->getParent()->children()) > 1) && $check) {
+            $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'deleteButton']);
+            TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+            $res = $this->replacePlaceholders($template, $block);
         }
-        if ((int)$block->getName() == count($block->getParent()->children()) - 1) {
-            $add = true;
-        }
-
-        return $this->getRepeatActions($block->getParent()->getName(), $add, $delete);
-    }
-
-    protected function getRepeatActions($name = '', $addButton = true, $deleteButton = false)
-    {
-        $res = "<div {$this->reActionsBlock}=\"{$name}\">";
-        if ($deleteButton) {
-            $res .= $this->getDeleteButton();
-        }
-        if ($addButton) {
-            $res .= $this->getAddButton();
-        }
-        $res .= '</div>';
 
         return $res;
     }
 
-    protected function getAddButton()
+    protected function blockSelector()
     {
-        return "<span {$this->reAddAction}>+</span>";
+        return $this->getSelectorFromSettings('block');
     }
 
-    protected function getDeleteButton()
+    protected function containerSelector()
     {
-        return "<span {$this->reDeleteAction}>-</span>";
+        return $this->getSelectorFromSettings('container');
     }
 
-    protected function repeatableBlockScript(BlockInterface $block)
+    protected function actionsBlockSelector()
+    {
+        return $this->getSelectorFromSettings('actionsBlock');
+    }
+
+    protected function deleteActionSelector()
+    {
+        return $this->getSelectorFromSettings('deleteAction');
+    }
+
+    protected function addActionSelector()
+    {
+        return $this->getSelectorFromSettings('addAction');
+    }
+
+    protected function getSelectorFromSettings($type = '')
+    {
+        if (empty($type)) {
+            return '';
+        }
+
+        $selector = Settings::getInstance()->get(['renderer', 'repeat', $type], '');
+        TypeChecker::getInstance()->isString($selector, 'selector')->throwTypeErrorIfNotValid();
+
+        return $selector;
+    }
+
+    protected function repeatScript(BlockInterface $block)
     {
         $deepCopy = new DeepCopy();
         /** @var BlockInterface|FieldInterface|RenderableInterface $childCopy */
@@ -115,35 +269,35 @@ class Renderer extends Object implements RendererInterface
         $childCopy->clear();
         $childCopy->setParent($block);
         $res = '<script>
-$(document).on("click", "[' . $this->reActionsBlock . '=\'' . $block->getName() . '\'] [' . $this->reDeleteAction . ']", function(e){
+$(document).on("click", "[' . $this->actionsBlockSelector() . '=\'' . $block->getName() . '\'] [' . $this->deleteActionSelector() . ']", function(e){
     e.preventDefault();
     var $this = $(this);
-    var $container = $this.closest("[' . $this->reContainer . ']");
-    if($container.find("[' . $this->reBlock . ']").length < 1){
+    var $container = $this.closest("[' . $this->containerSelector() . ']");
+    if($container.find("[' . $this->blockSelector() . ']").length < 1){
         return;
     }
-    var $block = $this.closest("[' . $this->reBlock . ']");
-    if($block.find("[' . $this->reAddAction . ']").length > 0){
-        $block.prev().find("[' . $this->reActionsBlock . ']").append(\'' . $this->getAddButton() . '\');
+    var $block = $this.closest("[' . $this->blockSelector() . ']");
+    if($block.find("[' . $this->addActionSelector() . ']").length > 0){
+        $block.prev().find("[' . $this->actionsBlockSelector() . ']").append(\'' . $this->addButton($block) . '\');
     }
     $block.remove();
-    if($container.find("[' . $this->reBlock . ']").length == 1){
-        $container.find("[' . $this->reBlock . ']:first [' . $this->reDeleteAction . ']").remove();
+    if($container.find("[' . $this->blockSelector() . ']").length == 1){
+        $container.find("[' . $this->blockSelector() . ']:first [' . $this->deleteActionSelector() . ']").remove();
     }
 });
-$(document).on("click", "[' . $this->reActionsBlock . '=\'' . $block->getName() . '\'] [' . $this->reAddAction . ']", function(e){
+$(document).on("click", "[' . $this->actionsBlockSelector() . '=\'' . $block->getName() . '\'] [' . $this->addActionSelector() . ']", function(e){
     e.preventDefault();
     var $this = $(this);
-    var $container = $this.closest("[' . $this->reContainer . ']");
+    var $container = $this.closest("[' . $this->containerSelector() . ']");
     var dummy = \'' . $childCopy . '\';
-    var $block = $this.closest("[' . $this->reBlock . ']");
-    var index = $container.find("[' . $this->reBlock . ']").length;
+    var $block = $this.closest("[' . $this->blockSelector() . ']");
+    var index = $container.find("[' . $this->blockSelector() . ']").length;
     var $dummy = $(dummy.replace(/#IND#/g, index));
-    if($block.find("[' . $this->reDeleteAction . ']").length == 0){
-        $block.find("[' . $this->reActionsBlock . ']").append(\'' . $this->getDeleteButton() . '\');
+    if($block.find("[' . $this->deleteActionSelector() . ']").length == 0){
+        $block.find("[' . $this->actionsBlockSelector() . ']").append(\'' . $this->deleteButton($block) . '\');
     }
-    $dummy.find("[' . $this->reActionsBlock . ']").remove();
-    $dummy.append(\'' . $this->getRepeatActions($block->getName(), true, true) . '\');
+    $dummy.find("[' . $this->actionsBlockSelector() . ']").remove();
+    $dummy.append(\'' . $this->deleteButton($block, false) . $this->addButton($block, false) . '\');
     $container.append($dummy);
     $this.remove();
 });
@@ -153,72 +307,40 @@ $(document).on("click", "[' . $this->reActionsBlock . '=\'' . $block->getName() 
     }
 
     /**
+     * @param FieldInterface|FormInterface|BlockInterface $object
+     * @return string
+     */
+    protected function name($object)
+    {
+        return $object->getParent()->getName();
+    }
+
+    /**
      * @inheritdoc
      */
     public function field(FieldInterface $field)
     {
-        $template = Settings::getInstance()->get(['renderer', 'templates', 'field'], self::DEFAULT_FIELD_TEMPLATE);
-        $fieldStr = $this->getFieldStr($field);
         if ($field->isRepeatable()) {
-            $fieldStr = "<div {$this->reBlock}>{$fieldStr}{$this->getBlockRepeatActions($field)}</div>";
+            $template = Settings::getInstance()->get(['renderer', 'templates', $field->getTemplate(), 'repeatFiled']);
+        } else {
+            $template = Settings::getInstance()->get(['renderer', 'templates', $field->getTemplate(), 'field']);
         }
-        $errors = $this->getErrorsStr($field, $template, self::FIELD);
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+        $res = $this->replacePlaceholders($template, $field);
 
-        $template = preg_replace('/\{' . self::PLACEHOLDER_FIELD . '\}/u', $fieldStr, $template);
-        $template = preg_replace('/\{' . self::PLACEHOLDER_LABEL . '\}/u', $label, $template);
-        $template = preg_replace('/\{' . self::PLACEHOLDER_ERRORS . '\}/u', $errors, $template);
+        return $res;
+    }
 
-        return $template;
+    protected function forField(FieldInterface $field)
+    {
+        return 'for="' . $field->attributes()->get('id')->getValue() . '"';
     }
 
     /**
      * @param FieldInterface $field
      * @return string
      */
-    protected function getFieldLabel(FieldInterface $field)
-    {
-        $template = Settings::getInstance()->get(['renderer', 'label', 'template', 'field']);
-        if ($field->isRepeatable() && strpos($template, $this->getPlaceholder('title')) === false) {
-            return '';
-        }
-        if ($field->getTitle() == '') {
-            return '';
-        }
-
-        $template = preg_replace('/' . $this->getPlaceholderRegexp('title') . '/u', $field->getTitle(), $template);
-        $template = preg_replace('/' . $this->getPlaceholderRegexp('forField') . '/u', (string)$forField, $template);
-
-        return $template;
-    }
-
-    protected function getForFieldStr(FieldInterface $field)
-    {
-        $forField = 'for="' . ($field->attributes()->get('id') != null ?: $field->getName()) . '"';
-    }
-
-    /**
-     * @param FieldInterface|BlockInterface|FormInterface $formObject
-     * @param string $template
-     * @param string $type
-     * @return string
-     */
-    protected function getErrorsStr(FieldInterface $formObject, $template, $type = self::FIELD)
-    {
-        $errors = '';
-        if (strpos($template, $this->getPlaceholder('errors')) !== false && !empty($formObject->getErrors())) {
-            $errorDelimiter = Settings::getInstance()->get(['renderer', 'error', 'template', 'delimiter']);
-            $errors = implode($errorDelimiter, $formObject->getErrors());
-        }
-        Settings::getInstance()->get(['renderer', 'error', 'template', $type]);
-
-        return $errors;
-    }
-
-    /**
-     * @param FieldInterface $field
-     * @return string
-     */
-    protected function getFieldStr(FieldInterface $field)
+    protected function fieldStr(FieldInterface $field)
     {
         $fieldStr = '';
         if ($field instanceof Field\CheckBox) {
@@ -226,11 +348,11 @@ $(document).on("click", "[' . $this->reActionsBlock . '=\'' . $block->getName() 
         } elseif ($field instanceof Field\Select) {
             $fieldStr = $this->select($field);
         } elseif ($field instanceof Field\CheckBoxSet) {
-            $fieldStr = $this->checkBoxSet($field);
+            $fieldStr = $this->checkSet($field);
         } elseif ($field instanceof Field\Input) {
             $fieldStr = $this->input($field);
         } elseif ($field instanceof Field\RadioSet) {
-            $fieldStr = $this->radioSet($field);
+            $fieldStr = $this->checkSet($field);
         } elseif ($field instanceof Field\TextArea) {
             $fieldStr = $this->textArea($field);
         }
@@ -245,43 +367,53 @@ $(document).on("click", "[' . $this->reActionsBlock . '=\'' . $block->getName() 
         return "<input name=\"{$field->getFullName()}\" {$field->attributes()}{$checked} />";
     }
 
-    protected function checkBoxSet(Field\CheckBoxSet $field)
-    {
-        return $this->checkSet($field, 'checkbox');
-    }
-
-    protected function radioSet(Field\RadioSet $field)
-    {
-        return $this->checkSet($field, 'radio');
-    }
-
     /**
      * @param Field\ListField $field
-     * @param string $type
      * @return string
      */
-    protected function checkSet(Field\ListField $field, $type)
+    protected function checkSet(Field\ListField $field)
     {
-        $optionTemplate = Settings::getInstance()->get(['renderer', 'checkSet', 'template', 'option']);
-        $fieldTemplate = Settings::getInstance()->get(['renderer', 'checkSet', 'template', 'field']);
-        $res = '';
-        $asArray = ($type == 'checkbox') ? '[]' : '';
-        $start = /** @lang text */
-            "<input type=\"{$type}\" name=\"{$field->getFullName()}{$asArray}\"{$field->attributes()}";
-        foreach ($field->options() as $option) {
-            $resOption = $optionTemplate;
-            $checked = $field->optionSelected($option['value']) ? ' checked' : '';
-            $res .= "{$start} value=\"{$option['value']}\"{$checked} />";
-            if (!empty($labelTemplate)) {
-                preg_replace('/' . $this->getPlaceholderRegexp('title') . '/u', $option['title'], $labelTemplate);
-                preg_replace('/' . $this->getPlaceholderRegexp('forField') . '/u', $option['title'], $labelTemplate);
-            }
-        }
+        $template = Settings::getInstance()->get(['renderer', 'templates', $field->getTemplate(), 'checkSet']);
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+        $res = $this->replacePlaceholders($template, $field);
 
         return $res;
     }
 
-    protected function input(Field\Input $field)
+    protected function options(Field\ListField $field)
+    {
+        $template = Settings::getInstance()->get(['renderer', 'templates', $field->getTemplate(), 'checkSetOption']);
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+        $options = '';
+        foreach ($field->options() as $option) {
+            $options .= $this->replacePlaceholders($template, $field, $option);
+        }
+
+        return $options;
+    }
+
+    protected function option(Field\ListField $field, array $options = [])
+    {
+        $type = '';
+        if ($field instanceof Field\CheckBoxSet) {
+            $type = 'checkbox';
+        } elseif ($field instanceof Field\RadioSet) {
+            $type = 'radio';
+        }
+        $asArray = ($type == 'checkbox') ? '[]' : '';
+        $checked = $field->optionSelected($options['value']) ? ' checked' : '';
+        $res = /** @lang text */
+            "<input type=\"{$type}\" name=\"{$field->getFullName()}{$asArray}\"{$field->attributes()} value=\"{$options['value']}\"{$checked} />";
+
+        return $res;
+    }
+
+    protected function optionTitle(Field\ListField $field, array $options = [])
+    {
+        return $options['title'];
+    }
+
+    protected function input(FormObjectInterface $field)
     {
         return "<input name=\"{$field->getFullName()}\" {$field->attributes()}/>";
     }
@@ -305,14 +437,5 @@ $(document).on("click", "[' . $this->reActionsBlock . '=\'' . $block->getName() 
     protected function textArea(Field\TextArea $field)
     {
         return '<textarea name="' . $field->getFullName() . '" ' . $field->attributes() . '>' . $field->getValue() . '</textarea>';
-    }
-
-    /**
-     * @param string $name
-     * @return string
-     */
-    protected function getPlaceholder($name)
-    {
-        return '{' . Settings::getInstance()->get(['renderer', 'placeholder', $name]) . '}';
     }
 }

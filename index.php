@@ -36,10 +36,12 @@ $form
         ->title('titleeee')
         ->attribute('class', 'special')
         ->attribute('id', 'qwe1')
+        ->validator('string', ['minLength' => 4])
+        ->template('active')
     ->end()
     ->repeatable(new Input('testRepeat', '', 'repeat title'))
     ->block('test')
-        ->text('0', 'qwe')
+        ->text('qwe', 'qwe')
             ->title('QWE')
             ->attribute('class', 'show')
             ->validator('string', ['minLength' => 6, 'maxLength' => 12])
@@ -73,9 +75,9 @@ $form
     ->repeatable(
         (new Block('fullName', 'Полное имя участника.'))
             ->attribute('data-repeatable')
-            ->text('name')->end()
-            ->text('surname')->end()
-            ->text('family')->end()
+            ->text('family')->title('Фамилия')->end()
+            ->text('name')->title('Имя')->end()
+            ->text('surname')->title('Отчество')->end()
     )
     ->handler(Handler\AbstractHandler::getClass())
     ->handler(Handler\ResetHandler::getClass())
@@ -84,4 +86,4 @@ if($form->load()){
     $form->validate();
     $form->save();
 }
-echo $form;
+echo $form->getString();

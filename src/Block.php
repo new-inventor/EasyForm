@@ -19,6 +19,8 @@ use NewInventor\EasyForm\Field\Select;
 use NewInventor\EasyForm\Field\TextArea;
 use NewInventor\EasyForm\Interfaces\BlockInterface;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
+use NewInventor\EasyForm\Renderer\Renderer;
+use NewInventor\EasyForm\Renderer\RendererInterface;
 
 /**
  * Class AbstractBlock
@@ -405,14 +407,6 @@ class Block extends FormObject implements BlockInterface
     /**
      * @inheritdoc
      */
-    public function isRepeatable()
-    {
-        return $this->getParent() !== null && $this->getParent()->isRepeatableContainer();
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function setRepeatable($repeatable)
     {
         $this->repeatable = $repeatable;
@@ -446,5 +440,13 @@ class Block extends FormObject implements BlockInterface
     public function setRepeatObject($repeatObject)
     {
         $this->repeatObject = $repeatObject;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function renderObject(RendererInterface $renderer)
+    {
+        return $renderer->block($this);
     }
 }

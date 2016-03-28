@@ -5,6 +5,7 @@ namespace NewInventor\EasyForm\Renderer;
 use NewInventor\EasyForm\Interfaces\BlockInterface;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
 use NewInventor\EasyForm\Interfaces\FormInterface;
+use NewInventor\EasyForm\Interfaces\HandlerInterface;
 
 interface RendererInterface
 {
@@ -25,4 +26,10 @@ interface RendererInterface
      * @return string
      */
     public function field(FieldInterface $field);
+
+    /**
+     * @param HandlerInterface $handler
+     * @return string
+     */
+    public function handler(HandlerInterface $handler);
 }

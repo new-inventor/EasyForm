@@ -80,4 +80,21 @@ interface FormObjectInterface extends NamedObjectInterface
      * @return array
      */
     public function getDataArray();
+
+    /**
+     * @return bool
+     */
+    public function isRepeatable();
+
+    /**
+     * @param string $name
+     * @return static
+     * @throws ArgumentTypeException
+     */
+    public function template($name);
+
+    /**
+     * @return string
+     */
+    public function getTemplate();
 }

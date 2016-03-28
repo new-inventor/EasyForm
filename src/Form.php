@@ -11,6 +11,8 @@ use NewInventor\EasyForm\Field\AbstractField;
 use NewInventor\EasyForm\Handler\AbstractHandler;
 use NewInventor\EasyForm\Interfaces\FormInterface;
 use NewInventor\EasyForm\Interfaces\HandlerInterface;
+use NewInventor\EasyForm\Renderer\Renderer;
+use NewInventor\EasyForm\Renderer\RendererInterface;
 
 class Form extends Block implements FormInterface
 {
@@ -167,22 +169,36 @@ class Form extends Block implements FormInterface
     }
 
     /**
-     * @param string $handler Handler type
+     * @param string|\Closure|HandlerInterface $handler Handler type
+     * @param string $name
+     * @param string $value
      *
      * @return FormInterface
      * @throws ArgumentException
      * @throws ArgumentTypeException
      */
-    public function handler($handler)
+    public function handler($handler, $name = 'abstractHandler', $value = 'Абстрактное действие')
     {
-        if (!class_exists($handler) && $handler instanceof HandlerInterface) {
+        if (!class_exists($handler) && !($handler instanceof HandlerInterface) && !($handler instanceof \Closure)) {
             throw new ArgumentException('Класс обработчика формы не существует.', 'handler');
         }
-        /** @var HandlerInterface $handler */
-        $handler = new $handler($this);
+        if(is_string($handler)) {
+            /** @var HandlerInterface $handler */
+            $handler = new $handler($this, $name, $value);
+        }elseif($handler instanceof \Closure){
+            $handler = new AbstractHandler($this, $name, $value, $handler);
+        }
         $this->handlers()->add($handler);
 
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function renderObject(RendererInterface $renderer)
+    {
+        return $renderer->form($this);
     }
 
     /**

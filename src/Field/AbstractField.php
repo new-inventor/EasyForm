@@ -15,6 +15,8 @@ use NewInventor\EasyForm\Exception\ArgumentTypeException;
 use NewInventor\EasyForm\FormObject;
 use NewInventor\EasyForm\Interfaces\FieldInterface;
 use NewInventor\EasyForm\Interfaces\ObjectListInterface;
+use NewInventor\EasyForm\Renderer\Renderer;
+use NewInventor\EasyForm\Renderer\RendererInterface;
 use NewInventor\EasyForm\Settings;
 use NewInventor\EasyForm\Validator\AbstractValidator;
 use NewInventor\EasyForm\Validator\ValidatorInterface;
@@ -37,6 +39,7 @@ abstract class AbstractField extends FormObject implements FieldInterface
     {
         parent::__construct($name, $title);
         $this->setValue($value);
+        $this->attribute('id', $name);
         $this->validators = new ObjectList(['NewInventor\EasyForm\Validator\ValidatorInterface']);
     }
 
@@ -189,5 +192,13 @@ abstract class AbstractField extends FormObject implements FieldInterface
     public function isRepeatable()
     {
         return $this->getParent() !== null && $this->getParent()->isRepeatableContainer();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function renderObject(RendererInterface $renderer)
+    {
+        return $renderer->field($this);
     }
 }

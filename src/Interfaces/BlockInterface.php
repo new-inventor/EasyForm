@@ -261,11 +261,6 @@ interface BlockInterface extends FormObjectInterface, RenderableInterface, Valid
     /**
      * @return bool
      */
-    public function isRepeatable();
-
-    /**
-     * @return bool
-     */
     public function isRepeatableContainer();
 
     /**
