@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dd9215b4a2ebf4a4937c61df3a35175b",
-    "content-hash": "da01b242098f524070e6ab4a8e2c7470",
+    "hash": "f3efb83eed272b785ad5661a967f84c1",
+    "content-hash": "a4fa523d9ffed8f23805d49bf84f8563",
     "packages": [
         {
             "name": "myclabs/deep-copy",
@@ -48,6 +48,162 @@
                 "object graph"
             ],
             "time": "2015-11-07 22:20:37"
+        },
+        {
+            "name": "new-inventor/abstractions",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/new-inventor/abstractions.git",
+                "reference": "4c8402fb9da4699780307cd2d77b68befa666d37"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/new-inventor/abstractions/zipball/4c8402fb9da4699780307cd2d77b68befa666d37",
+                "reference": "4c8402fb9da4699780307cd2d77b68befa666d37",
+                "shasum": ""
+            },
+            "require": {
+                "new-inventor/php-type-checker": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NewInventor\\Abstractions\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Georgy Ionov",
+                    "email": "newinventor20@gmail.com"
+                }
+            ],
+            "description": "Abstractions for projects",
+            "time": "2016-04-04 10:25:14"
+        },
+        {
+            "name": "new-inventor/config-tool",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/new-inventor/config-tool.git",
+                "reference": "307d9813e251213cb05b08063c4152716adccc8d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/new-inventor/config-tool/zipball/307d9813e251213cb05b08063c4152716adccc8d",
+                "reference": "307d9813e251213cb05b08063c4152716adccc8d",
+                "shasum": ""
+            },
+            "require": {
+                "new-inventor/patterns": "*",
+                "new-inventor/php-type-checker": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NewInventor\\ConfigTool\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Georgy Ionov",
+                    "email": "newinventor20@gmail.com"
+                }
+            ],
+            "description": "Config tool for projects",
+            "time": "2016-04-04 09:12:24"
+        },
+        {
+            "name": "new-inventor/patterns",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/new-inventor/patterns.git",
+                "reference": "a8ca525ee2214669c3c3019ecb08f6d19c4a9ce1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/new-inventor/patterns/zipball/a8ca525ee2214669c3c3019ecb08f6d19c4a9ce1",
+                "reference": "a8ca525ee2214669c3c3019ecb08f6d19c4a9ce1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NewInventor\\Patterns\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "George Ionov",
+                    "email": "newinventor20@gmail.com"
+                }
+            ],
+            "description": "Patterns realisation",
+            "time": "2016-04-01 13:48:14"
+        },
+        {
+            "name": "new-inventor/php-type-checker",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/new-inventor/php-type-checker.git",
+                "reference": "0236c2cc9530dc264e4f2aa04b0ce24382ab3c0b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/new-inventor/php-type-checker/zipball/0236c2cc9530dc264e4f2aa04b0ce24382ab3c0b",
+                "reference": "0236c2cc9530dc264e4f2aa04b0ce24382ab3c0b",
+                "shasum": ""
+            },
+            "require": {
+                "new-inventor/patterns": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NewInventor\\TypeChecker\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Georgy Ionov",
+                    "email": "newinventor20@gmail.com"
+                }
+            ],
+            "description": "Type checker for base types or list of types or arrays",
+            "time": "2016-04-01 13:23:05"
         },
         {
             "name": "psr/log",
@@ -571,16 +727,16 @@
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "3.0.6",
+            "version": "3.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "49bc700750196c04dd6bc2c4c99cb632b893836b"
+                "reference": "7c34c9bdde4131b824086457a3145e27dba10ca1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/49bc700750196c04dd6bc2c4c99cb632b893836b",
-                "reference": "49bc700750196c04dd6bc2c4c99cb632b893836b",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/7c34c9bdde4131b824086457a3145e27dba10ca1",
+                "reference": "7c34c9bdde4131b824086457a3145e27dba10ca1",
                 "shasum": ""
             },
             "require": {
@@ -598,7 +754,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0.x-dev"
+                    "dev-master": "3.1.x-dev"
                 }
             },
             "autoload": {
@@ -623,7 +779,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2015-12-08 08:47:06"
+            "time": "2016-03-24 05:58:25"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1085,16 +1241,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.0.3",
+            "version": "v3.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "b5ba64cd67ecd6887f63868fa781ca094bd1377c"
+                "reference": "0047c8366744a16de7516622c5b7355336afae96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/b5ba64cd67ecd6887f63868fa781ca094bd1377c",
-                "reference": "b5ba64cd67ecd6887f63868fa781ca094bd1377c",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/0047c8366744a16de7516622c5b7355336afae96",
+                "reference": "0047c8366744a16de7516622c5b7355336afae96",
                 "shasum": ""
             },
             "require": {
@@ -1130,7 +1286,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-02-23 15:16:06"
+            "time": "2016-03-04 07:55:57"
         }
     ],
     "aliases": [],
