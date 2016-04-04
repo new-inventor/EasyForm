@@ -8,10 +8,10 @@
 return [
     'templates' => [
         'default' => [
-            'form' => '{errors}{label}<div>{formStart}{children}{handlers}{formEnd}</div>',
+            'form' => '{errors}{label}<div>{start}{children}{handlers}{end}</div>',
             'block' => '{label}<div>{children}</div>',
-            'field' => /** @lang text */'<div><label {forField}>{title}</label>{fieldStr}</div>{errors}',
-            'handler' => '<div>{handlerStr}</div>',
+            'field' => /** @lang text */'<div><label {forField}>{title}</label>{field}</div>{errors}',
+            'handler' => '<div>{handler}</div>',
             'errors' => [
                 'default' => '<span>{errorsStr}</span>',
                 'form' => '<div>{errorsStr}</div>',
@@ -20,15 +20,16 @@ return [
                 'default' => '<span>{title}</span>',
                 'form' => '<div>{title}</div>',
             ],
-            'checkSet' => '<div>{options}</div>{errors}',
+            'checkSet' => '{label}<div>{options}</div>{errors}',
             'checkSetOption' => '<span><label>{optionTitle}{option}</label></span>',
-            'repeatFiled' => /** @lang text */'<div {blockSelector}>{fieldStr}{actions}{errors}</div>',
+            'repeatFiled' => /** @lang text */'<div {blockSelector}>{field}{actions}{errors}</div>',
             'repeatBlock' => /** @lang text */'<div {blockSelector}>{children}{actions}</div>',
             'repeatContainer' => /** @lang text */'<div {containerSelector}>{label}{children}</div>{repeatScript}',
             'repeatActionsBlock' => /** @lang text */'<div {actionsBlockSelector}="{name}">{deleteButton}{addButton}</div>',
             'deleteButton' => /** @lang text */'<span {deleteActionSelector}>-</span>',
             'addButton' => /** @lang text */'<span {addActionSelector}>+</span>',
-            'attribute' => '{name}="{value}"'
+            'attribute' => '{name}="{value}"',
+            'shortAttribute' => '{name}'
         ],
     ],
     'repeat' => [
@@ -45,9 +46,9 @@ return [
         'borders' => ['{', '}']
     ],
     'alias' => [
-        \NewInventor\EasyForm\Form::getClass() => 'form',
-        \NewInventor\EasyForm\Block::getClass() => 'block',
-        \NewInventor\EasyForm\Field\AbstractField::getClass() => 'field',
-        \NewInventor\EasyForm\Handler\AbstractHandler::getClass() => 'handler',
+        \NewInventor\Form\Form::getClass() => 'form',
+        \NewInventor\Form\Block::getClass() => 'block',
+        \NewInventor\Form\Field\AbstractField::getClass() => 'field',
+        \NewInventor\Form\Handler\AbstractHandler::getClass() => 'handler',
     ]
 ];

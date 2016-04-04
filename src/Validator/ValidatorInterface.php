@@ -5,10 +5,10 @@
  * Time: 16:48
  */
 
-namespace NewInventor\EasyForm\Validator;
+namespace NewInventor\Form\Validator;
 
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Interfaces\FieldInterface;
+use NewInventor\Form\Interfaces\FieldInterface;
+use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 
 interface ValidatorInterface
 {

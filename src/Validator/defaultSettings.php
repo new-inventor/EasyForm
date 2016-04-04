@@ -6,8 +6,8 @@
  */
 
 return [
-    'email' => \NewInventor\EasyForm\Validator\Validators\EmailValidator::getClass(),
-    'integer' => \NewInventor\EasyForm\Validator\Validators\IntegerValidator::getClass(),
-    'string' => \NewInventor\EasyForm\Validator\Validators\StringValidator::getClass(),
-    'required' => \NewInventor\EasyForm\Validator\Validators\RequiredValidator::getClass(),
+    'email' => \NewInventor\Form\Validator\Validators\EmailValidator::getClass(),
+    'integer' => \NewInventor\Form\Validator\Validators\IntegerValidator::getClass(),
+    'string' => \NewInventor\Form\Validator\Validators\StringValidator::getClass(),
+    'required' => \NewInventor\Form\Validator\Validators\RequiredValidator::getClass(),
 ];

@@ -5,9 +5,9 @@
  * Time: 17:33
  */
 
-namespace NewInventor\EasyForm\Field;
+namespace NewInventor\Form\Field;
 
-use NewInventor\EasyForm\Interfaces\FieldInterface;
+use NewInventor\Form\Interfaces\FieldInterface;
 
 class Select extends CheckBoxSet implements FieldInterface
 {

@@ -5,7 +5,7 @@
  * Time: 15:59
  */
 
-use \NewInventor\EasyForm\Validator\Validators\EmailValidator;
+use \NewInventor\Form\Validator\Validators\EmailValidator;
 
 class EmailValidatorTest extends PHPUnit_Framework_TestCase
 {

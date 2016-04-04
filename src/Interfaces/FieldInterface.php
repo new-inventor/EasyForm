@@ -1,11 +1,11 @@
 <?php
 
-namespace NewInventor\EasyForm\Interfaces;
+namespace NewInventor\Form\Interfaces;
 
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Renderer\RenderableInterface;
-use NewInventor\EasyForm\Validator\ValidatableInterface;
-use NewInventor\EasyForm\Validator\ValidatorInterface;
+use NewInventor\Form\Renderer\RenderableInterface;
+use NewInventor\Form\Validator\ValidatableInterface;
+use NewInventor\Form\Validator\ValidatorInterface;
+use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 
 interface FieldInterface extends FormObjectInterface, RenderableInterface, ValidatableInterface
 {

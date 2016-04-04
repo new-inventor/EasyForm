@@ -5,9 +5,11 @@
  * Time: 18:36
  */
 
-namespace NewInventor\EasyForm\Abstraction;
+namespace NewInventor\Form\Abstraction\asd;
 
-use NewInventor\EasyForm\Exception\ArgumentException;
+
+use NewInventor\TypeChecker\Exception\ArgumentException;
+use NewInventor\TypeChecker\TypeChecker;
 
 class KeyValuePairBuilder
 {
@@ -49,7 +51,7 @@ class KeyValuePairBuilder
         TypeChecker::getInstance()
             ->isString($type, 'type')
             ->throwCustomErrorIfNotValid('Неверный или пустой тип пары ключ-значение.');
-        $defaultSettings = include dirname(__DIR__) . '/config/key-value-types.php';
+        $defaultSettings = include dirname(dirname(__DIR__)) . '/config/key-value-types.php';
 
         $additionalSettings = [];
         if($this->settingsPathExists($settingsPath)){

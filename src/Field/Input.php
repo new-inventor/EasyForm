@@ -1,9 +1,9 @@
 <?php
 
-namespace NewInventor\EasyForm\Field;
+namespace NewInventor\Form\Field;
 
-use NewInventor\EasyForm\Abstraction\HtmlAttr;
-use NewInventor\EasyForm\Interfaces\FieldInterface;
+use NewInventor\Form\Abstraction\KeyValuePair;
+use NewInventor\Form\Interfaces\FieldInterface;
 
 class Input extends AbstractField implements FieldInterface
 {
@@ -11,7 +11,7 @@ class Input extends AbstractField implements FieldInterface
     public function setValue($value)
     {
         parent::setValue($value);
-        $this->attributes()->add(HtmlAttr::build('value', $value));
+        $this->attributes()->add(new KeyValuePair('value', $value));
 
         return $this;
     }

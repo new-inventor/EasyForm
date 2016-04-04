@@ -6,7 +6,7 @@
  * Time: 23:39
  */
 
-namespace NewInventor\EasyForm\Interfaces;
+namespace NewInventor\Form\Interfaces;
 
 
 interface HandlerInterface extends FormObjectInterface {

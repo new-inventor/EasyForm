@@ -6,9 +6,7 @@
  * Time: 0:47
  */
 
-namespace NewInventor\EasyForm\Handler;
-
-use NewInventor\EasyForm\Field\Input;
+namespace NewInventor\Form\Handler;
 
 class ResetHandler extends AbstractHandler
 {

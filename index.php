@@ -10,10 +10,12 @@
  */
 require 'vendor/autoload.php';
 
-use \NewInventor\EasyForm\Form;
-use \NewInventor\EasyForm\Field\Input;
-use \NewInventor\EasyForm\Block;
-use \NewInventor\EasyForm\Handler;
+use \NewInventor\Form\Form;
+use \NewInventor\Form\Field\Input;
+use \NewInventor\Form\Block;
+use \NewInventor\Form\Handler;
+
+\NewInventor\ConfigTool\Config::mergeFile([], __DIR__ . '/src/config/main.php');
 
 $form = new Form('form1', null, Form::METHOD_POST, 'title1', Form::ENC_TYPE_MULTIPART);
 $form

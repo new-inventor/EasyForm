@@ -6,12 +6,13 @@
  * Time: 23:35
  */
 
-namespace NewInventor\EasyForm\Handler;
+namespace NewInventor\Form\Handler;
 
-use NewInventor\EasyForm\FormObject;
-use NewInventor\EasyForm\Interfaces\FormInterface;
-use NewInventor\EasyForm\Interfaces\HandlerInterface;
-use NewInventor\EasyForm\Renderer\RendererInterface;
+use NewInventor\Form\FormObject;
+use NewInventor\Form\Interfaces\FormInterface;
+use NewInventor\Form\Interfaces\HandlerInterface;
+use NewInventor\Form\Renderer\HandlerRenderer;
+use NewInventor\Form\Renderer\RendererInterface;
 
 class AbstractHandler extends FormObject implements HandlerInterface
 {
@@ -51,11 +52,13 @@ class AbstractHandler extends FormObject implements HandlerInterface
      */
     public function validate(){}
 
+
     /**
      * @inheritdoc
      */
-    protected function renderObject(RendererInterface $renderer)
+    public function getString()
     {
-        return $renderer->handler($this);
+        $renderer = new HandlerRenderer();
+        return $renderer->render($this);
     }
 }

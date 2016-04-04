@@ -5,9 +5,9 @@
  * Time: 16:55
  */
 
-namespace NewInventor\EasyForm\Tests;
+namespace NewInventor\Form\Tests;
 
-use NewInventor\EasyForm\Abstraction\KeyValuePair;
+use NewInventor\Form\Abstraction\KeyValuePair;
 
 class KeyValuePairTest extends \PHPUnit_Framework_TestCase
 {

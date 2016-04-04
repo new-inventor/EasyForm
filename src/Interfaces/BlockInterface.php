@@ -1,13 +1,13 @@
 <?php
 
-namespace NewInventor\EasyForm\Interfaces;
+namespace NewInventor\Form\Interfaces;
 
-use NewInventor\EasyForm\Field\Select;
-use NewInventor\EasyForm\Field\TextArea;
-use NewInventor\EasyForm\Field\CheckBoxSet;
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Renderer\RenderableInterface;
-use NewInventor\EasyForm\Validator\ValidatableInterface;
+use NewInventor\Form\Field\Select;
+use NewInventor\Form\Field\TextArea;
+use NewInventor\Form\Field\CheckBoxSet;
+use NewInventor\Form\Renderer\RenderableInterface;
+use NewInventor\Form\Validator\ValidatableInterface;
+use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 
 interface BlockInterface extends FormObjectInterface, RenderableInterface, ValidatableInterface
 {

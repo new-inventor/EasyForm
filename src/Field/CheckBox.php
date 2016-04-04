@@ -6,11 +6,12 @@
  * Time: 20:10
  */
 
-namespace NewInventor\EasyForm\Field;
+namespace NewInventor\Form\Field;
 
-use NewInventor\EasyForm\Abstraction\SimpleTypes;
-use NewInventor\EasyForm\Abstraction\TypeChecker;
-use NewInventor\EasyForm\Interfaces\FieldInterface;
+
+use NewInventor\Form\Interfaces\FieldInterface;
+use NewInventor\TypeChecker\SimpleTypes;
+use NewInventor\TypeChecker\TypeChecker;
 
 class CheckBox extends AbstractField implements FieldInterface
 {

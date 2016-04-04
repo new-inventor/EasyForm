@@ -1,8 +1,11 @@
 <?php
 
-namespace NewInventor\EasyForm\Interfaces;
+namespace NewInventor\Form\Interfaces;
 
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
+
+use NewInventor\Abstractions\Interfaces\NamedObjectInterface;
+use NewInventor\Abstractions\Interfaces\ObjectListInterface;
+use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 
 interface FormObjectInterface extends NamedObjectInterface
 {
@@ -33,11 +36,12 @@ interface FormObjectInterface extends NamedObjectInterface
     /**
      * @param string $name
      * @param string $value
+     * @param bool $canBeShort
      *
      * @return $this
      * @throws ArgumentTypeException
      */
-    public function attribute($name, $value = '');
+    public function attribute($name, $value = '', $canBeShort = false);
 
     /**
      * @param $name
@@ -60,7 +64,7 @@ interface FormObjectInterface extends NamedObjectInterface
     /**
      * @param string $name
      *
-     * @return \NewInventor\EasyForm\Interfaces\NamedObjectInterface
+     * @return NamedObjectInterface
      * @throws ArgumentTypeException
      */
     public function child($name);

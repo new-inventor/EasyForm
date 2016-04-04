@@ -6,9 +6,9 @@
  * Time: 18:17
  */
 
-namespace NewInventor\EasyForm\Field;
+namespace NewInventor\Form\Field;
 
-use NewInventor\EasyForm\Interfaces\FieldInterface;
+use NewInventor\Form\Interfaces\FieldInterface;
 
 class RadioSet extends ListField implements FieldInterface
 {

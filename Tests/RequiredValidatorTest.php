@@ -5,7 +5,7 @@
  * Time: 15:59
  */
 
-use \NewInventor\EasyForm\Validator\Validators\RequiredValidator;
+use \NewInventor\Form\Validator\Validators\RequiredValidator;
 
 class RequiredValidatorTest extends PHPUnit_Framework_TestCase
 {

@@ -1,23 +1,21 @@
 <?php
 
-namespace NewInventor\EasyForm;
+namespace NewInventor\Form;
 
-use NewInventor\EasyForm\Abstraction\HtmlAttr;
-use NewInventor\EasyForm\Abstraction\KeyValuePair;
-use NewInventor\EasyForm\Abstraction\NamedObject;
-use NewInventor\EasyForm\Abstraction\NamedObjectList;
-use NewInventor\EasyForm\Abstraction\TypeChecker;
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Field\AbstractField;
-use NewInventor\EasyForm\Interfaces\BlockInterface;
-use NewInventor\EasyForm\Interfaces\FieldInterface;
-use NewInventor\EasyForm\Interfaces\FormInterface;
-use NewInventor\EasyForm\Interfaces\FormObjectInterface;
-use NewInventor\EasyForm\Interfaces\ObjectListInterface;
-use NewInventor\EasyForm\Renderer\RenderableInterface;
-use NewInventor\EasyForm\Renderer\Renderer;
-use NewInventor\EasyForm\Renderer\RendererInterface;
-use NewInventor\EasyForm\Validator\ValidatableInterface;
+use NewInventor\Abstractions\Interfaces\ObjectListInterface;
+use NewInventor\Abstractions\NamedObject;
+use NewInventor\Abstractions\NamedObjectList;
+use NewInventor\ConfigTool\Config;
+use NewInventor\Form\Abstraction\KeyValuePair;
+use NewInventor\Form\Field\AbstractField;
+use NewInventor\Form\Interfaces\BlockInterface;
+use NewInventor\Form\Interfaces\FieldInterface;
+use NewInventor\Form\Interfaces\FormInterface;
+use NewInventor\Form\Interfaces\FormObjectInterface;
+use NewInventor\Form\Renderer\RenderableInterface;
+use NewInventor\Form\Validator\ValidatableInterface;
+use NewInventor\TypeChecker\Exception\ArgumentTypeException;
+use NewInventor\TypeChecker\TypeChecker;
 
 abstract class FormObject extends NamedObject implements FormObjectInterface, ValidatableInterface, RenderableInterface
 {
@@ -47,7 +45,6 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     function __construct($name, $title = '')
     {
         $this->attrs = new NamedObjectList([KeyValuePair::getClass()]);
-        $this->attrs->setObjectsDelimiter(' ');
         $this->children = new NamedObjectList([Block::getClass(), AbstractField::getClass()]);
         parent::__construct($name);
         $this->title($title);
@@ -106,10 +103,10 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     /**
      * @inheritdoc
      */
-    public function attribute($name, $value = '')
+    public function attribute($name, $value = '', $canBeShort = false)
     {
         if ($name != 'name') {
-            $this->attributes()->add(HtmlAttr::build($name, $value));
+            $this->attributes()->add(new KeyValuePair($name, $value, $canBeShort));
         }
 
         return $this;
@@ -180,7 +177,11 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function __toString()
     {
-        return $this->getString();
+        try {
+            return $this->getString();
+        }catch (\Exception $e){
+            return "{$e->getMessage()}. File: {$e->getFile()}, Line: {$e->getLine()}, Stack trace: {$e->getTraceAsString()}";
+        }
     }
 
     /**
@@ -196,25 +197,13 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function getString()
     {
-        $rendererClass = Settings::getInstance()->get(['renderer', 'class'], Renderer::getClass());
-        if (isset($rendererClass)) {
-            /** @var RendererInterface $renderer */
-            $renderer = call_user_func([$rendererClass, 'getInstance']);
-
-            return $this->renderObject($renderer);
-        }
-
-        return '';
-    }
-
-    protected function renderObject(RendererInterface $renderer)
-    {
         return '';
     }
 
     public function validate()
     {
         if ($this->children() !== null) {
+            /** @var FieldInterface|BlockInterface $child */
             foreach ($this->children() as $child) {
                 $child->validate();
             }
@@ -227,6 +216,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     public function isValid()
     {
         if ($this->children() !== null) {
+            /** @var FieldInterface|BlockInterface $child */
             foreach ($this->children() as $child) {
                 $this->isValid = $this->isValid && $child->isValid();
             }
@@ -255,6 +245,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         $errors = $this->prepareErrors($this->errors);
         if ($this->children() !== null) {
+            /** @var FieldInterface|BlockInterface $child */
             foreach ($this->children() as $child) {
                 $errors = array_merge($errors, $child->getErrors());
             }

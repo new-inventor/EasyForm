@@ -5,11 +5,11 @@
  * Time: 17:32
  */
 
-namespace NewInventor\EasyForm\Field;
+namespace NewInventor\Form\Field;
 
-use NewInventor\EasyForm\Abstraction\TypeChecker;
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Interfaces\FieldInterface;
+use NewInventor\Form\Interfaces\FieldInterface;
+use NewInventor\TypeChecker\Exception\ArgumentTypeException;
+use NewInventor\TypeChecker\TypeChecker;
 
 class TextArea extends AbstractField implements FieldInterface
 {

@@ -1,16 +1,17 @@
 <?php
 
-namespace NewInventor\EasyForm\Renderer;
+namespace NewInventor\Form\Renderer;
 
 use DeepCopy\DeepCopy;
-use NewInventor\EasyForm\Abstraction\TypeChecker;
-use NewInventor\EasyForm\Field;
-use NewInventor\EasyForm\Interfaces\BlockInterface;
-use NewInventor\EasyForm\Interfaces\FieldInterface;
-use NewInventor\EasyForm\Interfaces\FormInterface;
-use NewInventor\EasyForm\Interfaces\FormObjectInterface;
-use NewInventor\EasyForm\Interfaces\HandlerInterface;
-use NewInventor\EasyForm\Settings;
+use NewInventor\ConfigTool\Config;
+use NewInventor\Form\Abstraction\KeyValuePair;
+use NewInventor\Form\Field;
+use NewInventor\Form\Interfaces\BlockInterface;
+use NewInventor\Form\Interfaces\FieldInterface;
+use NewInventor\Form\Interfaces\FormInterface;
+use NewInventor\Form\Interfaces\FormObjectInterface;
+use NewInventor\Form\Interfaces\HandlerInterface;
+use NewInventor\TypeChecker\TypeChecker;
 
 class Renderer extends BaseRenderer implements RendererInterface
 {
@@ -19,11 +20,12 @@ class Renderer extends BaseRenderer implements RendererInterface
      */
     public function form(FormInterface $form)
     {
-        $template = Settings::getInstance()->get(['renderer', 'templates', $form->getTemplate(), 'form']);
-        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
-        $res = $this->replacePlaceholders($template, $form);
+        $templateStr = Config::get(['renderer', 'templates', $form->getTemplate(), 'form']);
+        $template = new Template($templateStr);
+        $replacements = $this->getReplacements($template->getPlaceholders(), $form);
+        $template->setReplacements($replacements);
 
-        return $res;
+        return $template->getReplaced();
     }
 
     /**
@@ -32,7 +34,30 @@ class Renderer extends BaseRenderer implements RendererInterface
      */
     public function formStart(FormInterface $form)
     {
-        return '<form name="' . $form->getFullName() . '" ' . $form->attributes() . '>';
+        return '<form ' . $this->attributes($form) . '>';
+    }
+
+    protected function attributes(FormObjectInterface $object)
+    {
+        $template = Config::get(['renderrer', 'templates', $object->getTemplate(), 'attribute']);
+        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
+        $name = new KeyValuePair('name', $object->getFullName());
+        $attrs = [$this->replacePlaceholders($template, $name)];
+        foreach($object->attributes() as $attr){
+            $res[] = $this->replacePlaceholders($template, $attr);
+        }
+
+        return implode(' ', $attrs);
+    }
+
+    protected function attrName(KeyValuePair $pair)
+    {
+        return $pair->getName();
+    }
+
+    protected function attrValue(KeyValuePair $pair)
+    {
+        return $pair->getValue();
     }
 
     /**
@@ -67,7 +92,7 @@ class Renderer extends BaseRenderer implements RendererInterface
      */
     public function handler(HandlerInterface $handler)
     {
-        $template = Settings::getInstance()->get(['renderer', 'templates', $handler->getTemplate(), 'handler']);
+        $template = Config::get(['renderer', 'templates', $handler->getTemplate(), 'handler']);
         TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
         $res = $this->replacePlaceholders($template, $handler);
 
@@ -89,7 +114,7 @@ class Renderer extends BaseRenderer implements RendererInterface
         if (empty($errors)) {
             return '';
         }
-        $template = Settings::getInstance()->find(['renderer'], ['templates', $object->getTemplate(), 'errors'], $object->getClass(), '');
+        $template = Config::find(['renderer'], ['templates', $object->getTemplate(), 'errors'], $object->getClass(), '');
         TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
 
         $res = $this->replacePlaceholders($template, $object);
@@ -103,7 +128,7 @@ class Renderer extends BaseRenderer implements RendererInterface
      */
     public function errorsStr($object)
     {
-        $errorDelimiter = Settings::getInstance()->get(['renderer', 'errors', 'delimiter']);
+        $errorDelimiter = Config::get(['renderer', 'errors', 'delimiter']);
         $errorsStr = implode($errorDelimiter, $object->getErrors());
 
         return $errorsStr;
@@ -125,7 +150,7 @@ class Renderer extends BaseRenderer implements RendererInterface
 
     protected function singleBlock(BlockInterface $block)
     {
-        $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'block']);
+        $template = Config::get(['renderer', 'templates', $block->getTemplate(), 'block']);
         TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
         $res = $this->replacePlaceholders($template, $block);
 
@@ -134,7 +159,7 @@ class Renderer extends BaseRenderer implements RendererInterface
 
     protected function repeatableBlock(BlockInterface $block)
     {
-        $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'repeatBlock']);
+        $template = Config::get(['renderer', 'templates', $block->getTemplate(), 'repeatBlock']);
         TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
         $res = $this->replacePlaceholders($template, $block);
 
@@ -147,7 +172,7 @@ class Renderer extends BaseRenderer implements RendererInterface
      */
     protected function label($object)
     {
-        $template = Settings::getInstance()->find(['renderer'], ['templates', $object->getTemplate(), 'label'], $object->getClass(), '');
+        $template = Config::find(['renderer'], ['templates', $object->getTemplate(), 'label'], $object->getClass(), '');
         TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
         $res = $this->replacePlaceholders($template, $object);
 
@@ -165,7 +190,7 @@ class Renderer extends BaseRenderer implements RendererInterface
 
     protected function repeatableContainer(BlockInterface $block)
     {
-        $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'repeatContainer']);
+        $template = Config::get(['renderer', 'templates', $block->getTemplate(), 'repeatContainer']);
         TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
         $res = $this->replacePlaceholders($template, $block);
 
@@ -174,7 +199,7 @@ class Renderer extends BaseRenderer implements RendererInterface
 
     protected function getRepeatableMark(BlockInterface $block)
     {
-        return ' ' . Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'repeatBlock']);
+        return ' ' . Config::get(['renderer', 'templates', $block->getTemplate(), 'repeatBlock']);
     }
 
     /**
@@ -184,7 +209,7 @@ class Renderer extends BaseRenderer implements RendererInterface
      */
     protected function actions($block, $check = true)
     {
-        $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'repeatActionsBlock']);
+        $template = Config::get(['renderer', 'templates', $block->getTemplate(), 'repeatActionsBlock']);
         TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
         $res = $this->replacePlaceholders($template, $block, $check);
 
@@ -200,7 +225,7 @@ class Renderer extends BaseRenderer implements RendererInterface
     {
         $res = '';
         if (((int)$block->getName() == count($block->getParent()->children()) - 1) || !$check) {
-            $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'addButton']);
+            $template = Config::get(['renderer', 'templates', $block->getTemplate(), 'addButton']);
             TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
             $res = $this->replacePlaceholders($template, $block);
         }
@@ -217,7 +242,7 @@ class Renderer extends BaseRenderer implements RendererInterface
     {
         $res = '';
         if (((int)$block->getName() != 0 || count($block->getParent()->children()) > 1) || !$check) {
-            $template = Settings::getInstance()->get(['renderer', 'templates', $block->getTemplate(), 'deleteButton']);
+            $template = Config::get(['renderer', 'templates', $block->getTemplate(), 'deleteButton']);
             TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
             $res = $this->replacePlaceholders($template, $block);
         }
@@ -256,43 +281,10 @@ class Renderer extends BaseRenderer implements RendererInterface
             return '';
         }
 
-        $selector = Settings::getInstance()->get(['renderer', 'repeat', $type], '');
+        $selector = Config::get(['renderer', 'repeat', $type], '');
         TypeChecker::getInstance()->isString($selector, 'selector')->throwTypeErrorIfNotValid();
 
         return $selector;
-    }
-
-    protected function repeatScript(BlockInterface $block)
-    {
-        $deepCopy = new DeepCopy();
-        /** @var BlockInterface|FieldInterface|RenderableInterface $childCopy */
-        $childCopy = $deepCopy->copy($block->getRepeatObject());
-        $childCopy->clear();
-        $childCopy->setParent($block);
-        $res = '<script>
-$("[' . $this->containerSelector() . ']").repeatContainer({
-    containerSelector : \'[' . $this->containerSelector() . ']\',
-    blockSelector : \'[' . $this->blockSelector() . ']\',
-    actionsSelector : \'[' . $this->actionsBlockSelector() . '="' . $block->getName() . '"]\',
-    addSelector : \'[' . $this->addActionSelector() . ']\',
-    deleteSelector : \'[' . $this->deleteActionSelector() . ']\',
-    dummyObject: \'' . $childCopy . '\',
-    addButton: \'' . $this->addButton($block, false) . '\',
-    deleteButton: \'' . $this->deleteButton($block, false) . '\',
-    fullActionsBlock: \'' . $this->actions($block->child(0), false) . '\'
-});
-</script>';
-
-        return $res;
-    }
-
-    /**
-     * @param FieldInterface|FormInterface|BlockInterface $object
-     * @return string
-     */
-    protected function name($object)
-    {
-        return $object->getParent()->getName();
     }
 
     /**
@@ -301,9 +293,9 @@ $("[' . $this->containerSelector() . ']").repeatContainer({
     public function field(FieldInterface $field)
     {
         if ($field->isRepeatable()) {
-            $template = Settings::getInstance()->get(['renderer', 'templates', $field->getTemplate(), 'repeatFiled']);
+            $template = Config::get(['renderer', 'templates', $field->getTemplate(), 'repeatFiled']);
         } else {
-            $template = Settings::getInstance()->get(['renderer', 'templates', $field->getTemplate(), 'field']);
+            $template = Config::get(['renderer', 'templates', $field->getTemplate(), 'field']);
         }
         TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
         $res = $this->replacePlaceholders($template, $field);
@@ -353,7 +345,7 @@ $("[' . $this->containerSelector() . ']").repeatContainer({
      */
     protected function checkSet(Field\ListField $field)
     {
-        $template = Settings::getInstance()->get(['renderer', 'templates', $field->getTemplate(), 'checkSet']);
+        $template = Config::get(['renderer', 'templates', $field->getTemplate(), 'checkSet']);
         TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
         $res = $this->replacePlaceholders($template, $field);
 
@@ -362,7 +354,7 @@ $("[' . $this->containerSelector() . ']").repeatContainer({
 
     protected function options(Field\ListField $field)
     {
-        $template = Settings::getInstance()->get(['renderer', 'templates', $field->getTemplate(), 'checkSetOption']);
+        $template = Config::get(['renderer', 'templates', $field->getTemplate(), 'checkSetOption']);
         TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
         $options = '';
         foreach ($field->options() as $option) {

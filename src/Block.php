@@ -5,26 +5,26 @@
  * Time: 16:00
  */
 
-namespace NewInventor\EasyForm;
+namespace NewInventor\Form;
 
 use DeepCopy\DeepCopy;
-use NewInventor\EasyForm\Abstraction\SimpleTypes;
-use NewInventor\EasyForm\Abstraction\TypeChecker;
-use NewInventor\EasyForm\Field\AbstractField;
-use NewInventor\EasyForm\Field\CheckBox;
-use NewInventor\EasyForm\Field\CheckBoxSet;
-use NewInventor\EasyForm\Field\Input;
-use NewInventor\EasyForm\Field\RadioSet;
-use NewInventor\EasyForm\Field\Select;
-use NewInventor\EasyForm\Field\TextArea;
-use NewInventor\EasyForm\Interfaces\BlockInterface;
-use NewInventor\EasyForm\Interfaces\FieldInterface;
-use NewInventor\EasyForm\Renderer\Renderer;
-use NewInventor\EasyForm\Renderer\RendererInterface;
+use NewInventor\Form\Field\AbstractField;
+use NewInventor\Form\Field\CheckBox;
+use NewInventor\Form\Field\CheckBoxSet;
+use NewInventor\Form\Field\Input;
+use NewInventor\Form\Field\RadioSet;
+use NewInventor\Form\Field\Select;
+use NewInventor\Form\Field\TextArea;
+use NewInventor\Form\Interfaces\BlockInterface;
+use NewInventor\Form\Interfaces\FieldInterface;
+use NewInventor\Form\Renderer\BlockRenderer;
+use NewInventor\Form\Renderer\RendererInterface;
+use NewInventor\TypeChecker\SimpleTypes;
+use NewInventor\TypeChecker\TypeChecker;
 
 /**
  * Class AbstractBlock
- * @package NewInventor\EasyForm
+ * @package NewInventor\Form
  */
 class Block extends FormObject implements BlockInterface
 {
@@ -445,8 +445,9 @@ class Block extends FormObject implements BlockInterface
     /**
      * @inheritdoc
      */
-    protected function renderObject(RendererInterface $renderer)
+    public function getString()
     {
-        return $renderer->block($this);
+        $renderer = new BlockRenderer();
+        return $renderer->render($this);
     }
 }

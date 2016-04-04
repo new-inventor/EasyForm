@@ -5,10 +5,10 @@
  * Time: 16:59
  */
 
-namespace NewInventor\EasyForm\Validator\Validators;
+namespace NewInventor\Form\Validator\Validators;
 
-use NewInventor\EasyForm\Validator\AbstractValidator;
-use NewInventor\EasyForm\Validator\ValidatorInterface;
+use NewInventor\Form\Validator\AbstractValidator;
+use NewInventor\Form\Validator\ValidatorInterface;
 
 class RequiredValidator extends AbstractValidator implements ValidatorInterface
 {

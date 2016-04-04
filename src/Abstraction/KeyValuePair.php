@@ -5,41 +5,33 @@
  * Time: 16:21
  */
 
-namespace NewInventor\EasyForm\Abstraction;
+namespace NewInventor\Form\Abstraction;
 
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
+
+use NewInventor\Abstractions\NamedObject;
+use NewInventor\TypeChecker\Exception\ArgumentException;
+use NewInventor\TypeChecker\SimpleTypes;
+use NewInventor\TypeChecker\TypeChecker;
 
 class KeyValuePair extends NamedObject
 {
     /** @var string */
     private $value;
-    /** @var string */
-    private $delimiter;
-    /** @var string */
-    private $nameComaLeft;
-    /** @var string */
-    private $nameComaRight;
-    /** @var string */
-    private $valueComaLeft;
-    /** @var string */
-    private $valueComaRight;
     /** @var bool */
     private $canBeShort;
 
     /**
      * KeyValuePair constructor.
+     *
      * @param string $name
      * @param string $value
-     * @param bool $canBeShort
+     * @param bool   $canBeShort
      */
     public function __construct($name, $value = '', $canBeShort = false)
     {
         parent::__construct($name);
         $this->setValue($value);
         $this->setCanBeShort($canBeShort);
-        $this->setDelimiter('');
-        $this->setNameComas('', '');
-        $this->setValueComas('', '');
     }
 
     /**
@@ -66,6 +58,7 @@ class KeyValuePair extends NamedObject
 
     /**
      * @param bool $canBeShort
+     *
      * @return $this
      * @throws \Exception
      */
@@ -90,13 +83,16 @@ class KeyValuePair extends NamedObject
 
     /**
      * @param string $value
+     *
      * @return $this
      * @throws \Exception
      */
     public function setValue($value)
     {
         $typeChecker = TypeChecker::getInstance();
-        if (!$typeChecker->check($value, [SimpleTypes::STRING, SimpleTypes::INT, SimpleTypes::FLOAT, SimpleTypes::NULL], 'value')) {
+        if (!$typeChecker->check($value, [SimpleTypes::STRING, SimpleTypes::INT, SimpleTypes::FLOAT, SimpleTypes::NULL],
+            'value')
+        ) {
             $typeChecker->throwTypeError();
         }
         $this->value = $value;
@@ -104,76 +100,15 @@ class KeyValuePair extends NamedObject
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDelimiter()
-    {
-        return $this->delimiter;
-    }
-
-    /**
-     * @param string $delimiter
-     * @return $this
-     * @throws \Exception
-     */
-    public function setDelimiter($delimiter)
-    {
-        TypeChecker::getInstance()->isString($delimiter, 'delimiter')->throwTypeErrorIfNotValid();
-        $this->delimiter = $delimiter;
-
-        return $this;
-    }
-
-    /**
-     * @return array [left, right]
-     */
-    public function getNameComas()
-    {
-        return [$this->nameComaLeft, $this->nameComaRight];
-    }
-
-    /**
-     * @param string $nameComaLeft
-     * @param string $nameComaRight
-     * @return KeyValuePair
-     */
-    public function setNameComas($nameComaLeft, $nameComaRight = null)
-    {
-        if (!isset($nameComaRight)) {
-            $nameComaRight = $nameComaLeft;
-        }
-        $this->setComasArray('name', [$nameComaLeft, $nameComaRight]);
-
-        return $this;
-    }
-
-    /**
-     * @return array [left, right]
-     */
-    public function getValueComas()
-    {
-        return [$this->valueComaLeft, $this->valueComaRight];
-    }
-
-    /**
-     * @param $valueComaLeft
-     * @param $valueComaRight
-     * @return KeyValuePair
-     */
-    public function setValueComas($valueComaLeft, $valueComaRight = null)
-    {
-        if (!isset($valueComaRight)) {
-            $valueComaRight = $valueComaLeft;
-        }
-        $this->setComasArray('value', [$valueComaLeft, $valueComaRight]);
-
-        return $this;
-    }
-
     public function __toString()
     {
-        return $this->render();
+        return $this->getString();
+    }
+
+    public function getString()
+    {
+        $res = '';
+        return $res;
     }
 
     /**
@@ -181,15 +116,7 @@ class KeyValuePair extends NamedObject
      */
     public function render()
     {
-        $nameComas = $this->getNameComas();
-        $res = $nameComas[0] . $this->getName() . $nameComas[1];
-        if ($this->isCanBeShort() && $this->isValueEmpty()) {
-            return $res;
-        }
-        $valueComas = $this->getValueComas();
-        $res .= $this->getDelimiter() . $valueComas[0] . $this->getValue() . $valueComas[1];
-
-        return $res;
+        echo $this->getString();
     }
 
     public function isValueEmpty()
@@ -199,29 +126,22 @@ class KeyValuePair extends NamedObject
 
     /**
      * @param array $data
+     *
      * @return KeyValuePair
-     * @throws \Exception
+     * @throws ArgumentException
      */
     public static function initFromArray(array $data)
     {
         if (!isset($data['name'])) {
-            throw new \Exception('Name must be specified.');
+            throw new ArgumentException('Имя должно быть заполнено.');
         }
+
         $pair = new KeyValuePair($data['name']);
         if (isset($data['value'])) {
             $pair->setValue((string)$data['value']);
         }
         if (isset($data['canBeShort'])) {
             $pair->setCanBeShort((bool)$data['canBeShort']);
-        }
-        if (isset($data['delimiter'])) {
-            $pair->setDelimiter((string)$data['delimiter']);
-        }
-        if (isset($data['valueComas'])) {
-            $pair->setComasArray('value', $data['valueComas']);
-        }
-        if (isset($data['nameComas'])) {
-            $pair->setComasArray('name', $data['nameComas']);
         }
 
         return $pair;
@@ -235,53 +155,10 @@ class KeyValuePair extends NamedObject
         if (isset($params['value']) && !is_string($params['value'])) {
             return false;
         }
-        if (isset($params['delimiter']) && !is_string($params['delimiter'])) {
-            return false;
-        }
         if (isset($params['canBeShort']) && !is_bool($params['canBeShort'])) {
             return false;
         }
-        if (isset($params['valueComas']) && !self::isValidComasArray($params['valueComas'])) {
-            return false;
-        }
-        if (isset($params['nameComas']) && !self::isValidComasArray($params['nameComas'])) {
-            return false;
-        }
 
         return true;
-    }
-
-    public static function isValidComasArray($comas)
-    {
-        if ((!is_array($comas) || count($comas) < 1 || count($comas) > 2 ||
-                (count($comas) > 0 && !is_string($comas[0])) ||
-                (count($comas) > 1 && !is_string($comas[1]))) &&
-            !is_string($comas)
-        ) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function setComasArray($kind, $data)
-    {
-        if (!self::isValidComasArray($data)) {
-            throw new \Exception('Not correct format of comas');
-        }
-        $leftName = $kind . 'ComaLeft';
-        $rightName = $kind . 'ComaRight';
-        if (is_array($data) && count($data) == 1) {
-            $this->$leftName = $this->$rightName = $data[0];
-        } elseif (is_array($data) && count($data) == 2) {
-            $this->$leftName = $data[0];
-            $this->$rightName = $data[1];
-        } elseif (is_string($data)) {
-            $this->$leftName = $this->$rightName = $data;
-        } else {
-            throw new \Exception('Not correct format of comas');
-        }
-
-        return $this;
     }
 }

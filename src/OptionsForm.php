@@ -5,7 +5,7 @@
  * Time: 13:45
  */
 
-namespace NewInventor\EasyForm;
+namespace NewInventor\Form;
 
 class OptionsForm extends Form
 {

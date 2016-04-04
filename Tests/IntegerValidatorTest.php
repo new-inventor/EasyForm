@@ -6,7 +6,7 @@
  * Time: 16:27
  */
 
-use \NewInventor\EasyForm\Validator\Validators\IntegerValidator;
+use \NewInventor\Form\Validator\Validators\IntegerValidator;
 class IntegerValidatorTest extends PHPUnit_Framework_TestCase
 {
     public function testMin(){

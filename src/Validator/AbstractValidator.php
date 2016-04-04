@@ -5,13 +5,13 @@
  * Time: 17:00
  */
 
-namespace NewInventor\EasyForm\Validator;
+namespace NewInventor\Form\Validator;
 
-use NewInventor\EasyForm\Abstraction\Object;
-use NewInventor\EasyForm\Abstraction\TypeChecker;
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Interfaces\FieldInterface;
-use NewInventor\EasyForm\Settings;
+use NewInventor\Abstractions\Object;
+use NewInventor\ConfigTool\Config;
+use NewInventor\Form\Interfaces\FieldInterface;
+use NewInventor\TypeChecker\Exception\ArgumentTypeException;
+use NewInventor\TypeChecker\TypeChecker;
 
 class AbstractValidator extends Object implements ValidatorInterface
 {
@@ -44,7 +44,7 @@ class AbstractValidator extends Object implements ValidatorInterface
     public static function initSettings()
     {
         $default = include __DIR__ . '/defaultSettings.php';
-        Settings::getInstance()->merge('validator', $default);
+        Config::merge('validator', $default);
         self::$settingsInitialised = true;
     }
 

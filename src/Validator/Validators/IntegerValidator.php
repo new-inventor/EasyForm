@@ -5,12 +5,12 @@
  * Time: 16:59
  */
 
-namespace NewInventor\EasyForm\Validator\Validators;
+namespace NewInventor\Form\Validator\Validators;
 
-use NewInventor\EasyForm\Abstraction\TypeChecker;
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Validator\AbstractValidator;
-use NewInventor\EasyForm\Validator\ValidatorInterface;
+use NewInventor\Form\Validator\AbstractValidator;
+use NewInventor\Form\Validator\ValidatorInterface;
+use NewInventor\TypeChecker\Exception\ArgumentTypeException;
+use NewInventor\TypeChecker\TypeChecker;
 
 class IntegerValidator extends AbstractValidator implements ValidatorInterface
 {

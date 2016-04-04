@@ -7,10 +7,10 @@
 
 return [
     'renderer' => [
-        'class' =>  NewInventor\EasyForm\Renderer\Renderer::getClass(),
+        'class' =>  NewInventor\Form\Renderer\Renderer::getClass(),
         'templates' => [
             'active' => [
-                'field' => /** @lang text */'<span><label {forField}>{title}</label>{fieldStr}{errors}</span>',
+                'field' => /** @lang text */'<span><label {forField}>{title}</label>{field}{errors}</span>',
                 'errors' => [
                     'default' => '<span>{errorsStr}</span>',
                 ],

@@ -6,11 +6,11 @@
  * Time: 20:30
  */
 
-namespace NewInventor\EasyForm\Field;
+namespace NewInventor\Form\Field;
 
-use NewInventor\EasyForm\Abstraction\SimpleTypes;
-use NewInventor\EasyForm\Abstraction\TypeChecker;
-use NewInventor\EasyForm\Interfaces\FieldInterface;
+use NewInventor\Form\Interfaces\FieldInterface;
+use NewInventor\TypeChecker\SimpleTypes;
+use NewInventor\TypeChecker\TypeChecker;
 
 class CheckBoxSet extends ListField implements FieldInterface
 {

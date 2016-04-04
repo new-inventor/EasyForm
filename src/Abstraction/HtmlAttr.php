@@ -5,7 +5,7 @@
  * Time: 10:20
  */
 
-namespace NewInventor\EasyForm\Abstraction;
+namespace NewInventor\Form\Abstraction\asd;
 
 class HtmlAttr
 {

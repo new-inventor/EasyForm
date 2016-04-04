@@ -5,21 +5,21 @@
  * Time: 17:22
  */
 
-namespace NewInventor\EasyForm\Field;
+namespace NewInventor\Form\Field;
 
-use NewInventor\EasyForm\Abstraction\ObjectList;
-use NewInventor\EasyForm\Abstraction\SimpleTypes;
-use NewInventor\EasyForm\Abstraction\TypeChecker;
-use NewInventor\EasyForm\Exception\ArgumentException;
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\FormObject;
-use NewInventor\EasyForm\Interfaces\FieldInterface;
-use NewInventor\EasyForm\Interfaces\ObjectListInterface;
-use NewInventor\EasyForm\Renderer\Renderer;
-use NewInventor\EasyForm\Renderer\RendererInterface;
-use NewInventor\EasyForm\Settings;
-use NewInventor\EasyForm\Validator\AbstractValidator;
-use NewInventor\EasyForm\Validator\ValidatorInterface;
+use NewInventor\Abstractions\Interfaces\ObjectListInterface;
+use NewInventor\Abstractions\ObjectList;
+use NewInventor\ConfigTool\Config;
+use NewInventor\Form\FormObject;
+use NewInventor\Form\Interfaces\FieldInterface;
+use NewInventor\Form\Renderer\FieldRenderer;
+use NewInventor\Form\Renderer\RendererInterface;
+use NewInventor\Form\Validator\AbstractValidator;
+use NewInventor\Form\Validator\ValidatorInterface;
+use NewInventor\TypeChecker\Exception\ArgumentException;
+use NewInventor\TypeChecker\Exception\ArgumentTypeException;
+use NewInventor\TypeChecker\SimpleTypes;
+use NewInventor\TypeChecker\TypeChecker;
 
 abstract class AbstractField extends FormObject implements FieldInterface
 {
@@ -40,7 +40,7 @@ abstract class AbstractField extends FormObject implements FieldInterface
         parent::__construct($name, $title);
         $this->setValue($value);
         $this->attribute('id', $name);
-        $this->validators = new ObjectList(['NewInventor\EasyForm\Validator\ValidatorInterface']);
+        $this->validators = new ObjectList(['NewInventor\Form\Validator\ValidatorInterface']);
     }
 
     /**
@@ -161,8 +161,8 @@ abstract class AbstractField extends FormObject implements FieldInterface
     protected function generateInnerValidator($validatorName)
     {
         AbstractValidator::initSettings();
-        $validatorClassName = Settings::getInstance()->get(['validator', $validatorName]);
-        if (class_exists($validatorClassName) && in_array('NewInventor\EasyForm\Validator\ValidatorInterface', class_implements($validatorClassName))) {
+        $validatorClassName = Config::get(['validator', $validatorName]);
+        if (class_exists($validatorClassName) && in_array('NewInventor\Form\Validator\ValidatorInterface', class_implements($validatorClassName))) {
             /** @var ValidatorInterface $validatorObj */
             $validatorObj = new $validatorClassName();
         }else{
@@ -197,8 +197,9 @@ abstract class AbstractField extends FormObject implements FieldInterface
     /**
      * @inheritdoc
      */
-    protected function renderObject(RendererInterface $renderer)
+    public function getString()
     {
-        return $renderer->field($this);
+        $renderer = new FieldRenderer();
+        return $renderer->render($this);
     }
 }

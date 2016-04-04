@@ -5,9 +5,7 @@
  * Time: 16:57
  */
 
-namespace NewInventor\EasyForm\Validator;
-
-use NewInventor\EasyForm\Abstraction\NamedObjectList;
+namespace NewInventor\Form\Validator;
 
 interface ValidatableInterface
 {

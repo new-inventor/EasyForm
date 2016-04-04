@@ -1,10 +1,11 @@
 <?php
 
-namespace NewInventor\EasyForm\Interfaces;
+namespace NewInventor\Form\Interfaces;
 
-use NewInventor\EasyForm\Abstraction\NamedObjectList;
-use NewInventor\EasyForm\Exception\ArgumentException;
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
+
+use NewInventor\Abstractions\NamedObjectList;
+use NewInventor\TypeChecker\Exception\ArgumentException;
+use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 
 interface FormInterface extends BlockInterface
 {

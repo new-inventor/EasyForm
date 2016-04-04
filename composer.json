@@ -1,6 +1,6 @@
 {
-  "name": "newinventor/easy-form",
-  "description": "EasyForm",
+  "name": "new-inventor/form",
+  "description": "Html form buolder",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
@@ -14,7 +14,7 @@
   },
   "autoload": {
     "psr-4": {
-      "NewInventor\\EasyForm\\": "src/"
+      "NewInventor\\Form\\": "src/"
     }
   },
   "require": {

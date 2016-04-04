@@ -5,9 +5,10 @@
  * Time: 18:17
  */
 
-namespace NewInventor\EasyForm\Renderer;
+namespace NewInventor\Form\Renderer;
 
-use NewInventor\EasyForm\Interfaces\ObjectInterface;
+
+use NewInventor\Abstractions\Interfaces\ObjectInterface;
 
 interface RenderableInterface extends ObjectInterface
 {

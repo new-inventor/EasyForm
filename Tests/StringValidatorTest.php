@@ -5,7 +5,7 @@
  * Time: 15:23
  */
 
-use \NewInventor\EasyForm\Validator\Validators\StringValidator;
+use \NewInventor\Form\Validator\Validators\StringValidator;
 
 class StringValidatorTest extends PHPUnit_Framework_TestCase
 {

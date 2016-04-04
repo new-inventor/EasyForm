@@ -1,18 +1,19 @@
 <?php
 
-namespace NewInventor\EasyForm;
+namespace NewInventor\Form;
 
-use NewInventor\EasyForm\Abstraction\HtmlAttr;
-use NewInventor\EasyForm\Abstraction\NamedObjectList;
-use NewInventor\EasyForm\Abstraction\TypeChecker;
-use NewInventor\EasyForm\Exception\ArgumentException;
-use NewInventor\EasyForm\Exception\ArgumentTypeException;
-use NewInventor\EasyForm\Field\AbstractField;
-use NewInventor\EasyForm\Handler\AbstractHandler;
-use NewInventor\EasyForm\Interfaces\FormInterface;
-use NewInventor\EasyForm\Interfaces\HandlerInterface;
-use NewInventor\EasyForm\Renderer\Renderer;
-use NewInventor\EasyForm\Renderer\RendererInterface;
+use NewInventor\Abstractions\NamedObjectList;
+use NewInventor\Form\Abstraction\HtmlAttr;
+use NewInventor\Form\Abstraction\KeyValuePair;
+use NewInventor\Form\Field\AbstractField;
+use NewInventor\Form\Handler\AbstractHandler;
+use NewInventor\Form\Interfaces\FormInterface;
+use NewInventor\Form\Interfaces\HandlerInterface;
+use NewInventor\Form\Renderer\FormRenderer;
+use NewInventor\Form\Renderer\RendererInterface;
+use NewInventor\TypeChecker\Exception\ArgumentException;
+use NewInventor\TypeChecker\Exception\ArgumentTypeException;
+use NewInventor\TypeChecker\TypeChecker;
 
 class Form extends Block implements FormInterface
 {
@@ -50,8 +51,13 @@ class Form extends Block implements FormInterface
      * @throws ArgumentException
      * @throws ArgumentTypeException
      */
-    public function __construct($name, $action = '', $method = 'post', $title = '', $encType = self::ENC_TYPE_URLENCODED)
-    {
+    public function __construct(
+        $name,
+        $action = '',
+        $method = 'post',
+        $title = '',
+        $encType = self::ENC_TYPE_URLENCODED
+    ) {
         parent::__construct($name, $title);
         if (!is_null($action)) {
             $this->action($action);
@@ -94,7 +100,7 @@ class Form extends Block implements FormInterface
             ->isString($method, 'method')
             ->throwTypeErrorIfNotValid();
         $this->method = $method;
-        $this->attributes()->add(HtmlAttr::build('method', $method)->full());
+        $this->attributes()->add(new KeyValuePair('method', $method));
 
         return $this;
     }
@@ -149,7 +155,8 @@ class Form extends Block implements FormInterface
 
             return $this;
         }
-        throw new ArgumentException('Кодировка формы должна быть "', implode('" или "', $this->encTypes) . '".', 'encType');
+        throw new ArgumentException('Кодировка формы должна быть "', implode('" или "', $this->encTypes) . '".',
+            'encType');
     }
 
     public function toArray()
@@ -170,8 +177,8 @@ class Form extends Block implements FormInterface
 
     /**
      * @param string|\Closure|HandlerInterface $handler Handler type
-     * @param string $name
-     * @param string $value
+     * @param string                           $name
+     * @param string                           $value
      *
      * @return FormInterface
      * @throws ArgumentException
@@ -182,10 +189,10 @@ class Form extends Block implements FormInterface
         if (!class_exists($handler) && !($handler instanceof HandlerInterface) && !($handler instanceof \Closure)) {
             throw new ArgumentException('Класс обработчика формы не существует.', 'handler');
         }
-        if(is_string($handler)) {
+        if (is_string($handler)) {
             /** @var HandlerInterface $handler */
             $handler = new $handler($this, $name, $value);
-        }elseif($handler instanceof \Closure){
+        } elseif ($handler instanceof \Closure) {
             $handler = new AbstractHandler($this, $name, $value, $handler);
         }
         $this->handlers()->add($handler);
@@ -196,9 +203,10 @@ class Form extends Block implements FormInterface
     /**
      * @inheritdoc
      */
-    protected function renderObject(RendererInterface $renderer)
+    public function getString()
     {
-        return $renderer->form($this);
+        $renderer = new FormRenderer();
+        return $renderer->render($this);
     }
 
     /**
