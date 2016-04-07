@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f3efb83eed272b785ad5661a967f84c1",
-    "content-hash": "a4fa523d9ffed8f23805d49bf84f8563",
+    "hash": "5550638e9cec5439249e7e85726f61ba",
+    "content-hash": "894c0e2ae9ae45525aacf2858eb429e3",
     "packages": [
         {
             "name": "myclabs/deep-copy",
@@ -204,6 +204,47 @@
             ],
             "description": "Type checker for base types or list of types or arrays",
             "time": "2016-04-01 13:23:05"
+        },
+        {
+            "name": "new-inventor/template",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/new-inventor/template.git",
+                "reference": "536a6e2446446ff0f34732e5f39dcb685dd19cf3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/new-inventor/template/zipball/536a6e2446446ff0f34732e5f39dcb685dd19cf3",
+                "reference": "536a6e2446446ff0f34732e5f39dcb685dd19cf3",
+                "shasum": ""
+            },
+            "require": {
+                "new-inventor/config-tool": "*",
+                "new-inventor/php-type-checker": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NewInventor\\Template\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Georgy Ionov",
+                    "email": "newinventor20@gmail.com"
+                }
+            ],
+            "description": "Template class for string replacements",
+            "time": "2016-04-07 08:11:25"
         },
         {
             "name": "psr/log",

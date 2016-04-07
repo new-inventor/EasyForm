@@ -23,7 +23,8 @@
     "new-inventor/patterns": "*",
     "new-inventor/php-type-checker": "*",
     "new-inventor/config-tool": "*",
-    "new-inventor/abstractions": "*"
+    "new-inventor/abstractions": "*",
+    "new-inventor/template": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "5.1.*"

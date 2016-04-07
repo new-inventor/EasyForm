@@ -7,7 +7,6 @@
 
 return [
     'renderer' => [
-        'class' =>  NewInventor\Form\Renderer\Renderer::getClass(),
         'templates' => [
             'active' => [
                 'field' => /** @lang text */'<span><label {forField}>{title}</label>{field}{errors}</span>',

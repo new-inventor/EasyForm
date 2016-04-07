@@ -12,6 +12,7 @@ namespace NewInventor\Form\Renderer;
 use NewInventor\Abstractions\Interfaces\ObjectInterface;
 use NewInventor\ConfigTool\Config;
 use NewInventor\Form\Interfaces\HandlerInterface;
+use NewInventor\Template\Template;
 
 class HandlerRenderer extends FieldRenderer
 {

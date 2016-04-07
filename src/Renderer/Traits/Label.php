@@ -13,7 +13,7 @@ use NewInventor\ConfigTool\Config;
 use NewInventor\Form\Interfaces\BlockInterface;
 use NewInventor\Form\Interfaces\FieldInterface;
 use NewInventor\Form\Interfaces\FormInterface;
-use NewInventor\Form\Renderer\Template;
+use NewInventor\Template\Template;
 
 /**
  * Class LabelRendererTrait

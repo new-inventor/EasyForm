@@ -13,6 +13,7 @@ use NewInventor\Abstractions\Interfaces\ObjectInterface;
 use NewInventor\ConfigTool\Config;
 use NewInventor\Form\Interfaces\FormInterface;
 use NewInventor\Form\Renderer\Traits;
+use NewInventor\Template\Template;
 use NewInventor\TypeChecker\TypeChecker;
 
 class FormRenderer extends BaseRenderer
