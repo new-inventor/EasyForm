@@ -48,9 +48,11 @@ class BaseRenderer extends Object implements RendererInterface
      */
     protected function getReplacements(array $placeholders, ObjectInterface $object)
     {
+        $params = func_get_args();
+        $placeholders = array_shift($params);
         $replacements = [];
         foreach ($placeholders as $placeholder) {
-            $replacements[] = $this->$placeholder($object);
+            $replacements[] = call_user_func_array([$this, $placeholder], $params);
         }
 
         return $replacements;

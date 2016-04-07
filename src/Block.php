@@ -330,6 +330,7 @@ class Block extends FormObject implements BlockInterface
         return $this;
     }
 
+    //TODO сделать ограничение количества повторяемых блоков
     /**
      * @inheritdoc
      */
@@ -375,6 +376,11 @@ class Block extends FormObject implements BlockInterface
                     for ($i = 0; $i < abs($childrenDelta); $i++) {
                         $child->children()->delete(($childrenMaxIndex - $i));
                     }
+                }elseif ($childrenDelta == 0 && count($value) == 1 && !empty($value[0])){
+                    $objectClone = $deepCopy->copy($child->getRepeatObject());
+                    $objectClone->setParent($child);
+                    $objectClone->setName((string)(count($child->children())));
+                    $child->children()->add($objectClone);
                 }
                 $child->load($value);
             }
@@ -382,6 +388,16 @@ class Block extends FormObject implements BlockInterface
 
         return true;
     }
+
+//    protected function addRepeatableChild($deepCopy, $child)
+//    {
+//        /** @var BlockInterface $objectClone */
+//        $objectClone = $deepCopy->copy($child->getRepeatObject());
+//        $objectValue = $objectClone->getValue();
+//        $objectClone->setParent($child);
+//        $objectClone->setName((string)($childrenCount + $i));
+//        $child->children()->add($objectClone);
+//    }
 
     /**
      * @inheritdoc

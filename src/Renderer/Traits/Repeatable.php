@@ -12,8 +12,15 @@ namespace NewInventor\Form\Renderer\Traits;
 use NewInventor\ConfigTool\Config;
 use NewInventor\Form\Interfaces\BlockInterface;
 use NewInventor\Form\Interfaces\FieldInterface;
+use NewInventor\Form\Renderer\Template;
 use NewInventor\TypeChecker\TypeChecker;
 
+/**
+ * Class Repeatable
+ * @package NewInventor\Form\Renderer\Traits
+ *
+ * @method getReplacements(array $placeholders, $object)
+ */
 trait Repeatable
 {
     /**
@@ -24,11 +31,12 @@ trait Repeatable
      */
     protected function actions($block, $check = true)
     {
-        $template = Config::get(['renderer', 'templates', $block->getTemplate(), 'repeatActionsBlock']);
-        TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
-        //$res = $this->replacePlaceholders($template, $block, $check);
+        $templateStr = Config::get(['renderer', 'templates', $block->getTemplate(), 'repeatActionsBlock']);
+        $template = new Template($templateStr);
+        $replacements = $this->getReplacements($template->getPlaceholders(), $block, $check);
+        $template->setReplacements($replacements);
 
-        return '';//$res;
+        return $template->getReplaced();
     }
 
     /**
@@ -41,9 +49,11 @@ trait Repeatable
     {
         $res = '';
         if (((int)$block->getName() == count($block->getParent()->children()) - 1) || !$check) {
-            $template = Config::get(['renderer', 'templates', $block->getTemplate(), 'addButton']);
-            TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
-            //$res = $this->replacePlaceholders($template, $block);
+            $templateStr = Config::get(['renderer', 'templates', $block->getTemplate(), 'addButton']);
+            $template = new Template($templateStr);
+            $replacements = $this->getReplacements($template->getPlaceholders(), $block);
+            $template->setReplacements($replacements);
+            $res = $template->getReplaced();
         }
 
         return $res;
@@ -59,9 +69,11 @@ trait Repeatable
     {
         $res = '';
         if (((int)$block->getName() != 0 || count($block->getParent()->children()) > 1) || !$check) {
-            $template = Config::get(['renderer', 'templates', $block->getTemplate(), 'deleteButton']);
-            TypeChecker::getInstance()->isString($template, 'template')->throwTypeErrorIfNotValid();
-            //$res = $this->replacePlaceholders($template, $block);
+            $templateStr = Config::get(['renderer', 'templates', $block->getTemplate(), 'deleteButton']);
+            $template = new Template($templateStr);
+            $replacements = $this->getReplacements($template->getPlaceholders(), $block);
+            $template->setReplacements($replacements);
+            $res = $template->getReplaced();
         }
 
         return $res;

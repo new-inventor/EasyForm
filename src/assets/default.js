@@ -33,7 +33,7 @@
         var index = $container.find(self.options.blockSelector).length;
         var $dummy = $(self.options.dummyObject.replace(/#IND#/g, index));
         if ($block.find(self.options.deleteSelector).length == 0) {
-            $block.find(self.options.blockSelector).append(self.options.deleteButton);
+            $block.find(self.options.actionsSelector).append(self.options.deleteButton);
         }
         $dummy.find(self.options.actionsSelector).remove();
         $dummy.append(self.options.fullActionsBlock);
