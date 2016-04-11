@@ -3,7 +3,6 @@
 namespace NewInventor\Form;
 
 use NewInventor\Abstractions\NamedObjectList;
-use NewInventor\Form\Abstraction\HtmlAttr;
 use NewInventor\Form\Abstraction\KeyValuePair;
 use NewInventor\Form\Field\AbstractField;
 use NewInventor\Form\Handler\AbstractHandler;
@@ -125,7 +124,7 @@ class Form extends Block implements FormInterface
             ->isString($action, 'action')
             ->throwTypeErrorIfNotValid();
         $this->action = $action;
-        $this->attributes()->add(HtmlAttr::build('action', $action)->full());
+        $this->attributes()->add(new KeyValuePair('action', $action));
 
         return $this;
     }

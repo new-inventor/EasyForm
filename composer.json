@@ -1,6 +1,6 @@
 {
   "name": "new-inventor/form",
-  "description": "Html form buolder",
+  "description": "Html form builder",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
@@ -18,7 +18,7 @@
     }
   },
   "require": {
-    "psr/log": "^1.0",
+    "php": ">=5.4.0",
     "myclabs/deep-copy": "^1.5",
     "new-inventor/patterns": "*",
     "new-inventor/php-type-checker": "*",
