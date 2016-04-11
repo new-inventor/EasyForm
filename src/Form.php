@@ -9,10 +9,13 @@ use NewInventor\Form\Handler\AbstractHandler;
 use NewInventor\Form\Interfaces\FormInterface;
 use NewInventor\Form\Interfaces\HandlerInterface;
 use NewInventor\Form\Renderer\FormRenderer;
-use NewInventor\Form\Renderer\RendererInterface;
 use NewInventor\TypeChecker\Exception\ArgumentException;
 use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 use NewInventor\TypeChecker\TypeChecker;
+
+//TODO AJAX send
+//TODO handler
+//TODO user validation
 
 class Form extends Block implements FormInterface
 {
