@@ -13,8 +13,16 @@ use NewInventor\TypeChecker\Exception\ArgumentException;
 use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 use NewInventor\TypeChecker\TypeChecker;
 
-//TODO AJAX send
-//TODO user validation
+//TODO AJAX send(by change, by submit)
+//TODO user validation (one by one + full form + pre send)
+//TODO creation from array
+//TODO multi step forms
+//TODO from and to object translators
+//TODO check security
+//TODO fill up the field types(captcha, date picker, file preview, file drop down, rating, code, html, range, geo map, ...)
+//TODO some custom patterns
+//TODO translate to php 7
+//TODO change validators (elements relations) and translate to separate project. Fill up validators
 
 class Form extends Block implements FormInterface
 {
