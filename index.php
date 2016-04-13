@@ -15,6 +15,24 @@ use \NewInventor\Form\Field\Input;
 use \NewInventor\Form\Block;
 use \NewInventor\Form\Handler;
 
+function asd(\NewInventor\Form\Interfaces\FormInterface $form){
+    return true;
+}
+
+class A{
+    public function asd(\NewInventor\Form\Interfaces\FormInterface $form){
+        $form->load($form->getDataArray());
+        return true;
+    }
+
+    public static function zxc(\NewInventor\Form\Interfaces\FormInterface $form)
+    {
+        return true;
+    }
+}
+
+$a = new A();
+
 \NewInventor\ConfigTool\Config::mergeFile([], __DIR__ . '/src/config/main.php');
 
 $form = new Form('form1', null, Form::METHOD_POST, 'title1', Form::ENC_TYPE_MULTIPART);
@@ -82,8 +100,20 @@ $form
             ->text('name')->title('Имя')->end()
             ->text('surname')->title('Отчество')->end()
     )
-    ->handler(Handler\AbstractHandler::getClass())
-    ->handler(Handler\ResetHandler::getClass())
+    // you can do so
+//    ->handler(new Handler\AbstractHandler($form, 'save', 'Сохранить', function(\NewInventor\Form\Interfaces\FormInterface $form){
+//        return true;
+//    }))
+    ->handler('asd', 'save', 'Сохранить')
+    ->handler(function (\NewInventor\Form\Interfaces\FormInterface $form){
+        $form->load([]);
+        return true;
+    }, 'reset111', 'Сбросить111')
+    // you can do so
+//    ->handler(new Handler\ResetHandler($form), 'resettttt', 'Reseeeettttt')
+//    ->handler(new Handler\ResetHandler($form))
+    ->handler([$a, 'asd'], 'tot', 'Еще')
+    ->handler(['A', 'zxc'], 'tot1', 'Еще1')
 ->end();
 if($form->load()){
     $form->validate();

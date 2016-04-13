@@ -5,7 +5,7 @@ namespace NewInventor\Form;
 use NewInventor\Abstractions\NamedObjectList;
 use NewInventor\Form\Abstraction\KeyValuePair;
 use NewInventor\Form\Field\AbstractField;
-use NewInventor\Form\Handler\AbstractHandler;
+use NewInventor\Form\Handler;
 use NewInventor\Form\Interfaces\FormInterface;
 use NewInventor\Form\Interfaces\HandlerInterface;
 use NewInventor\Form\Renderer\FormRenderer;
@@ -14,7 +14,6 @@ use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 use NewInventor\TypeChecker\TypeChecker;
 
 //TODO AJAX send
-//TODO handler
 //TODO user validation
 
 class Form extends Block implements FormInterface
@@ -25,8 +24,8 @@ class Form extends Block implements FormInterface
 
     private $encTypes = [
         'urlencoded' => 'application/x-www-form-urlencoded',
-        'multipart' => 'multipart/form-data',
-        'plain' => 'text/plain'
+        'multipart'  => 'multipart/form-data',
+        'plain'      => 'text/plain'
     ];
 
     const METHOD_POST = 'POST';
@@ -71,7 +70,7 @@ class Form extends Block implements FormInterface
             $this->encType($encType);
         }
         $this->handlers = new NamedObjectList();
-        $this->handlers->setElementClasses([AbstractHandler::getClass()]);
+        $this->handlers->setElementClasses(['NewInventor\Form\Interfaces\HandlerInterface']);
         $this->children()->setElementClasses([Block::getClass(), AbstractField::getClass()]);
     }
 
@@ -178,30 +177,29 @@ class Form extends Block implements FormInterface
     }
 
     /**
-     * @param string|\Closure|HandlerInterface $handler Handler type
-     * @param string                           $name
-     * @param string                           $value
+     * @param callable|\Closure|HandlerInterface $handler Handler type
+     * @param string $name
+     * @param string $value
      *
      * @return FormInterface
      * @throws ArgumentException
      * @throws ArgumentTypeException
      */
-    public function handler($handler, $name = 'abstractHandler', $value = 'Абстрактное действие')
+    public function handler($handler, $name = 'abstract', $value = 'Абстрактное действие')
     {
-        if (!class_exists($handler) && !($handler instanceof HandlerInterface) && !($handler instanceof \Closure)) {
-            throw new ArgumentException('Класс обработчика формы не существует.', 'handler');
+        if ($handler instanceof HandlerInterface) {
+            $handler->setName($name);
+            $handler->title($value);
+            $handler->attribute('value', $value);
+            $this->handlers()->add($handler);
+        } else {
+            $handler = new Handler($this, $handler, $name, $value);
+            $this->handlers()->add($handler);
         }
-        if (is_string($handler)) {
-            /** @var HandlerInterface $handler */
-            $handler = new $handler($this, $name, $value);
-        } elseif ($handler instanceof \Closure) {
-            $handler = new AbstractHandler($this, $name, $value, $handler);
-        }
-        $this->handlers()->add($handler);
 
         return $this;
     }
-
+    
     /**
      * @inheritdoc
      */

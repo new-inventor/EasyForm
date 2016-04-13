@@ -49,6 +49,6 @@ return [
         \NewInventor\Form\Form::getClass() => 'form',
         \NewInventor\Form\Block::getClass() => 'block',
         \NewInventor\Form\Field\AbstractField::getClass() => 'field',
-        \NewInventor\Form\Handler\AbstractHandler::getClass() => 'handler',
+        \NewInventor\Form\Handler::getClass() => 'handler',
     ]
 ];

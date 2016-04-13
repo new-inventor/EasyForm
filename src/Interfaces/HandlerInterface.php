@@ -9,9 +9,17 @@
 namespace NewInventor\Form\Interfaces;
 
 
+use NewInventor\TypeChecker\Exception\ArgumentException;
+
 interface HandlerInterface extends FormObjectInterface {
     /**
      * @return bool
      */
     public function process();
+    
+    /**
+     * @param callable|\Closure $process
+     * @throws ArgumentException
+     */
+    public function setProcess($process);
 } 

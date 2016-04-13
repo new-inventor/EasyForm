@@ -389,16 +389,6 @@ class Block extends FormObject implements BlockInterface
         return true;
     }
 
-//    protected function addRepeatableChild($deepCopy, $child)
-//    {
-//        /** @var BlockInterface $objectClone */
-//        $objectClone = $deepCopy->copy($child->getRepeatObject());
-//        $objectValue = $objectClone->getValue();
-//        $objectClone->setParent($child);
-//        $objectClone->setName((string)($childrenCount + $i));
-//        $child->children()->add($objectClone);
-//    }
-
     /**
      * @inheritdoc
      */

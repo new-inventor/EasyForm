@@ -63,13 +63,15 @@ interface FormInterface extends BlockInterface
     public function handlers();
 
     /**
-     * @param string $handler Handler type
+     * @param callable|\Closure|HandlerInterface $handler Handler type
+     * @param string                           $name
+     * @param string                           $value
      *
      * @return FormInterface
      * @throws ArgumentException
      * @throws ArgumentTypeException
      */
-    public function handler($handler);
+    public function handler($handler, $name = 'abstract', $value = 'Абстрактное действие');
 
     /**
      * @param array|null $customData
