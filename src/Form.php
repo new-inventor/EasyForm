@@ -5,7 +5,6 @@ namespace NewInventor\Form;
 use NewInventor\Abstractions\NamedObjectList;
 use NewInventor\Form\Abstraction\KeyValuePair;
 use NewInventor\Form\Field\AbstractField;
-use NewInventor\Form\Handler;
 use NewInventor\Form\Interfaces\FormInterface;
 use NewInventor\Form\Interfaces\HandlerInterface;
 use NewInventor\Form\Renderer\FormRenderer;
@@ -23,22 +22,23 @@ use NewInventor\TypeChecker\TypeChecker;
 //TODO some custom patterns
 //TODO translate to php 7
 //TODO change validators (elements relations) and translate to separate project. Fill up validators
+//TODO session form result messages
 
 class Form extends Block implements FormInterface
 {
     const ENC_TYPE_URLENCODED = 'urlencoded';
     const ENC_TYPE_MULTIPART = 'multipart';
     const ENC_TYPE_PLAIN = 'plain';
-
+    
     private $encTypes = [
         'urlencoded' => 'application/x-www-form-urlencoded',
         'multipart'  => 'multipart/form-data',
         'plain'      => 'text/plain'
     ];
-
+    
     const METHOD_POST = 'POST';
     const METHOD_GET = 'GET';
-
+    
     /** @var string */
     private $method;
     /** @var string */
@@ -47,7 +47,7 @@ class Form extends Block implements FormInterface
     private $encType;
     /** @var NamedObjectList */
     private $handlers;
-
+    
     /**
      * AbstractForm constructor.
      *
@@ -81,14 +81,14 @@ class Form extends Block implements FormInterface
         $this->handlers->setElementClasses(['NewInventor\Form\Interfaces\HandlerInterface']);
         $this->children()->setElementClasses([Block::getClass(), AbstractField::getClass()]);
     }
-
+    
     public function isValidEncType($encType)
     {
         return ($encType == self::ENC_TYPE_URLENCODED) ||
         ($encType == self::ENC_TYPE_MULTIPART) ||
         ($encType == self::ENC_TYPE_PLAIN);
     }
-
+    
     /**
      * @return string
      */
@@ -96,7 +96,7 @@ class Form extends Block implements FormInterface
     {
         return $this->method;
     }
-
+    
     /**
      * @param string $method
      *
@@ -110,10 +110,10 @@ class Form extends Block implements FormInterface
             ->throwTypeErrorIfNotValid();
         $this->method = $method;
         $this->attributes()->add(new KeyValuePair('method', $method));
-
+        
         return $this;
     }
-
+    
     /**
      * @return string
      */
@@ -121,7 +121,7 @@ class Form extends Block implements FormInterface
     {
         return $this->action;
     }
-
+    
     /**
      * @param string $action
      *
@@ -135,10 +135,10 @@ class Form extends Block implements FormInterface
             ->throwTypeErrorIfNotValid();
         $this->action = $action;
         $this->attributes()->add(new KeyValuePair('action', $action));
-
+        
         return $this;
     }
-
+    
     /**
      * @return string
      */
@@ -146,7 +146,7 @@ class Form extends Block implements FormInterface
     {
         return $this->encType;
     }
-
+    
     /**
      * @param string $encType
      *
@@ -161,13 +161,13 @@ class Form extends Block implements FormInterface
             ->throwTypeErrorIfNotValid();
         if (array_key_exists($encType, $this->encTypes)) {
             $this->encType = $encType;
-
+            
             return $this;
         }
         throw new ArgumentException('Кодировка формы должна быть "', implode('" или "', $this->encTypes) . '".',
             'encType');
     }
-
+    
     public function toArray()
     {
         $res = parent::toArray();
@@ -175,7 +175,7 @@ class Form extends Block implements FormInterface
         $res['action'] = $this->getAction();
         $res['encType'] = $this->getEncType();
     }
-
+    
     /**
      * @return NamedObjectList
      */
@@ -183,7 +183,7 @@ class Form extends Block implements FormInterface
     {
         return $this->handlers;
     }
-
+    
     /**
      * @param callable|\Closure|HandlerInterface $handler Handler type
      * @param string $name
@@ -204,7 +204,7 @@ class Form extends Block implements FormInterface
             $handler = new Handler($this, $handler, $name, $value);
             $this->handlers()->add($handler);
         }
-
+        
         return $this;
     }
     
@@ -216,7 +216,7 @@ class Form extends Block implements FormInterface
         $renderer = new FormRenderer();
         return $renderer->render($this);
     }
-
+    
     /**
      * @param array|null $customData
      *
@@ -240,7 +240,7 @@ class Form extends Block implements FormInterface
                 return $handler->process();
             }
         }
-
+        
         return false;
     }
 }
