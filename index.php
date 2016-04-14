@@ -15,6 +15,7 @@ use \NewInventor\Form\Field\Input;
 use \NewInventor\Form\Block;
 use \NewInventor\Form\Handler;
 
+
 function asd(\NewInventor\Form\Interfaces\FormInterface $form){
     return true;
 }
@@ -30,6 +31,9 @@ class A{
         return true;
     }
 }
+
+session_start();
+
 
 $a = new A();
 
@@ -114,9 +118,12 @@ $form
 //    ->handler(new Handler\ResetHandler($form))
     ->handler([$a, 'asd'], 'tot', 'Еще')
     ->handler(['A', 'zxc'], 'tot1', 'Еще1')
+    ->resultMessage('Данные сохранены.')
 ->end();
 if($form->load()){
     $form->validate();
-    $form->save();
+    if($form->isValid()) {
+        $form->save();
+    }
 }
 echo $form->getString();

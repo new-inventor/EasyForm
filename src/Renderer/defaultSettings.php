@@ -8,7 +8,7 @@
 return [
     'templates' => [
         'default' => [
-            'form' => '{errors}{label}<div>{start}{children}{handlers}{end}</div>',
+            'form' => '{resultMessage}{errors}{label}<div>{start}{children}{handlers}{end}</div>',
             'block' => '{label}<div>{children}</div>',
             'field' => /** @lang text */'<div><label {forField}>{title}</label>{field}</div>{errors}',
             'handler' => '<div>{handler}</div>',
@@ -20,6 +20,7 @@ return [
                 'default' => '<span>{title}</span>',
                 'form' => '<div>{title}</div>',
             ],
+            'resultMessage' => '<',
             'checkSet' => '{label}<div>{options}</div>{errors}',
             'checkSetOption' => '<span><label>{optionTitle}{option}</label></span>',
             'repeatFiled' => /** @lang text */'<div {blockSelector}>{field}{actions}{errors}</div>',

@@ -63,4 +63,20 @@ class FormRenderer extends BaseRenderer
     {
         return implode('', $form->handlers()->getAll());
     }
+
+    /**
+     * @param FormInterface $form
+     *
+     * @return string
+     */
+    public function resultMessage(FormInterface $form)
+    {
+        if($form->isResultShowStatus()) {
+            $templateStr = Config::get(['render', 'templates', 'default', 'resultMessage'], '{resultMessage}');
+            $template = new Template($templateStr);
+            $template->addReplacement($form->getResultMessage());
+            return $template->getReplaced();
+        }
+        return '';
+    }
 }

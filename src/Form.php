@@ -47,6 +47,8 @@ class Form extends Block implements FormInterface
     private $encType;
     /** @var NamedObjectList */
     private $handlers;
+    /** @var string */
+    private $resultMessage = '';
     
     /**
      * AbstractForm constructor.
@@ -81,7 +83,10 @@ class Form extends Block implements FormInterface
         $this->handlers->setElementClasses(['NewInventor\Form\Interfaces\HandlerInterface']);
         $this->children()->setElementClasses([Block::getClass(), AbstractField::getClass()]);
     }
-    
+
+    /**
+     * @inheritdoc
+     */
     public function isValidEncType($encType)
     {
         return ($encType == self::ENC_TYPE_URLENCODED) ||
@@ -90,7 +95,7 @@ class Form extends Block implements FormInterface
     }
     
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getMethod()
     {
@@ -98,10 +103,7 @@ class Form extends Block implements FormInterface
     }
     
     /**
-     * @param string $method
-     *
-     * @return $this
-     * @throws ArgumentTypeException
+     * @inheritdoc
      */
     public function method($method)
     {
@@ -115,7 +117,7 @@ class Form extends Block implements FormInterface
     }
     
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getAction()
     {
@@ -123,10 +125,7 @@ class Form extends Block implements FormInterface
     }
     
     /**
-     * @param string $action
-     *
-     * @return $this
-     * @throws ArgumentTypeException
+     * @inheritdoc
      */
     public function action($action)
     {
@@ -140,7 +139,7 @@ class Form extends Block implements FormInterface
     }
     
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getEncType()
     {
@@ -148,11 +147,7 @@ class Form extends Block implements FormInterface
     }
     
     /**
-     * @param string $encType
-     *
-     * @return $this
-     * @throws ArgumentException
-     * @throws ArgumentTypeException
+     * @inheritdoc
      */
     public function encType($encType)
     {
@@ -167,7 +162,10 @@ class Form extends Block implements FormInterface
         throw new ArgumentException('Кодировка формы должна быть "', implode('" или "', $this->encTypes) . '".',
             'encType');
     }
-    
+
+    /**
+     * @inheritdoc
+     */
     public function toArray()
     {
         $res = parent::toArray();
@@ -177,7 +175,7 @@ class Form extends Block implements FormInterface
     }
     
     /**
-     * @return NamedObjectList
+     * @inheritdoc
      */
     public function handlers()
     {
@@ -185,13 +183,7 @@ class Form extends Block implements FormInterface
     }
     
     /**
-     * @param callable|\Closure|HandlerInterface $handler Handler type
-     * @param string $name
-     * @param string $value
-     *
-     * @return FormInterface
-     * @throws ArgumentException
-     * @throws ArgumentTypeException
+     * @inheritdoc
      */
     public function handler($handler, $name = 'abstract', $value = 'Абстрактное действие')
     {
@@ -218,9 +210,7 @@ class Form extends Block implements FormInterface
     }
     
     /**
-     * @param array|null $customData
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function save(array $customData = null)
     {
@@ -237,10 +227,108 @@ class Form extends Block implements FormInterface
          */
         foreach ($this->handlers() as $key => $handler) {
             if (array_key_exists($key, $data)) {
-                return $handler->process();
+                $result = $handler->process();
+                if ($result) {
+                    $this->afterSave();
+                }
+                return $result;
             }
         }
         
         return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function load($data = null)
+    {
+        $sessionData = $this->getSessionData();
+        if($this->isResultShowStatus() || $this->isNormalStatus()) {
+            $this->beforeSave();
+        }
+        if($this->isAfterRefreshStatus()){
+            $this->afterRefresh();
+        }
+        return parent::load($data);
+    }
+
+    protected function afterSave()
+    {
+        $_SESSION['form'][$this->getName()]['resultMessage'] = true;
+        $_SESSION['form'][$this->getName()]['refreshed'] = false;
+        header("Refresh:0");
+    }
+
+    protected function beforeSave()
+    {
+        $_SESSION['form'][$this->getName()]['resultMessage'] = false;
+        $_SESSION['form'][$this->getName()]['refreshed'] = false;
+    }
+
+    protected function afterRefresh()
+    {
+        $_SESSION['form'][$this->getName()]['resultMessage'] = true;
+        $_SESSION['form'][$this->getName()]['refreshed'] = true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getResultMessage()
+    {
+        return $this->resultMessage;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSessionData()
+    {
+        if(isset($_SESSION['form'][$this->getName()])) {
+            return $_SESSION['form'][$this->getName()];
+        }
+        return [];
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function resultMessage($message)
+    {
+        TypeChecker::getInstance()
+            ->isString($message, 'message')
+            ->throwTypeErrorIfNotValid();
+
+        $this->resultMessage = $message;
+        
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isResultShowStatus()
+    {
+        $sessionData = $this->getSessionData();
+        return isset($sessionData['resultMessage']) && $sessionData['resultMessage'] && isset($sessionData['refreshed']) && $sessionData['refreshed'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAfterRefreshStatus()
+    {
+        $sessionData = $this->getSessionData();
+        return isset($sessionData['resultMessage']) && $sessionData['resultMessage'] && isset($sessionData['refreshed']) && $sessionData['refreshed'] === false;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function isNormalStatus()
+    {
+        $sessionData = $this->getSessionData();
+        return (!isset($sessionData['resultMessage']) || !$sessionData['resultMessage']) && (!isset($sessionData['refreshed']) || !$sessionData['refreshed']);
     }
 }

@@ -79,4 +79,36 @@ interface FormInterface extends BlockInterface
      * @return bool
      */
     public function save(array $customData = null);
+
+    /**
+     * @param $message
+     * @throws ArgumentTypeException
+     * @return FormInterface
+     */
+    public function resultMessage($message);
+    
+    /**
+     * @return string
+     */
+    public function getResultMessage();
+    
+    /**
+     * @return array
+     */
+    public function getSessionData();
+
+    /**
+     * @return bool
+     */
+    public function isResultShowStatus();
+
+    /**
+     * @return bool
+     */
+    public function isAfterRefreshStatus();
+
+    /**
+     * @return bool
+     */
+    public function isNormalStatus();
 }

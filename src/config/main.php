@@ -9,7 +9,7 @@ return [
     'renderer' => [
         'templates' => [
             'default' => [
-                'form' => '{label}<div>{start}{children}{errors}{handlers}{end}</div>',
+                'form' => '{resultMessage}{label}<div>{start}{children}{errors}{handlers}{end}</div>',
             ],
             'active' => [
                 'field' => /** @lang text */'<span><label {forField}>{title}</label>{field}{errors}</span>',

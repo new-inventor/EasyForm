@@ -200,6 +200,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         return '';
     }
 
+    /** @inheritdoc */
     public function validate()
     {
         if ($this->children() !== null) {
