@@ -1,8 +1,8 @@
 {
   "name": "new-inventor/form",
   "description": "Html form builder",
-  "minimum-stability": "stable",
-  "license": "proprietary",
+  "minimum-stability": "dev",
+  "license": "MIT",
   "authors": [
     {
       "name": "Georgy Ionov",
