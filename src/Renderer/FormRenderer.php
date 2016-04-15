@@ -89,8 +89,8 @@ class FormRenderer extends BaseRenderer
     public function scripts(FormInterface $form)
     {
         $composerPath = $_SERVER['DOCUMENT_ROOT'] . '/composer.json';
-        $composerConfig = json_decode(include $composerPath, true);
-        $vendorFolder = $_SERVER['DOCUMENT_ROOT'] . $composerConfig['config']['vendor-dir'];
+        $composerConfig = json_decode(file_get_contents($composerPath), true);
+        $vendorFolder = $_SERVER['DOCUMENT_ROOT'] . '/' . $composerConfig['config']['vendor-dir'];
 
         $res = '';
         if ($form->showJQuery()) {
