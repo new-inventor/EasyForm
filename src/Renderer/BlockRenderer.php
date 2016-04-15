@@ -59,16 +59,18 @@ class BlockRenderer extends BaseRenderer
         /** @var BlockInterface|FieldInterface $child */
         $child = $block->child(0);
         $res = '<script>
-$("[' . $this->containerSelector() . ']").repeatContainer({
-    containerSelector : \'[' . $this->containerSelector() . ']\',
-    blockSelector : \'[' . $this->blockSelector() . ']\',
-    actionsSelector : \'[' . $this->actionsBlockSelector() . '="' . $block->getName() . '"]\',
-    addSelector : \'[' . $this->addActionSelector() . ']\',
-    deleteSelector : \'[' . $this->deleteActionSelector() . ']\',
-    dummyObject: \'' . $childCopy . '\',
-    addButton: \'' . $this->addButton($block, false) . '\',
-    deleteButton: \'' . $this->deleteButton($block, false) . '\',
-    fullActionsBlock: \'' . $this->actions($child, false) . '\'
+$(document).ready(function(e){
+    $("[' . $this->containerSelector() . ']").repeatContainer({
+        containerSelector : \'[' . $this->containerSelector() . ']\',
+        blockSelector : \'[' . $this->blockSelector() . ']\',
+        actionsSelector : \'[' . $this->actionsBlockSelector() . '="' . $block->getName() . '"]\',
+        addSelector : \'[' . $this->addActionSelector() . ']\',
+        deleteSelector : \'[' . $this->deleteActionSelector() . ']\',
+        dummyObject: \'' . $childCopy . '\',
+        addButton: \'' . $this->addButton($block, false) . '\',
+        deleteButton: \'' . $this->deleteButton($block, false) . '\',
+        fullActionsBlock: \'' . $this->actions($child, false) . '\'
+    });
 });
 </script>';
 

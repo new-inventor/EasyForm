@@ -209,6 +209,8 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
                 $child->validate();
             }
         }
+
+        return $this->isValid();
     }
 
     /**

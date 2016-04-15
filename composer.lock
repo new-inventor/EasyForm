@@ -4,9 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2e304f081573fba2ce4de2fef009ff2e",
-    "content-hash": "e693bf42434168121e2eb3b1c9e6fe25",
+    "hash": "af1bbbb12604f96cf41e4b8652c7c5f2",
+    "content-hash": "68eed9b5de175f5f925f4d22820c2d1f",
     "packages": [
+        {
+            "name": "jquery/jquery",
+            "version": "1.12.1",
+            "dist": {
+                "type": "file",
+                "url": "https://code.jquery.com/jquery-1.12.1.min.js",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "jquery"
+        },
         {
             "name": "myclabs/deep-copy",
             "version": "1.5.0",

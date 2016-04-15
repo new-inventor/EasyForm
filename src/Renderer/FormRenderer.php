@@ -11,6 +11,7 @@ namespace NewInventor\Form\Renderer;
 
 use NewInventor\Abstractions\Interfaces\ObjectInterface;
 use NewInventor\ConfigTool\Config;
+use NewInventor\Form\Form;
 use NewInventor\Form\Interfaces\FormInterface;
 use NewInventor\Form\Renderer\Traits;
 use NewInventor\Template\Template;
@@ -71,12 +72,51 @@ class FormRenderer extends BaseRenderer
      */
     public function resultMessage(FormInterface $form)
     {
-        if($form->isResultShowStatus()) {
+        if ($form->getStatus() == Form::STATUS_SHOW_RESULT) {
             $templateStr = Config::get(['render', 'templates', 'default', 'resultMessage'], '{resultMessage}');
             $template = new Template($templateStr);
             $template->addReplacement($form->getResultMessage());
             return $template->getReplaced();
         }
         return '';
+    }
+
+    /**
+     * @param FormInterface $form
+     *
+     * @return string
+     */
+    public function scripts(FormInterface $form)
+    {
+        $composerPath = $_SERVER['DOCUMENT_ROOT'] . '/composer.json';
+        $composerConfig = json_decode(include $composerPath, true);
+        $vendorFolder = $_SERVER['DOCUMENT_ROOT'] . $composerConfig['config']['vendor-dir'];
+
+        $res = '';
+        if ($form->showJQuery()) {
+            if($this->pingJquery()){
+                $res .= '<script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>';
+            }else{
+                $res .= "<script src='{$vendorFolder}/jquery/jquery/jquery-1.12.1.min.js'></script>";
+            }
+        }
+        $res .= "<script src='{$vendorFolder}/new-inventor/form/src/assets/default.js'></script>";
+        return $res;
+    }
+
+    protected function pingJquery()
+    {
+        $ch = curl_init('https://code.jquery.com/jquery-1.12.1.min.js');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $data = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if($httpcode>=200 && $httpcode<300){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

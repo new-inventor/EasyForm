@@ -17,6 +17,34 @@
       "NewInventor\\Form\\": "src/"
     }
   },
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "jquery/jquery",
+        "version": "1.12.1",
+        "type": "jquery",
+        "dist": {
+          "url": "https://code.jquery.com/jquery-1.12.1.min.js",
+          "type": "file"
+        }
+      }
+    }
+  ],
+  "extra": {
+    "assets": {
+      "actions": [
+        {
+          "type": "copy",
+          "target": "webroot/js",
+          "pattern": "\\.js$"
+        }
+      ],
+      "packages": {
+        "jquery/jquery": "*"
+      }
+    }
+  },
   "require": {
     "php": ">=5.4.0",
     "myclabs/deep-copy": "^1.5",
@@ -24,7 +52,8 @@
     "new-inventor/php-type-checker": "*",
     "new-inventor/config-tool": "*",
     "new-inventor/abstractions": "*",
-    "new-inventor/template": "*"
+    "new-inventor/template": "*",
+    "jquery/jquery": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "5.1.*"

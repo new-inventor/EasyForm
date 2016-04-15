@@ -4,6 +4,7 @@ namespace NewInventor\Form;
 
 use NewInventor\Abstractions\NamedObjectList;
 use NewInventor\Form\Abstraction\KeyValuePair;
+use NewInventor\Form\Exceptions\SessionException;
 use NewInventor\Form\Field\AbstractField;
 use NewInventor\Form\Interfaces\FormInterface;
 use NewInventor\Form\Interfaces\HandlerInterface;
@@ -22,13 +23,18 @@ use NewInventor\TypeChecker\TypeChecker;
 //TODO some custom patterns
 //TODO translate to php 7
 //TODO change validators (elements relations) and translate to separate project. Fill up validators
-//TODO session form result messages
+//TODO i18n internationalisation
+//TODO Increase work speed
 
 class Form extends Block implements FormInterface
 {
     const ENC_TYPE_URLENCODED = 'urlencoded';
     const ENC_TYPE_MULTIPART = 'multipart';
     const ENC_TYPE_PLAIN = 'plain';
+    
+    const STATUS_NORMAL = 0;
+    const STATUS_BEFORE_REDIRECT = 1;
+    const STATUS_SHOW_RESULT = 2;
     
     private $encTypes = [
         'urlencoded' => 'application/x-www-form-urlencoded',
@@ -49,6 +55,8 @@ class Form extends Block implements FormInterface
     private $handlers;
     /** @var string */
     private $resultMessage = '';
+    /** @var bool */
+    private $loadJQuery = false;
     
     /**
      * AbstractForm constructor.
@@ -83,7 +91,7 @@ class Form extends Block implements FormInterface
         $this->handlers->setElementClasses(['NewInventor\Form\Interfaces\HandlerInterface']);
         $this->children()->setElementClasses([Block::getClass(), AbstractField::getClass()]);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -162,7 +170,7 @@ class Form extends Block implements FormInterface
         throw new ArgumentException('Кодировка формы должна быть "', implode('" или "', $this->encTypes) . '".',
             'encType');
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -237,41 +245,38 @@ class Form extends Block implements FormInterface
         
         return false;
     }
-
+    
     /**
      * @inheritdoc
      */
     public function load($data = null)
     {
-        $sessionData = $this->getSessionData();
-        if($this->isResultShowStatus() || $this->isNormalStatus()) {
+        $status = $this->getStatus();
+        if ($status == self::STATUS_SHOW_RESULT || $status == self::STATUS_NORMAL) {
             $this->beforeSave();
         }
-        if($this->isAfterRefreshStatus()){
+        if ($status == self::STATUS_BEFORE_REDIRECT) {
             $this->afterRefresh();
         }
         return parent::load($data);
     }
-
+    
     protected function afterSave()
     {
-        $_SESSION['form'][$this->getName()]['resultMessage'] = true;
-        $_SESSION['form'][$this->getName()]['refreshed'] = false;
+        $this->setStatus(self::STATUS_BEFORE_REDIRECT);
         header("Refresh:0");
     }
-
+    
     protected function beforeSave()
     {
-        $_SESSION['form'][$this->getName()]['resultMessage'] = false;
-        $_SESSION['form'][$this->getName()]['refreshed'] = false;
+        $this->setStatus(self::STATUS_NORMAL);
     }
-
+    
     protected function afterRefresh()
     {
-        $_SESSION['form'][$this->getName()]['resultMessage'] = true;
-        $_SESSION['form'][$this->getName()]['refreshed'] = true;
+        $this->setStatus(self::STATUS_SHOW_RESULT);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -279,16 +284,30 @@ class Form extends Block implements FormInterface
     {
         return $this->resultMessage;
     }
-
+    
     /**
      * @inheritdoc
      */
     public function getSessionData()
     {
-        if(isset($_SESSION['form'][$this->getName()])) {
-            return $_SESSION['form'][$this->getName()];
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            throw new SessionException('Для использования формы необходимо проинициализировать сессию.');
+        }
+        if (isset($_SESSION['forms'][$this->getName()])) {
+            return $_SESSION['forms'][$this->getName()];
         }
         return [];
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function setSessionData($data)
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            throw new SessionException('Для использования формы необходимо проинициализировать сессию.');
+        }
+        $_SESSION['forms'][$this->getName()] = $data;
     }
     
     /**
@@ -299,36 +318,51 @@ class Form extends Block implements FormInterface
         TypeChecker::getInstance()
             ->isString($message, 'message')
             ->throwTypeErrorIfNotValid();
-
-        $this->resultMessage = $message;
         
+        $this->resultMessage = $message;
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isResultShowStatus()
-    {
-        $sessionData = $this->getSessionData();
-        return isset($sessionData['resultMessage']) && $sessionData['resultMessage'] && isset($sessionData['refreshed']) && $sessionData['refreshed'];
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAfterRefreshStatus()
-    {
-        $sessionData = $this->getSessionData();
-        return isset($sessionData['resultMessage']) && $sessionData['resultMessage'] && isset($sessionData['refreshed']) && $sessionData['refreshed'] === false;
     }
     
     /**
-     * @return bool
+     * @inheritdoc
      */
-    public function isNormalStatus()
+    public function getStatus()
     {
         $sessionData = $this->getSessionData();
-        return (!isset($sessionData['resultMessage']) || !$sessionData['resultMessage']) && (!isset($sessionData['refreshed']) || !$sessionData['refreshed']);
+        if (isset($sessionData['status'])) {
+            return $sessionData['status'];
+        }
+        return 0;
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function setStatus($status)
+    {
+        TypeChecker::getInstance()
+            ->isInt($status, 'status')
+            ->throwTypeErrorIfNotValid();
+        
+        $sessionData = $this->getSessionData();
+        $sessionData['status'] = $status;
+        $this->setSessionData($sessionData);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function loadJQuery()
+    {
+        $this->loadJQuery = true;
+        return $this;
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function showJQuery()
+    {
+        return $this->loadJQuery;
     }
 }

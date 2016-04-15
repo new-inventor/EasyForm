@@ -15,7 +15,7 @@ interface ValidatableInterface
     public function isValid();
 
     /**
-     * @return void
+     * @return bool
      */
     public function validate();
 

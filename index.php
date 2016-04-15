@@ -1,5 +1,5 @@
 <head>
-    <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script src="vendor/jquery/jquery/jquery-1.12.1.min.js"></script>
     <script src="src/assets/default.js"></script>
 </head>
 <?php
@@ -13,7 +13,6 @@ require 'vendor/autoload.php';
 use \NewInventor\Form\Form;
 use \NewInventor\Form\Field\Input;
 use \NewInventor\Form\Block;
-use \NewInventor\Form\Handler;
 
 
 function asd(\NewInventor\Form\Interfaces\FormInterface $form){
@@ -119,11 +118,9 @@ $form
     ->handler([$a, 'asd'], 'tot', 'Еще')
     ->handler(['A', 'zxc'], 'tot1', 'Еще1')
     ->resultMessage('Данные сохранены.')
+    ->loadJQuery()
 ->end();
-if($form->load()){
-    $form->validate();
-    if($form->isValid()) {
-        $form->save();
-    }
+if($form->load() && $form->validate()){
+    $form->save();
 }
 echo $form->getString();

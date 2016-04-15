@@ -4,6 +4,7 @@ namespace NewInventor\Form\Interfaces;
 
 
 use NewInventor\Abstractions\NamedObjectList;
+use NewInventor\Form\Exceptions\SessionException;
 use NewInventor\TypeChecker\Exception\ArgumentException;
 use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 
@@ -86,6 +87,16 @@ interface FormInterface extends BlockInterface
      * @return FormInterface
      */
     public function resultMessage($message);
+
+    /**
+     * @return FormInterface
+     */
+    public function loadJQuery();
+    
+    /**
+     * @return bool
+     */
+    public function showJQuery();
     
     /**
      * @return string
@@ -94,21 +105,25 @@ interface FormInterface extends BlockInterface
     
     /**
      * @return array
+     * @throws SessionException
      */
     public function getSessionData();
-
+    
     /**
-     * @return bool
+     * @param $data
+     * @throws SessionException
      */
-    public function isResultShowStatus();
-
+    public function setSessionData($data);
+    
     /**
-     * @return bool
+     * @return mixed
+     * @throws SessionException
      */
-    public function isAfterRefreshStatus();
-
+    public function getStatus();
+    
     /**
-     * @return bool
+     * @param $status
+     * @throws SessionException
      */
-    public function isNormalStatus();
+    public function setStatus($status);
 }

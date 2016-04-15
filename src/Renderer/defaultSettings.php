@@ -8,7 +8,7 @@
 return [
     'templates' => [
         'default' => [
-            'form' => '{resultMessage}{errors}{label}<div>{start}{children}{handlers}{end}</div>',
+            'form' => '{resultMessage}{errors}{label}<div>{start}{children}{handlers}{end}</div>{scripts}',
             'block' => '{label}<div>{children}</div>',
             'field' => /** @lang text */'<div><label {forField}>{title}</label>{field}</div>{errors}',
             'handler' => '<div>{handler}</div>',
