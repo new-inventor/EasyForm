@@ -13,19 +13,19 @@ interface ValidatableInterface
      * @return boolean
      */
     public function isValid();
-
+    
     /**
      * @param bool $revalidate
      * @return bool
      */
     public function validate($revalidate = false);
-
+    
     /**
      * @param string $error
      * @return static
      */
     public function addError($error);
-
+    
     /**
      * @return string[]
      */

@@ -12,10 +12,10 @@ class Input extends AbstractField implements FieldInterface
     {
         parent::setValue($value);
         $this->attributes()->add(new KeyValuePair('value', $value));
-
+        
         return $this;
     }
-
+    
     /**
      * @param string $type
      *
@@ -24,7 +24,7 @@ class Input extends AbstractField implements FieldInterface
     public function type($type)
     {
         $this->attribute('type', $type);
-
+        
         return $this;
     }
 }

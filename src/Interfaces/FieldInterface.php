@@ -13,26 +13,26 @@ interface FieldInterface extends FormObjectInterface, RenderableInterface, Valid
      * @return mixed
      */
     public function getValue();
-
+    
     /**
      * @param $value
      * @return $this
      * @throws ArgumentTypeException
      */
     public function setValue($value);
-
+    
     /**
      * @return $this
      */
     public function clear();
-
+    
     /**
      * @param \Closure|string|ValidatorInterface $validator
      * @param array $options
      * @return $this
      */
     public function validator($validator, array $options = []);
-
+    
     /**
      * @return bool
      */

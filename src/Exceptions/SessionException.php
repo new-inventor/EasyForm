@@ -14,7 +14,7 @@ class SessionException extends \Exception
     {
         parent::__construct($this->getMessageString($message), $code, $previous);
     }
-
+    
     protected function getMessageString($message)
     {
         $str = "Ошибка сессии: {$message}";

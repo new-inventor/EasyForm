@@ -16,23 +16,23 @@ interface FormObjectInterface extends NamedObjectInterface
      * @throws ArgumentTypeException
      */
     public function title($title);
-
+    
     /**
      * @return string
      */
     public function getTitle();
-
+    
     /**
      * get parent object
      * @return FormInterface|BlockInterface
      */
     public function end();
-
+    
     /**
      * @return ObjectListInterface
      */
     public function attributes();
-
+    
     /**
      * @param string $name
      * @param string $value
@@ -42,7 +42,7 @@ interface FormObjectInterface extends NamedObjectInterface
      * @throws ArgumentTypeException
      */
     public function attribute($name, $value = '', $canBeShort = false);
-
+    
     /**
      * @param $name
      *
@@ -50,17 +50,17 @@ interface FormObjectInterface extends NamedObjectInterface
      * @throws ArgumentTypeException
      */
     public function getAttribute($name);
-
+    
     /**
      * @return string
      */
     public function getFullName();
-
+    
     /**
      * @return ObjectListInterface
      */
     public function children();
-
+    
     /**
      * @param string $name
      *
@@ -68,35 +68,35 @@ interface FormObjectInterface extends NamedObjectInterface
      * @throws ArgumentTypeException
      */
     public function child($name);
-
+    
     /**
      * @return mixed
      */
     public function getParent();
-
+    
     /**
      * @param mixed $parent
      */
     public function setParent($parent);
-
-
+    
+    
     /**
      * @return array
      */
     public function getDataArray();
-
+    
     /**
      * @return bool
      */
     public function isRepeatable();
-
+    
     /**
      * @param string $name
      * @return static
      * @throws ArgumentTypeException
      */
     public function template($name);
-
+    
     /**
      * @return string
      */

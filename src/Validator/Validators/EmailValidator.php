@@ -19,10 +19,10 @@ class EmailValidator extends AbstractValidator implements ValidatorInterface
     {
         parent::__construct('Неверный формат электронной почты в поле "{f}".', $customValidateMethod);
     }
-
+    
     public function validateValue($value)
     {
-        if(mb_strlen($value) == 0){
+        if (mb_strlen($value) == 0) {
             return true;
         }
         return filter_var($value, FILTER_VALIDATE_EMAIL) === $value;

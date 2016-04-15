@@ -2,7 +2,7 @@
  * Created by George Ionov on 23.03.2016.
  */
 (function ($) {
-    function RepeatContainer(element, options){
+    function RepeatContainer(element, options) {
         this.element = $(element);
         this.options = $.extend({
             containerSelector: '',
@@ -17,10 +17,10 @@
         }, options);
         var self = this;
 
-        $(document).on('click.repeat', this.options.actionsSelector + ' ' + this.options.addSelector, function(e){
+        $(document).on('click.repeat', this.options.actionsSelector + ' ' + this.options.addSelector, function (e) {
             self.addBlock(e, self, this);
         });
-        $(document).on('click.repeat', this.options.actionsSelector + ' ' + this.options.deleteSelector, function(e){
+        $(document).on('click.repeat', this.options.actionsSelector + ' ' + this.options.deleteSelector, function (e) {
             self.deleteBlock(e, self, this);
         });
     }
@@ -45,15 +45,15 @@
         e.preventDefault();
         var $button = $(button);
         var $container = $button.closest(self.options.containerSelector);
-        if($container.find(self.options.blockSelector).length < 1){
+        if ($container.find(self.options.blockSelector).length < 1) {
             return;
         }
         var $block = $button.closest(self.options.blockSelector);
-        if($block.find(self.options.addSelector).length > 0){
+        if ($block.find(self.options.addSelector).length > 0) {
             $block.prev().find(self.options.actionsSelector).append(self.options.addButton);
         }
         $block.remove();
-        if($container.find(self.options.blockSelector).length == 1){
+        if ($container.find(self.options.blockSelector).length == 1) {
             $container.find(self.options.blockSelector + ":first " + self.options.deleteSelector).remove();
         }
     };
@@ -62,7 +62,7 @@
         this.each(function () {
 
             var element = $(this);
-            if (element.data('repeatContainer')){
+            if (element.data('repeatContainer')) {
                 return
             }
             var instance = new RepeatContainer(this, options);

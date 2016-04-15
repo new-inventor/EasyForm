@@ -17,13 +17,13 @@ interface RenderableInterface extends ObjectInterface
      * @return string
      */
     public function __toString();
-
+    
     /**
      * Преобразовать объект в строку
      * @return string
      */
     public function getString();
-
+    
     /**
      * Отобразить объект на странице
      * @return void

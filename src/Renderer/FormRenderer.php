@@ -23,7 +23,7 @@ class FormRenderer extends BaseRenderer
     use Traits\Errors;
     use Traits\Label;
     use Traits\Children;
-
+    
     /** @inheritdoc */
     public function render(ObjectInterface $handler)
     {
@@ -32,10 +32,10 @@ class FormRenderer extends BaseRenderer
         $template = new Template($templateStr);
         $replacements = $this->getReplacements($template->getPlaceholders(), $handler);
         $template->setReplacements($replacements);
-
+        
         return $template->getReplaced();
     }
-
+    
     /**
      * @param FormInterface $form
      *
@@ -45,7 +45,7 @@ class FormRenderer extends BaseRenderer
     {
         return '<form ' . $this->attributes($form) . '>';
     }
-
+    
     /**
      * @return string
      * @internal param FormInterface $form
@@ -54,7 +54,7 @@ class FormRenderer extends BaseRenderer
     {
         return '</form>';
     }
-
+    
     /**
      * @param FormInterface $form
      *
@@ -64,7 +64,7 @@ class FormRenderer extends BaseRenderer
     {
         return implode('', $form->handlers()->getAll());
     }
-
+    
     /**
      * @param FormInterface $form
      *
@@ -97,7 +97,7 @@ class FormRenderer extends BaseRenderer
         }
         return '';
     }
-
+    
     /**
      * @param FormInterface $form
      *
@@ -108,19 +108,19 @@ class FormRenderer extends BaseRenderer
         $composerPath = $_SERVER['DOCUMENT_ROOT'] . '/composer.json';
         $composerConfig = json_decode(file_get_contents($composerPath), true);
         $vendorFolder = $composerConfig['config']['vendor-dir'];
-
+        
         $res = '';
         if ($form->showJQuery()) {
-            if($this->pingJquery()){
+            if ($this->pingJquery()) {
                 $res .= '<script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>';
-            }else{
+            } else {
                 $res .= "<script src='{$vendorFolder}/jquery/jquery/jquery-1.12.1.min.js'></script>";
             }
         }
         $res .= "<script src='{$vendorFolder}/new-inventor/form/src/assets/default.js'></script>";
         return $res;
     }
-
+    
     protected function pingJquery()
     {
         $ch = curl_init('https://code.jquery.com/jquery-1.12.1.min.js');
@@ -130,7 +130,7 @@ class FormRenderer extends BaseRenderer
         $data = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        if($httpcode>=200 && $httpcode<300){
+        if ($httpcode >= 200 && $httpcode < 300) {
             return true;
         } else {
             return false;

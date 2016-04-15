@@ -25,7 +25,7 @@ trait Repeatable
 {
     /**
      * @param BlockInterface|FieldInterface $block
-     * @param bool                          $check
+     * @param bool $check
      *
      * @return string
      */
@@ -35,13 +35,13 @@ trait Repeatable
         $template = new Template($templateStr);
         $replacements = $this->getReplacements($template->getPlaceholders(), $block, $check);
         $template->setReplacements($replacements);
-
+        
         return $template->getReplaced();
     }
-
+    
     /**
      * @param BlockInterface|FieldInterface $block
-     * @param bool                          $check
+     * @param bool $check
      *
      * @return string
      */
@@ -55,13 +55,13 @@ trait Repeatable
             $template->setReplacements($replacements);
             $res = $template->getReplaced();
         }
-
+        
         return $res;
     }
-
+    
     /**
      * @param BlockInterface|FieldInterface $block
-     * @param bool                          $check
+     * @param bool $check
      *
      * @return string
      */
@@ -75,47 +75,47 @@ trait Repeatable
             $template->setReplacements($replacements);
             $res = $template->getReplaced();
         }
-
+        
         return $res;
     }
-
+    
     protected function blockSelector()
     {
         return $this->getSelectorFromSettings('block');
     }
-
+    
     protected function containerSelector()
     {
         return $this->getSelectorFromSettings('container');
     }
-
+    
     protected function actionsBlockSelector()
     {
         return $this->getSelectorFromSettings('actionsBlock');
     }
-
+    
     protected function deleteActionSelector()
     {
         return $this->getSelectorFromSettings('deleteAction');
     }
-
+    
     protected function addActionSelector()
     {
         return $this->getSelectorFromSettings('addAction');
     }
-
+    
     protected function getSelectorFromSettings($type = '')
     {
         if (empty($type)) {
             return '';
         }
-
+        
         $selector = Config::get(['renderer', 'repeat', $type], '');
         TypeChecker::getInstance()->isString($selector, 'selector')->throwTypeErrorIfNotValid();
-
+        
         return $selector;
     }
-
+    
     /**
      * @param FieldInterface|BlockInterface $object
      *

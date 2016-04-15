@@ -18,7 +18,7 @@ abstract class ListField extends AbstractField
 {
     /** @var ObjectList */
     private $options;
-
+    
     /**
      * RadioSet constructor.
      *
@@ -35,7 +35,7 @@ abstract class ListField extends AbstractField
             $this->addOptionArray($options);
         }
     }
-
+    
     /**
      * @param string $title
      * @param string $value
@@ -55,12 +55,12 @@ abstract class ListField extends AbstractField
             'title' => $title,
             'value' => $value
         ];
-
+        
         $this->options()->add($option);
-
+        
         return $this;
     }
-
+    
     /**
      * @param array $options
      *
@@ -72,10 +72,10 @@ abstract class ListField extends AbstractField
         foreach ($options as $value => $title) {
             $this->option($title, $value);
         }
-
+        
         return $this;
     }
-
+    
     /**
      * @return ObjectList
      */
@@ -83,7 +83,7 @@ abstract class ListField extends AbstractField
     {
         return $this->options;
     }
-
+    
     /**
      * @param int|string $key
      *
@@ -94,7 +94,7 @@ abstract class ListField extends AbstractField
     {
         return $this->options()->get($key);
     }
-
+    
     /**
      * @param string $value
      *

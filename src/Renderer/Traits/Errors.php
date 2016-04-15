@@ -18,7 +18,7 @@ use NewInventor\Template\Template;
 /**
  * Class ErrorRendererTrait
  * @package NewInventor\Form\Renderer\Traits
- *          
+ *
  * @method getReplacements(array $placeholders, $object)
  */
 trait Errors
@@ -34,7 +34,7 @@ trait Errors
         if (empty($errors)) {
             return '';
         }
-
+        
         $templateStr = Config::find(
             ['renderer'],
             ['templates', $object->getTemplate(), 'errors'],
@@ -44,10 +44,10 @@ trait Errors
         $template = new Template($templateStr);
         $replacements = $this->getReplacements($template->getPlaceholders(), $object);
         $template->setReplacements($replacements);
-
+        
         return $template->getReplaced();
     }
-
+    
     /**
      * @param FormInterface|BlockInterface|FieldInterface $object
      *
@@ -57,7 +57,7 @@ trait Errors
     {
         $errorDelimiter = Config::get(['renderer', 'errors', 'delimiter']);
         $errorsStr = implode($errorDelimiter, $object->getErrors());
-
+        
         return $errorsStr;
     }
 }

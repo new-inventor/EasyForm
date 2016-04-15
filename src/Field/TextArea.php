@@ -24,10 +24,10 @@ class TextArea extends AbstractField implements FieldInterface
     {
         TypeChecker::getInstance()->isInt($count, 'count')->throwTypeErrorIfNotValid();
         $this->attribute('cols', $count);
-
+        
         return $this;
     }
-
+    
     /**
      * @param int $count
      *
@@ -39,7 +39,7 @@ class TextArea extends AbstractField implements FieldInterface
     {
         TypeChecker::getInstance()->isInt($count, 'count')->throwTypeErrorIfNotValid();
         $this->attribute('rows', $count);
-
+        
         return $this;
     }
 }

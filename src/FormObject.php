@@ -35,9 +35,9 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     protected $templateName;
     /** @var bool */
     protected $validated = false;
-
+    
     const DEFAULT_TEMPLATE = 'default';
-
+    
     /**
      * @param string $name
      * @param string $title
@@ -53,7 +53,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         $this->isValid = true;
         $this->templateName = self::DEFAULT_TEMPLATE;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -61,7 +61,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         return $this->children;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -69,7 +69,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         return $this->children()->get($name);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -77,7 +77,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         return $this->parent;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -85,7 +85,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         $this->parent = $parent;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -93,7 +93,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         return $this->attrs;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -101,7 +101,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         return $this->attrs->get($name);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -110,10 +110,10 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         if ($name != 'name') {
             $this->attributes()->add(new KeyValuePair($name, $value, $canBeShort));
         }
-
+        
         return $this;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -121,7 +121,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         return $this->title;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -131,10 +131,10 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
             ->isString($title, 'title')
             ->throwTypeErrorIfNotValid();
         $this->title = $title;
-
+        
         return $this;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -146,14 +146,14 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         if (isset($parent)) {
             return $parent->getFullName() . '[' . $objectName . ']';
         }
-
+        
         return $objectName;
     }
-
+    
     public static function initFromArray(array $data)
     {
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -161,20 +161,20 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         return $this->getParent();
     }
-
+    
     public function toArray()
     {
         $res = parent::toArray();
         $res = array_merge($res, [
-            'title' => $this->getTitle(),
+            'title'    => $this->getTitle(),
             'fullName' => $this->getFullName(),
-            'attrs' => $this->attributes()->toArray(),
+            'attrs'    => $this->attributes()->toArray(),
             'children' => $this->children()->toArray()
         ]);
-
+        
         return $res;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -182,11 +182,11 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         try {
             return $this->getString();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return "{$e->getMessage()}. File: {$e->getFile()}, Line: {$e->getLine()}, Stack trace: {$e->getTraceAsString()}";
         }
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -194,7 +194,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         echo $this->getString();
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -202,11 +202,11 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         return '';
     }
-
+    
     /** @inheritdoc */
     public function validate($revalidate = false)
     {
-        if($this->validated && !$revalidate){
+        if ($this->validated && !$revalidate) {
             return $this->isValid();
         }
         if ($this->children() !== null) {
@@ -215,10 +215,10 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
                 $child->validate();
             }
         }
-
+        
         return $this->isValid();
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -230,10 +230,10 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
                 $this->isValid = $this->isValid && $child->isValid();
             }
         }
-
+        
         return $this->isValid;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -243,10 +243,10 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
             ->isString($error, 'error')
             ->throwTypeErrorIfNotValid();
         $this->errors[] = $error;
-
+        
         return $this;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -259,15 +259,15 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
                 $errors = array_merge($errors, $child->getErrors());
             }
         }
-
+        
         return $errors;
     }
-
+    
     public function prepareErrors(array $errors = [])
     {
         return $errors;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -276,7 +276,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         if ($this instanceof FieldInterface) {
             return [$this->getName() => $this->getValue()];
         }
-
+        
         $res = [];
         foreach ($this->children() as $child) {
             if ($child instanceof FieldInterface) {
@@ -285,10 +285,10 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
                 $res[$child->getName()] = $child->getDataArray();
             }
         }
-
+        
         return $res;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -296,7 +296,7 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         return $this->getParent() !== null && $this->getParent()->isRepeatableContainer();
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -304,10 +304,10 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     {
         TypeChecker::getInstance()->isString($name, 'name')->throwTypeErrorIfNotValid();
         $this->templateName = $name;
-
+        
         return $this;
     }
-
+    
     /**
      * @inheritdoc
      */

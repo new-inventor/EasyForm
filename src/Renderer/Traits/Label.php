@@ -35,10 +35,10 @@ trait Label
         $template = new Template($templateStr);
         $replacements = $this->getReplacements($template->getPlaceholders(), $object);
         $template->setReplacements($replacements);
-
+        
         return $template->getReplaced();
     }
-
+    
     /**
      * @param FormInterface|BlockInterface|FieldInterface $object
      *

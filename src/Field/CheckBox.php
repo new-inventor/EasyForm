@@ -27,7 +27,7 @@ class CheckBox extends AbstractField implements FieldInterface
         parent::__construct($name, $value, $title);
         $this->attribute('type', 'checkbox');
     }
-
+    
     public function setValue($value)
     {
         TypeChecker::getInstance()
@@ -38,7 +38,7 @@ class CheckBox extends AbstractField implements FieldInterface
         } else {
             parent::setValue($value);
         }
-
+        
         return $this;
     }
 } 

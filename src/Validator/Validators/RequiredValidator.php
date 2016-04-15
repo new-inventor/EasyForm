@@ -19,7 +19,7 @@ class RequiredValidator extends AbstractValidator implements ValidatorInterface
     {
         parent::__construct('Поле "{f}" обязательно для заполнения.', $customValidateMethod);
     }
-
+    
     public function validateValue($value)
     {
         return !empty($value) || is_numeric($value);

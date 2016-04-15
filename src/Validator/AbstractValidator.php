@@ -23,10 +23,10 @@ class AbstractValidator extends Object implements ValidatorInterface
     protected $customValidateMethod;
     /** @var FieldInterface */
     protected $field;
-
+    
     /** @var bool */
     protected static $settingsInitialised = false;
-
+    
     /**
      * AbstractValidator constructor.
      * @param string $message
@@ -37,7 +37,7 @@ class AbstractValidator extends Object implements ValidatorInterface
         $this->message = $message;
         $this->customValidateMethod = $customValidateMethod;
     }
-
+    
     /**
      * @return bool
      */
@@ -45,7 +45,7 @@ class AbstractValidator extends Object implements ValidatorInterface
     {
         return self::$settingsInitialised;
     }
-
+    
     /** @inheritdoc */
     public function isValid($value)
     {
@@ -53,28 +53,28 @@ class AbstractValidator extends Object implements ValidatorInterface
         if (isset($this->customValidateMethod)) {
             return $this->customValidateMethod->__invoke($value);
         }
-
+        
         return $this->validateValue($value);
     }
-
+    
     protected function validateValue($value)
     {
         return true;
     }
-
+    
     public function getError()
     {
         return $this->replaceFieldName($this->message);
     }
-
+    
     protected function replaceFieldName($message)
     {
         $name = !empty($this->field->getTitle()) ? $this->field->getTitle() : $this->field->getName();
-
+        
         return str_replace('{f}', $name, $message);
     }
-
-
+    
+    
     /**
      * @param \Closure $customValidateMethod
      */
@@ -82,7 +82,7 @@ class AbstractValidator extends Object implements ValidatorInterface
     {
         $this->customValidateMethod = $customValidateMethod;
     }
-
+    
     /**
      * @param array $options
      * @throws ArgumentTypeException
@@ -97,7 +97,7 @@ class AbstractValidator extends Object implements ValidatorInterface
             $this->$argName($arg);
         }
     }
-
+    
     /**
      * @param string $message
      * @return $this
@@ -109,10 +109,10 @@ class AbstractValidator extends Object implements ValidatorInterface
             ->isString($message, 'message')
             ->throwTypeErrorIfNotValid();
         $this->message = $message;
-
+        
         return $this;
     }
-
+    
     /**
      * @param FieldInterface $field
      */

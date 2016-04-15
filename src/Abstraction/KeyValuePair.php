@@ -19,13 +19,13 @@ class KeyValuePair extends NamedObject
     private $value;
     /** @var bool */
     private $canBeShort;
-
+    
     /**
      * KeyValuePair constructor.
      *
      * @param string $name
      * @param string $value
-     * @param bool   $canBeShort
+     * @param bool $canBeShort
      */
     public function __construct($name, $value = '', $canBeShort = false)
     {
@@ -33,7 +33,7 @@ class KeyValuePair extends NamedObject
         $this->setValue($value);
         $this->setCanBeShort($canBeShort);
     }
-
+    
     /**
      * @return boolean
      */
@@ -41,21 +41,21 @@ class KeyValuePair extends NamedObject
     {
         return $this->canBeShort;
     }
-
+    
     public function short()
     {
         $this->canBeShort = true;
-
+        
         return $this;
     }
-
+    
     public function full()
     {
         $this->canBeShort = false;
-
+        
         return $this;
     }
-
+    
     /**
      * @param bool $canBeShort
      *
@@ -69,10 +69,10 @@ class KeyValuePair extends NamedObject
             $typeChecker->throwTypeError();
         }
         $this->canBeShort = $canBeShort;
-
+        
         return $this;
     }
-
+    
     /**
      * @return string
      */
@@ -80,7 +80,7 @@ class KeyValuePair extends NamedObject
     {
         return $this->value;
     }
-
+    
     /**
      * @param string $value
      *
@@ -96,21 +96,21 @@ class KeyValuePair extends NamedObject
             $typeChecker->throwTypeError();
         }
         $this->value = $value;
-
+        
         return $this;
     }
-
+    
     public function __toString()
     {
         return $this->getString();
     }
-
+    
     public function getString()
     {
         $res = '';
         return $res;
     }
-
+    
     /**
      * @return string
      */
@@ -118,12 +118,12 @@ class KeyValuePair extends NamedObject
     {
         echo $this->getString();
     }
-
+    
     public function isValueEmpty()
     {
         return empty($this->value);
     }
-
+    
     /**
      * @param array $data
      *
@@ -135,7 +135,7 @@ class KeyValuePair extends NamedObject
         if (!isset($data['name'])) {
             throw new ArgumentException('Имя должно быть заполнено.');
         }
-
+        
         $pair = new KeyValuePair($data['name']);
         if (isset($data['value'])) {
             $pair->setValue((string)$data['value']);
@@ -143,10 +143,10 @@ class KeyValuePair extends NamedObject
         if (isset($data['canBeShort'])) {
             $pair->setCanBeShort((bool)$data['canBeShort']);
         }
-
+        
         return $pair;
     }
-
+    
     public static function isArrayParamsValid($params)
     {
         if (!isset($params['name']) || isset($params['name']) && !is_string($params['name'])) {
@@ -158,7 +158,7 @@ class KeyValuePair extends NamedObject
         if (isset($params['canBeShort']) && !is_bool($params['canBeShort'])) {
             return false;
         }
-
+        
         return true;
     }
 }

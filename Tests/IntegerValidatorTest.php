@@ -7,12 +7,14 @@
  */
 
 use \NewInventor\Form\Validator\Validators\IntegerValidator;
+
 class IntegerValidatorTest extends PHPUnit_Framework_TestCase
 {
-    public function testMin(){
+    public function testMin()
+    {
         $validator = new IntegerValidator();
         $validator->setMin(0);
-
+        
         $this->assertFalse($validator->isValid('-1'));
         $this->assertFalse($validator->isValid('dfsdfsdf'));
         $this->assertFalse($validator->isValid(null));
@@ -20,16 +22,17 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($validator->isValid('12312.231'));
         $this->assertFalse($validator->isValid(12312.231));
         $this->assertFalse($validator->isValid(12312.231));
-
+        
         $this->assertTrue($validator->isValid(''));
         $this->assertTrue($validator->isValid(1));
         $this->assertTrue($validator->isValid(1432));
     }
-
-    public function testMax(){
+    
+    public function testMax()
+    {
         $validator = new IntegerValidator();
         $validator->setMax(100);
-
+        
         $this->assertFalse($validator->isValid('dfsdfsdf'));
         $this->assertFalse($validator->isValid(null));
         $this->assertFalse($validator->isValid([]));
@@ -37,17 +40,18 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($validator->isValid(12312.231));
         $this->assertFalse($validator->isValid(12312.231));
         $this->assertFalse($validator->isValid(1432));
-
+        
         $this->assertTrue($validator->isValid(''));
         $this->assertTrue($validator->isValid(1));
         $this->assertTrue($validator->isValid('-1'));
     }
-
-    public function testMinMax(){
+    
+    public function testMinMax()
+    {
         $validator = new IntegerValidator();
         $validator->setMin(0);
         $validator->setMax(100);
-
+        
         $this->assertFalse($validator->isValid('dfsdfsdf'));
         $this->assertFalse($validator->isValid(null));
         $this->assertFalse($validator->isValid([]));
@@ -57,7 +61,7 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($validator->isValid(1432));
         $this->assertFalse($validator->isValid('101'));
         $this->assertFalse($validator->isValid('-1'));
-
+        
         $this->assertTrue($validator->isValid(''));
         $this->assertTrue($validator->isValid(1));
         $this->assertTrue($validator->isValid('100'));

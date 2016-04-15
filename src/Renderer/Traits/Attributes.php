@@ -28,7 +28,7 @@ trait Attributes
         foreach ($object->attributes() as $attr) {
             $attrs[] = $renderer->render($attr);
         }
-
+        
         return implode(' ', $attrs);
     }
 }

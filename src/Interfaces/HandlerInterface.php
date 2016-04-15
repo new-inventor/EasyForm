@@ -11,7 +11,8 @@ namespace NewInventor\Form\Interfaces;
 
 use NewInventor\TypeChecker\Exception\ArgumentException;
 
-interface HandlerInterface extends FormObjectInterface {
+interface HandlerInterface extends FormObjectInterface
+{
     /**
      * @return bool
      */

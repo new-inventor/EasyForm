@@ -31,15 +31,15 @@ class AttributeRenderer extends BaseRenderer
         }
         $replacements = $this->getReplacements($template->getPlaceholders(), $attribute);
         $template->setReplacements($replacements);
-
+        
         return $template->getReplaced();
     }
-
+    
     protected function name(KeyValuePair $pair)
     {
         return $pair->getName();
     }
-
+    
     protected function value(KeyValuePair $pair)
     {
         return (string)$pair->getValue();

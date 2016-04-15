@@ -252,9 +252,9 @@ class Form extends Block implements FormInterface
         if (!$this->validate()) {
             return false;
         }
-
+        
         $handler = $this->findHandler($data);
-        if(!isset($handler)){
+        if (!isset($handler)) {
             return false;
         }
         $this->result = ['success' => false];
@@ -274,7 +274,7 @@ class Form extends Block implements FormInterface
         $this->afterSave();
         return false;
     }
-
+    
     /**
      * @param array $data
      * @return HandlerInterface|null
@@ -287,7 +287,7 @@ class Form extends Block implements FormInterface
             }
             return $handler;
         }
-
+        
         return null;
     }
     
@@ -433,7 +433,7 @@ class Form extends Block implements FormInterface
     {
         return $this->loadJQuery;
     }
-
+    
     /**
      * @inheritdoc
      */

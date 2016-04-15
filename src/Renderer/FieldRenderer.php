@@ -24,6 +24,7 @@ class FieldRenderer extends BaseRenderer
     use Traits\Label;
     use Traits\Errors;
     use Traits\Repeatable;
+    
     /** @inheritdoc */
     public function render(ObjectInterface $handler)
     {
@@ -36,15 +37,15 @@ class FieldRenderer extends BaseRenderer
         $template = new Template($templateStr);
         $replacements = $this->getReplacements($template->getPlaceholders(), $handler);
         $template->setReplacements($replacements);
-
+        
         return $template->getReplaced();
     }
-
+    
     protected function forField(FieldInterface $field)
     {
         return 'for="' . $field->attributes()->get('id')->getValue() . '"';
     }
-
+    
     /**
      * @param FieldInterface $field
      *
@@ -66,17 +67,17 @@ class FieldRenderer extends BaseRenderer
         } elseif ($field instanceof Field\TextArea) {
             $fieldStr = $this->textArea($field);
         }
-
+        
         return $fieldStr;
     }
-
+    
     protected function checkBox(Field\CheckBox $field)
     {
         $checked = $field->getValue() ? ' checked' : '';
-
+        
         return "<input {$this->attributes($field)}{$checked} />";
     }
-
+    
     /**
      * @param Field\ListField $field
      *
@@ -88,10 +89,10 @@ class FieldRenderer extends BaseRenderer
         $template = new Template($templateStr);
         $replacements = $this->getReplacements($template->getPlaceholders(), $field);
         $template->setReplacements($replacements);
-
+        
         return $template->getReplaced();
     }
-
+    
     protected function options(Field\ListField $field)
     {
         $templateStr = Config::get(['renderer', 'templates', $field->getTemplate(), 'checkSetOption']);
@@ -102,10 +103,10 @@ class FieldRenderer extends BaseRenderer
             $template->setReplacements($this->getOptionReplacements($placeholders, $field, $option));
             $options .= $template->getReplaced();
         }
-
+        
         return $options;
     }
-
+    
     /**
      * @param array $placeholders
      * @param array $option
@@ -115,23 +116,23 @@ class FieldRenderer extends BaseRenderer
     protected function getOptionReplacements(array $placeholders, FieldInterface $field, array $option)
     {
         $res = [];
-        foreach($placeholders as $placeholder){
+        foreach ($placeholders as $placeholder) {
             $res[] = $this->$placeholder($field, $option);
         }
         
         return $res;
     }
-
+    
     protected function option(Field\ListField $field, array $option = [])
     {
         $checked = $field->optionSelected($option['value']) ? ' checked' : '';
-
+        
         $res = /** @lang text */
             "<input {$this->renderOptionAttributes($field)} value=\"{$option['value']}\"{$checked} />";
-
+        
         return $res;
     }
-
+    
     protected function renderOptionAttributes(Field\ListField $field)
     {
         $renderer = new AttributeRenderer();
@@ -149,21 +150,21 @@ class FieldRenderer extends BaseRenderer
         foreach ($field->attributes() as $attr) {
             $attrs[] = $renderer->render($attr);
         }
-
+        
         return implode(' ', $attrs);
     }
-
+    
     protected function optionTitle(Field\ListField $field, array $option = [])
     {
         return $option['title'];
     }
-
+    
     protected function input(FormObjectInterface $field)
     {
         
         return "<input {$this->attributes($field)}/>";
     }
-
+    
     protected function select(Field\Select $field)
     {
         $res = '<select ' . $this->attributes($field) . '>';
@@ -176,10 +177,10 @@ class FieldRenderer extends BaseRenderer
             $res .= $optionString;
         }
         $res .= '</select>';
-
+        
         return $res;
     }
-
+    
     protected function textArea(Field\TextArea $field)
     {
         return "<textarea {$this->attributes($field)}>{$field->getValue()}</textarea>";

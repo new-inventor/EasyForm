@@ -17,12 +17,12 @@ class Handler extends FormObject implements HandlerInterface
 {
     const PROCESS_TYPE_CLOSURE = 0;
     const PROCESS_TYPE_CALLABLE = 1;
-
+    
     /** @var \Closure|callable */
     protected $process;
     /** @var int */
     protected $processType;
-
+    
     /**
      * Handler constructor.
      * @param FormInterface $form
@@ -39,7 +39,7 @@ class Handler extends FormObject implements HandlerInterface
         $this->attribute('id', $name);
         $this->setProcess($process);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -59,7 +59,7 @@ class Handler extends FormObject implements HandlerInterface
         }
         $this->process = $process;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -72,7 +72,7 @@ class Handler extends FormObject implements HandlerInterface
         }
         return true;
     }
-
+    
     /**
      * @inheritdoc
      */

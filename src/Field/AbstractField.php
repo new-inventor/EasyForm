@@ -28,7 +28,7 @@ abstract class AbstractField extends FormObject implements FieldInterface
     protected $validators;
     /** @var bool */
     protected $validated = false;
-
+    
     /**
      * AbstractField constructor.
      * @param string $name
@@ -42,7 +42,7 @@ abstract class AbstractField extends FormObject implements FieldInterface
         $this->attribute('id', $name);
         $this->validators = new ObjectList(['NewInventor\Form\Validator\ValidatorInterface']);
     }
-
+    
     /**
      * @param string $name
      * @return $this
@@ -51,10 +51,10 @@ abstract class AbstractField extends FormObject implements FieldInterface
     public function setName($name)
     {
         parent::setName($name);
-
+        
         return $this;
     }
-
+    
     /**
      * @return string
      */
@@ -62,7 +62,7 @@ abstract class AbstractField extends FormObject implements FieldInterface
     {
         return $this->value;
     }
-
+    
     /**
      * @param $value
      * @return $this
@@ -81,18 +81,18 @@ abstract class AbstractField extends FormObject implements FieldInterface
             ], 'value')
             ->throwTypeErrorIfNotValid();
         $this->value = $value;
-
+        
         return $this;
     }
-
+    
     public function toArray()
     {
         $res = parent::toArray();
         $res['value'] = $this->getValue();
-
+        
         return $res;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -111,17 +111,17 @@ abstract class AbstractField extends FormObject implements FieldInterface
         }
         return $this->isValid();
     }
-
+    
     public function children()
     {
         return null;
     }
-
+    
     public function child($name)
     {
         return null;
     }
-
+    
     public function clear()
     {
         $this->value = null;
@@ -130,8 +130,8 @@ abstract class AbstractField extends FormObject implements FieldInterface
             $this->attribute('value', '');
         }
     }
-
-
+    
+    
     /**
      * @inheritdoc
      */
@@ -139,7 +139,7 @@ abstract class AbstractField extends FormObject implements FieldInterface
     {
         return $this->validators;
     }
-
+    
     /**
      * @param $name
      * @return ValidatorInterface|null
@@ -149,7 +149,7 @@ abstract class AbstractField extends FormObject implements FieldInterface
     {
         return $this->validators()->get($name);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -168,10 +168,10 @@ abstract class AbstractField extends FormObject implements FieldInterface
         $validatorObj->field($this);
         $validatorObj->setOptions($options);
         $this->validators()->add($validatorObj);
-
+        
         return $this;
     }
-
+    
     protected function generateInnerValidator($validatorName)
     {
         $validatorClassName = Config::get(['validator', $validatorName]);
@@ -183,24 +183,24 @@ abstract class AbstractField extends FormObject implements FieldInterface
         } else {
             throw new ArgumentException('Класс для валидатора не найден.', 'validatorName');
         }
-
+        
         return $validatorObj;
     }
-
+    
     protected function generateCustomValidator($validator)
     {
         $validatorObj = new AbstractValidator();
         $validatorObj->setCustomValidateMethod($validator);
-
+        
         return $validatorObj;
     }
-
+    
     /** @inheritdoc */
     public function prepareErrors(array $errors = [])
     {
         return $errors;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -208,7 +208,7 @@ abstract class AbstractField extends FormObject implements FieldInterface
     {
         return $this->getParent() !== null && $this->getParent()->isRepeatableContainer();
     }
-
+    
     /**
      * @inheritdoc
      */

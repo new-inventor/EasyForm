@@ -29,9 +29,9 @@ use NewInventor\TypeChecker\TypeChecker;
 class Block extends FormObject implements BlockInterface
 {
     private $repeatable;
-
+    
     private $repeatObject;
-
+    
     /**
      * AbstractBlock constructor.
      *
@@ -42,7 +42,7 @@ class Block extends FormObject implements BlockInterface
     {
         parent::__construct($name, $title);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -51,10 +51,10 @@ class Block extends FormObject implements BlockInterface
         $block = new Block($name, $title);
         $block->setParent($this);
         $this->children()->add($block);
-
+        
         return $block;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -62,17 +62,17 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('button', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
     public function checkbox($name, $value = false)
     {
         $checkbox = new CheckBox($name, $value);
-
+        
         return $this->field($checkbox);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -80,7 +80,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('file', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -88,7 +88,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('hidden', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -96,7 +96,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('image', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -104,7 +104,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('password', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -112,7 +112,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('radio', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -120,10 +120,10 @@ class Block extends FormObject implements BlockInterface
     {
         $set = new RadioSet($name, $value);
         $this->field($set);
-
+        
         return $set;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -131,7 +131,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('reset', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -139,7 +139,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('submit', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -147,7 +147,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('text', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -155,7 +155,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('color', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -163,7 +163,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('date', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -171,7 +171,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('datetime', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -179,7 +179,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('datetimeLocal', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -187,7 +187,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('email', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -195,7 +195,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('number', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -203,7 +203,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('range', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -211,7 +211,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('search', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -219,7 +219,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('tel', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -227,7 +227,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('time', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -235,7 +235,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('url', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -243,7 +243,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('month', $name, $value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -251,45 +251,45 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->addInputField('week', $name, $value);
     }
-
+    
     protected function addInputField($type, $name, $value)
     {
         $field = new Input($name, $value);
         $field->attribute('type', $type);
-
+        
         return $this->field($field);
     }
-
+    
     /**
      * @inheritdoc
      */
     public function select($name, $value = null)
     {
         $select = new Select($name, $value, '');
-
+        
         return $this->field($select);
     }
-
+    
     /**
      * @inheritdoc
      */
     public function textArea($name, $value = '')
     {
         $textArea = new TextArea($name, $value);
-
+        
         return $this->field($textArea);
     }
-
+    
     /**
      * @inheritdoc
      */
     public function checkBoxSet($name, $value = null)
     {
         $checkBoxSet = new CheckBoxSet($name, $value);
-
+        
         return $this->field($checkBoxSet);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -297,10 +297,10 @@ class Block extends FormObject implements BlockInterface
     {
         $field->setParent($this);
         $this->children()->add($field);
-
+        
         return $field;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -309,7 +309,7 @@ class Block extends FormObject implements BlockInterface
         TypeChecker::getInstance()
             ->check($object, [Block::getClass(), AbstractField::getClass()], 'object')
             ->throwTypeErrorIfNotValid();
-
+        
         $repeatableBlockName = $object->getName();
         $repeatableBlockTitle = $object->getTitle();
         $object->title('');
@@ -317,19 +317,19 @@ class Block extends FormObject implements BlockInterface
         $repeatableBlock->setRepeatable(true);
         $object->setName('#IND#');
         $repeatableBlock->setRepeatObject($object);
-
+        
         $deepCopy = new DeepCopy();
         $objectClone = $deepCopy->copy($repeatableBlock->getRepeatObject());
         $objectClone->setParent($repeatableBlock);
         $objectClone->setName('0');
         $repeatableBlock->children()->add($objectClone);
-
+        
         $repeatableBlock->setParent($this);
         $this->children()->add($repeatableBlock);
-
+        
         return $this;
     }
-
+    
     //TODO сделать ограничение количества повторяемых блоков
     /**
      * @inheritdoc
@@ -344,7 +344,7 @@ class Block extends FormObject implements BlockInterface
         } elseif ($data === null) {
             return false;
         }
-
+        
         $deepCopy = new DeepCopy();
         foreach ($data as $name => $value) {
             $child = $this->child($name);
@@ -362,7 +362,7 @@ class Block extends FormObject implements BlockInterface
                         /** @var BlockInterface $objectClone */
                         $objectClone = $deepCopy->copy($child->getRepeatObject());
                         $objectValue = $objectClone->getValue();
-                        if($value[$i] == $objectValue){
+                        if ($value[$i] == $objectValue) {
                             $childrenDelta--;
                             array_splice($value, $i, 1);
                             $i--;
@@ -376,7 +376,7 @@ class Block extends FormObject implements BlockInterface
                     for ($i = 0; $i < abs($childrenDelta); $i++) {
                         $child->children()->delete(($childrenMaxIndex - $i));
                     }
-                }elseif ($childrenDelta == 0 && count($value) == 1 && !empty($value[0])){
+                } elseif ($childrenDelta == 0 && count($value) == 1 && !empty($value[0])) {
                     $objectClone = $deepCopy->copy($child->getRepeatObject());
                     $objectClone->setParent($child);
                     $objectClone->setName((string)(count($child->children())));
@@ -385,10 +385,10 @@ class Block extends FormObject implements BlockInterface
                 $child->load($value);
             }
         }
-
+        
         return true;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -398,10 +398,10 @@ class Block extends FormObject implements BlockInterface
         foreach ($this->children() as $child) {
             $value[$child->getName()] = $child->getValue();
         }
-
+        
         return $value;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -409,17 +409,17 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->repeatable;
     }
-
+    
     /**
      * @inheritdoc
      */
     public function setRepeatable($repeatable)
     {
         $this->repeatable = $repeatable;
-
+        
         return $this;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -428,10 +428,10 @@ class Block extends FormObject implements BlockInterface
         foreach ($this->children() as $child) {
             $child->clear();
         }
-
+        
         return $this;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -439,7 +439,7 @@ class Block extends FormObject implements BlockInterface
     {
         return $this->repeatObject;
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -447,7 +447,7 @@ class Block extends FormObject implements BlockInterface
     {
         $this->repeatObject = $repeatObject;
     }
-
+    
     /**
      * @inheritdoc
      */

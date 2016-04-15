@@ -27,7 +27,7 @@ class CheckBoxSet extends ListField implements FieldInterface
         parent::__construct($name, null, $title, $options);
         $this->setValue($value);
     }
-
+    
     /**
      * @inheritdoc
      */
@@ -43,10 +43,10 @@ class CheckBoxSet extends ListField implements FieldInterface
         } else {
             parent::setValue([]);
         }
-
+        
         return $this;
     }
-
+    
     /**
      * @param string $value
      *

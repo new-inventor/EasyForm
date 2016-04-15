@@ -20,31 +20,32 @@ class Select extends CheckBoxSet implements FieldInterface
         if ($this->isMultiple()) {
             $name .= '[]';
         }
-
+        
         return $name;
     }
-
-    public function isMultiple(){
+    
+    public function isMultiple()
+    {
         return $this->getAttribute('multiple') !== null;
     }
-
+    
     /**
      * @return $this
      */
     public function multiple()
     {
         $this->attribute('multiple');
-
+        
         return $this;
     }
-
+    
     /**
      * @return $this
      */
     public function single()
     {
         $this->attributes()->delete('multiple');
-
+        
         return $this;
     }
 }

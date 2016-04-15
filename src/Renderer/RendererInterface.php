@@ -8,7 +8,7 @@ interface RendererInterface
 {
     /**
      * @param ObjectInterface $handler
-     * 
+     *
      * @return string
      */
     public function render(ObjectInterface $handler);

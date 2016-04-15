@@ -6,7 +6,7 @@
  */
 
 return [
-    'renderer' => [
+    'renderer'  => [
         'templates' => [
             'default' => [
                 'form'               => '{result}{errors}{label}<div>{start}{children}{handlers}{end}</div>{scripts}',
@@ -22,7 +22,7 @@ return [
                     'default' => '<span>{title}</span>',
                     'form'    => '<div>{title}</div>',
                 ],
-                'result'      => '<div class="{className}">{message}</div>',
+                'result'             => '<div class="{className}">{message}</div>',
                 'checkSet'           => '{label}<div>{options}</div>{errors}',
                 'checkSetOption'     => '<span><label>{optionTitle}{option}</label></span>',
                 'repeatFiled'        => /** @lang text */
@@ -59,9 +59,9 @@ return [
         ]
     ],
     'validator' => [
-    'email'    => \NewInventor\Form\Validator\Validators\EmailValidator::getClass(),
-    'integer'  => \NewInventor\Form\Validator\Validators\IntegerValidator::getClass(),
-    'string'   => \NewInventor\Form\Validator\Validators\StringValidator::getClass(),
-    'required' => \NewInventor\Form\Validator\Validators\RequiredValidator::getClass(),
-]
+        'email'    => \NewInventor\Form\Validator\Validators\EmailValidator::getClass(),
+        'integer'  => \NewInventor\Form\Validator\Validators\IntegerValidator::getClass(),
+        'string'   => \NewInventor\Form\Validator\Validators\StringValidator::getClass(),
+        'required' => \NewInventor\Form\Validator\Validators\RequiredValidator::getClass(),
+    ]
 ];

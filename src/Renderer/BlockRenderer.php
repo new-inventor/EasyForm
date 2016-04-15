@@ -24,7 +24,7 @@ class BlockRenderer extends BaseRenderer
     use Traits\Label;
     use Traits\Children;
     use Traits\Repeatable;
-
+    
     /** @inheritdoc */
     public function render(ObjectInterface $handler)
     {
@@ -36,14 +36,14 @@ class BlockRenderer extends BaseRenderer
         } else {
             $templateStr = Config::get(['renderer', 'templates', $handler->getTemplate(), 'block']);
         }
-
+        
         $template = new Template($templateStr);
         $replacements = $this->getReplacements($template->getPlaceholders(), $handler);
         $template->setReplacements($replacements);
-
+        
         return $template->getReplaced();
     }
-
+    
     /**
      * @param BlockInterface $block
      *
@@ -73,7 +73,7 @@ $(document).ready(function(e){
     });
 });
 </script>';
-
+        
         return $res;
     }
 }

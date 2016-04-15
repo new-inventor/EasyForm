@@ -17,7 +17,7 @@ use NewInventor\Template\Template;
 class HandlerRenderer extends FieldRenderer
 {
     use Traits\Attributes;
-
+    
     /** @inheritdoc */
     public function render(ObjectInterface $handler)
     {
@@ -26,10 +26,10 @@ class HandlerRenderer extends FieldRenderer
         $template = new Template($templateStr);
         $replacements = $this->getReplacements($template->getPlaceholders(), $handler);
         $template->setReplacements($replacements);
-
+        
         return $template->getReplaced();
     }
-
+    
     protected function handler(HandlerInterface $handler)
     {
         return $this->input($handler->attribute('type', 'submit'));
