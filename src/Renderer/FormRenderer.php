@@ -70,14 +70,30 @@ class FormRenderer extends BaseRenderer
      *
      * @return string
      */
-    public function resultMessage(FormInterface $form)
+    public function result(FormInterface $form)
     {
         if ($form->getStatus() == Form::STATUS_SHOW_RESULT) {
             $templateStr = Config::get(['render', 'templates', 'default', 'resultMessage'], '{resultMessage}');
             $template = new Template($templateStr);
-            $resultMessage = $form->isValid() ? $form->getSuccessMessage() : $form->getFailMessage();
-            $template->addReplacement($resultMessage);
+            $replacements = $this->getReplacements($template->getPlaceholders(), $form);
+            $template->setReplacements($replacements);
             return $template->getReplaced();
+        }
+        return '';
+    }
+    
+    public function className(FormInterface $form)
+    {
+        if (isset($form->getResult()['success'])) {
+            return $form->getResult()['success'] ? 'success' : 'danger';
+        }
+        return '';
+    }
+    
+    public function message(FormInterface $form)
+    {
+        if (isset($form->getResult()['message'])) {
+            return $form->getResult()['message'];
         }
         return '';
     }

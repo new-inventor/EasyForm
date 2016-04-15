@@ -4,6 +4,7 @@ namespace NewInventor\Form;
 
 use NewInventor\Abstractions\NamedObjectList;
 use NewInventor\Form\Abstraction\KeyValuePair;
+use NewInventor\Form\Exceptions\FormBadDataException;
 use NewInventor\Form\Exceptions\SessionException;
 use NewInventor\Form\Field\AbstractField;
 use NewInventor\Form\Interfaces\FormInterface;
@@ -58,6 +59,8 @@ class Form extends Block implements FormInterface
     private $successMessage = '';
     /** @var string */
     private $failMessage = '';
+    /** @var array */
+    private $result = [];
     /** @var bool */
     private $loadJQuery = false;
     
@@ -234,26 +237,46 @@ class Form extends Block implements FormInterface
         if ($data === null) {
             return false;
         }
-        if(!$this->validate()){
+        if (!$this->validate()) {
             return false;
         }
-        /**
-         * @var string $key
-         * @var HandlerInterface $handler
-         */
-        foreach ($this->handlers() as $key => $handler) {
-            if (array_key_exists($key, $data)) {
-                $result = $handler->process();
-                if ($result) {
-                    $this->afterSave();
-                }else{
-                    $this->addError($this->getFailMessage());
-                }
-                return $result;
-            }
+
+        $handler = $this->findHandler($data);
+        if(!isset($handler)){
+            return false;
         }
-        
+        $this->result = ['success' => false];
+        try {
+            $handler->process();
+            $this->result = [
+                'success' => true,
+                'message' => $this->successMessage
+            ];
+            $this->afterSave();
+            return true;
+        } catch (FormBadDataException $e) {
+            $this->result['message'] = $e->getMessage();
+        } catch (\Exception $e) {
+            $this->result['message'] = $this->failMessage;
+        }
+        $this->afterSave();
         return false;
+    }
+
+    /**
+     * @param array $data
+     * @return HandlerInterface|null
+     */
+    protected function findHandler(array $data)
+    {
+        foreach ($this->handlers() as $key => $handler) {
+            if (!array_key_exists($key, $data)) {
+                continue;
+            }
+            return $handler;
+        }
+
+        return null;
     }
     
     /**
@@ -274,7 +297,7 @@ class Form extends Block implements FormInterface
     protected function afterSave()
     {
         $this->setStatus(self::STATUS_BEFORE_REDIRECT);
-        if($this->method == self::METHOD_POST) {
+        if ($this->method == self::METHOD_POST) {
             header("Refresh:0");
         }
     }

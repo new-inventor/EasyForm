@@ -138,4 +138,9 @@ interface FormInterface extends BlockInterface
      * @throws SessionException
      */
     public function setStatus($status);
+
+    /**
+     * @return array
+     */
+    public function getResult();
 }
