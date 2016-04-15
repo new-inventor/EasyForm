@@ -144,4 +144,9 @@ interface FormInterface extends BlockInterface
      * @return array
      */
     public function getResult();
+
+    /**
+     * @param array $result
+     */
+    public function setResult(array $result);
 }

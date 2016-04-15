@@ -309,6 +309,7 @@ class Form extends Block implements FormInterface
     protected function afterSave()
     {
         $this->setStatus(self::STATUS_BEFORE_REDIRECT);
+        $this->setResult($this->result);
         if ($this->method == self::METHOD_POST) {
             header("Refresh:0");
         }
@@ -439,6 +440,19 @@ class Form extends Block implements FormInterface
      */
     public function getResult()
     {
-        return $this->result;
+        $sessionData = $this->getSessionData();
+        if (isset($sessionData['result'])) {
+            return $sessionData['result'];
+        }
+        return '';
+    }
+    /**
+     * @inheritdoc
+     */
+    public function setResult(array $result)
+    {
+        $sessionData = $this->getSessionData();
+        $sessionData['result'] = $result;
+        $this->setSessionData($sessionData);
     }
 }

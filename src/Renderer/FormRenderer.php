@@ -83,16 +83,18 @@ class FormRenderer extends BaseRenderer
     
     public function className(FormInterface $form)
     {
-        if (isset($form->getResult()['success'])) {
-            return $form->getResult()['success'] ? 'success' : 'danger';
+        $result = $form->getResult();
+        if (isset($result['success'])) {
+            return $result['success'] ? 'success' : 'danger';
         }
         return '';
     }
-    
+
     public function message(FormInterface $form)
     {
-        if (isset($form->getResult()['message'])) {
-            return $form->getResult()['message'];
+        $result = $form->getResult();
+        if (isset($result['message'])) {
+            return $result['message'];
         }
         return '';
     }
