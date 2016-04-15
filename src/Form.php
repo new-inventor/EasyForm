@@ -13,6 +13,7 @@ use NewInventor\TypeChecker\Exception\ArgumentException;
 use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 use NewInventor\TypeChecker\TypeChecker;
 
+//TODO сделать настраиваемое положение ошибок
 //TODO AJAX send(by change, by submit)
 //TODO user validation (one by one + full form + pre send)
 //TODO creation from array
