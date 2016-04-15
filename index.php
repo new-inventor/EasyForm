@@ -36,8 +36,6 @@ session_start();
 
 $a = new A();
 
-\NewInventor\ConfigTool\Config::mergeFile([], __DIR__ . '/src/config/main.php');
-
 $form = new Form('form1', null, Form::METHOD_POST, 'title1', Form::ENC_TYPE_MULTIPART);
 $form
     ->radioSet('name1', 1)
@@ -61,7 +59,6 @@ $form
         ->attribute('class', 'special')
         ->attribute('id', 'qwe1')
         ->validator('string', ['minLength' => 4])
-        ->template('active')
     ->end()
     ->repeatable(new Input('testRepeat', '', 'repeat title'))
     ->block('test')

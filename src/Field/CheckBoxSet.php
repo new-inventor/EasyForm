@@ -54,6 +54,10 @@ class CheckBoxSet extends ListField implements FieldInterface
      */
     public function optionSelected($value)
     {
-        return array_search($value, $this->getValue()) !== false;
+        $values = $this->getValue();
+        if (isset($values)) {
+            return array_search($value, $values) !== false;
+        }
+        return false;
     }
 } 

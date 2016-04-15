@@ -174,7 +174,6 @@ abstract class AbstractField extends FormObject implements FieldInterface
 
     protected function generateInnerValidator($validatorName)
     {
-        AbstractValidator::initSettings();
         $validatorClassName = Config::get(['validator', $validatorName]);
         if (class_exists($validatorClassName) && in_array('NewInventor\Form\Validator\ValidatorInterface',
                 class_implements($validatorClassName))

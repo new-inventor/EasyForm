@@ -39,16 +39,6 @@ class AbstractValidator extends Object implements ValidatorInterface
     }
 
     /**
-     * @return void
-     */
-    public static function initSettings()
-    {
-        $default = include __DIR__ . '/defaultSettings.php';
-        Config::merge('validator', $default);
-        self::$settingsInitialised = true;
-    }
-
-    /**
      * @return bool
      */
     public function isSettingsInitialised()

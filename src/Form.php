@@ -3,6 +3,7 @@
 namespace NewInventor\Form;
 
 use NewInventor\Abstractions\NamedObjectList;
+use NewInventor\ConfigTool\Config;
 use NewInventor\Form\Abstraction\KeyValuePair;
 use NewInventor\Form\Exceptions\FormBadDataException;
 use NewInventor\Form\Exceptions\SessionException;
@@ -96,6 +97,17 @@ class Form extends Block implements FormInterface
         $this->handlers = new NamedObjectList();
         $this->handlers->setElementClasses(['NewInventor\Form\Interfaces\HandlerInterface']);
         $this->children()->setElementClasses([Block::getClass(), AbstractField::getClass()]);
+        
+        $defaultData = include __DIR__ . '/config/default.php';
+        $this->addDefaultConfig('renderer', $defaultData['renderer']);
+        $this->addDefaultConfig('validator', $defaultData['validator']);
+    }
+    
+    protected function addDefaultConfig($route, $config)
+    {
+        $customData = Config::get($route, []);
+        Config::set($route, array_replace_recursive($config, $customData));
+        unset($validatorData);
     }
     
     /**

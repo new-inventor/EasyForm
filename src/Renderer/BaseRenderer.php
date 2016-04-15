@@ -25,23 +25,21 @@ class BaseRenderer extends Object implements RendererInterface
     const FIELD = 'field';
     const BLOCK = 'block';
     const FORM = 'form';
-
+    
     protected static $borders;
-
+    
     public function __construct()
     {
-        $default = include __DIR__ . '/defaultSettings.php';
-        Config::merge(['renderer'], $default);
     }
-
+    
     /** @inheritdoc */
     public function render(ObjectInterface $object)
     {
         return '';
     }
-
+    
     /**
-     * @param array           $placeholders
+     * @param array $placeholders
      * @param ObjectInterface $object
      *
      * @return array
@@ -54,7 +52,7 @@ class BaseRenderer extends Object implements RendererInterface
         foreach ($placeholders as $placeholder) {
             $replacements[] = call_user_func_array([$this, $placeholder], $params);
         }
-
+        
         return $replacements;
     }
 }
