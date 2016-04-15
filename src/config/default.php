@@ -22,7 +22,7 @@ return [
                     'default' => '<span>{title}</span>',
                     'form'    => '<div>{title}</div>',
                 ],
-                'resultMessage'      => '<div class="{className}">{message}</div>',
+                'result'      => '<div class="{className}">{message}</div>',
                 'checkSet'           => '{label}<div>{options}</div>{errors}',
                 'checkSetOption'     => '<span><label>{optionTitle}{option}</label></span>',
                 'repeatFiled'        => /** @lang text */

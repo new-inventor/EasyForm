@@ -73,7 +73,7 @@ class FormRenderer extends BaseRenderer
     public function result(FormInterface $form)
     {
         if ($form->getStatus() == Form::STATUS_SHOW_RESULT) {
-            $templateStr = Config::get(['render', 'templates', 'default', 'resultMessage'], '{resultMessage}');
+            $templateStr = Config::get(['renderer', 'templates', $form->getTemplate(), 'result']);
             $template = new Template($templateStr);
             $replacements = $this->getReplacements($template->getPlaceholders(), $form);
             $template->setReplacements($replacements);
