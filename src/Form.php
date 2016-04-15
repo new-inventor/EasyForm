@@ -245,6 +245,8 @@ class Form extends Block implements FormInterface
                 $result = $handler->process();
                 if ($result) {
                     $this->afterSave();
+                }else{
+                    $this->addError($this->getFailMessage());
                 }
                 return $result;
             }
