@@ -75,7 +75,8 @@ class FormRenderer extends BaseRenderer
         if ($form->getStatus() == Form::STATUS_SHOW_RESULT) {
             $templateStr = Config::get(['render', 'templates', 'default', 'resultMessage'], '{resultMessage}');
             $template = new Template($templateStr);
-            $template->addReplacement($form->getResultMessage());
+            $resultMessage = $form->isValid() ? $form->getSuccessMessage() : $form->getFailMessage();
+            $template->addReplacement($resultMessage);
             return $template->getReplaced();
         }
         return '';
