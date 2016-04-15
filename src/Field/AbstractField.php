@@ -13,7 +13,6 @@ use NewInventor\ConfigTool\Config;
 use NewInventor\Form\FormObject;
 use NewInventor\Form\Interfaces\FieldInterface;
 use NewInventor\Form\Renderer\FieldRenderer;
-use NewInventor\Form\Renderer\RendererInterface;
 use NewInventor\Form\Validator\AbstractValidator;
 use NewInventor\Form\Validator\ValidatorInterface;
 use NewInventor\TypeChecker\Exception\ArgumentException;
@@ -27,7 +26,8 @@ abstract class AbstractField extends FormObject implements FieldInterface
     private $value;
     /** @var ObjectListInterface */
     protected $validators;
-
+    /** @var bool */
+    protected $validated = false;
 
     /**
      * AbstractField constructor.
@@ -71,7 +71,14 @@ abstract class AbstractField extends FormObject implements FieldInterface
     public function setValue($value)
     {
         TypeChecker::getInstance()
-            ->check($value, [SimpleTypes::STRING, SimpleTypes::ARR, SimpleTypes::NULL, SimpleTypes::INT, SimpleTypes::FLOAT, SimpleTypes::BOOL], 'value')
+            ->check($value, [
+                SimpleTypes::STRING,
+                SimpleTypes::ARR,
+                SimpleTypes::NULL,
+                SimpleTypes::INT,
+                SimpleTypes::FLOAT,
+                SimpleTypes::BOOL
+            ], 'value')
             ->throwTypeErrorIfNotValid();
         $this->value = $value;
 
@@ -86,8 +93,14 @@ abstract class AbstractField extends FormObject implements FieldInterface
         return $res;
     }
 
-    public function validate()
+    /**
+     * @inheritdoc
+     */
+    public function validate($revalidate = false)
     {
+        if ($this->validated && !$revalidate) {
+            return $this->isValid();
+        }
         /** @var ValidatorInterface $validator */
         foreach ($this->validators() as $validator) {
             if ($validator->isValid($this->getValue())) {
@@ -96,6 +109,7 @@ abstract class AbstractField extends FormObject implements FieldInterface
             $this->isValid = false;
             $this->errors[] = $validator->getError();
         }
+        return $this->isValid();
     }
 
     public function children()
@@ -143,12 +157,12 @@ abstract class AbstractField extends FormObject implements FieldInterface
     {
         $validatorObj = null;
         if (is_string($validator)) {
-           $validatorObj = $this->generateInnerValidator($validator);
+            $validatorObj = $this->generateInnerValidator($validator);
         } elseif ($validator instanceof \Closure) {
             $validatorObj = $this->generateCustomValidator($validator);
-        } elseif($validator instanceof ValidatorInterface){
+        } elseif ($validator instanceof ValidatorInterface) {
             $validatorObj = $validator;
-        }else{
+        } else {
             throw new ArgumentException('Передан неправильный валидатор.', 'validator');
         }
         $validatorObj->field($this);
@@ -162,10 +176,12 @@ abstract class AbstractField extends FormObject implements FieldInterface
     {
         AbstractValidator::initSettings();
         $validatorClassName = Config::get(['validator', $validatorName]);
-        if (class_exists($validatorClassName) && in_array('NewInventor\Form\Validator\ValidatorInterface', class_implements($validatorClassName))) {
+        if (class_exists($validatorClassName) && in_array('NewInventor\Form\Validator\ValidatorInterface',
+                class_implements($validatorClassName))
+        ) {
             /** @var ValidatorInterface $validatorObj */
             $validatorObj = new $validatorClassName();
-        }else{
+        } else {
             throw new ArgumentException('Класс для валидатора не найден.', 'validatorName');
         }
 
