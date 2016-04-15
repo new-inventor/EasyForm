@@ -421,4 +421,12 @@ class Form extends Block implements FormInterface
     {
         return $this->loadJQuery;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
 }
