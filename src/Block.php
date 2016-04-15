@@ -18,7 +18,6 @@ use NewInventor\Form\Field\TextArea;
 use NewInventor\Form\Interfaces\BlockInterface;
 use NewInventor\Form\Interfaces\FieldInterface;
 use NewInventor\Form\Renderer\BlockRenderer;
-use NewInventor\Form\Renderer\RendererInterface;
 use NewInventor\TypeChecker\SimpleTypes;
 use NewInventor\TypeChecker\TypeChecker;
 

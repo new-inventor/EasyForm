@@ -9,15 +9,7 @@ namespace NewInventor\Form\Renderer;
 
 use NewInventor\Abstractions\Interfaces\ObjectInterface;
 use NewInventor\Abstractions\Object;
-use NewInventor\ConfigTool\Config;
-use NewInventor\Form\Abstraction\KeyValuePair;
-use NewInventor\Form\Interfaces\BlockInterface;
-use NewInventor\Form\Interfaces\FieldInterface;
-use NewInventor\Form\Interfaces\FormInterface;
 use NewInventor\Patterns\SingletonTrait;
-use NewInventor\TypeChecker\Exception\ArgumentException;
-use NewInventor\TypeChecker\SimpleTypes;
-use NewInventor\TypeChecker\TypeChecker;
 
 class BaseRenderer extends Object implements RendererInterface
 {

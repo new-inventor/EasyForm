@@ -13,7 +13,6 @@ use NewInventor\Abstractions\Interfaces\ObjectInterface;
 use NewInventor\ConfigTool\Config;
 use NewInventor\Form\Abstraction\KeyValuePair;
 use NewInventor\Template\Template;
-use NewInventor\TypeChecker\TypeChecker;
 
 class AttributeRenderer extends BaseRenderer
 {

@@ -5,7 +5,6 @@ namespace NewInventor\Form;
 use NewInventor\Abstractions\Interfaces\ObjectListInterface;
 use NewInventor\Abstractions\NamedObject;
 use NewInventor\Abstractions\NamedObjectList;
-use NewInventor\ConfigTool\Config;
 use NewInventor\Form\Abstraction\KeyValuePair;
 use NewInventor\Form\Field\AbstractField;
 use NewInventor\Form\Interfaces\BlockInterface;

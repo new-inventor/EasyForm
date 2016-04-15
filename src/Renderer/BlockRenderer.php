@@ -16,7 +16,6 @@ use NewInventor\Form\Interfaces\BlockInterface;
 use NewInventor\Form\Interfaces\FieldInterface;
 use NewInventor\Form\Renderer\Traits;
 use NewInventor\Template\Template;
-use NewInventor\TypeChecker\TypeChecker;
 
 class BlockRenderer extends BaseRenderer
 {

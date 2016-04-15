@@ -8,7 +8,6 @@
 namespace NewInventor\Form\Validator;
 
 use NewInventor\Abstractions\Object;
-use NewInventor\ConfigTool\Config;
 use NewInventor\Form\Interfaces\FieldInterface;
 use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 use NewInventor\TypeChecker\TypeChecker;

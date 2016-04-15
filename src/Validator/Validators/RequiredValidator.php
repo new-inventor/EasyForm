@@ -13,7 +13,8 @@ use NewInventor\Form\Validator\ValidatorInterface;
 class RequiredValidator extends AbstractValidator implements ValidatorInterface
 {
     /**
-     * EmailValidator constructor.
+     * RequiredValidator constructor.
+     * @param \Closure|null $customValidateMethod
      */
     public function __construct(\Closure $customValidateMethod = null)
     {

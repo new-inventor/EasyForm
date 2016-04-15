@@ -15,7 +15,6 @@ use NewInventor\Form\Form;
 use NewInventor\Form\Interfaces\FormInterface;
 use NewInventor\Form\Renderer\Traits;
 use NewInventor\Template\Template;
-use NewInventor\TypeChecker\TypeChecker;
 
 class FormRenderer extends BaseRenderer
 {
