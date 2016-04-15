@@ -54,7 +54,9 @@ class Form extends Block implements FormInterface
     /** @var NamedObjectList */
     private $handlers;
     /** @var string */
-    private $resultMessage = '';
+    private $successMessage = '';
+    /** @var string */
+    private $failMessage = '';
     /** @var bool */
     private $loadJQuery = false;
     
@@ -269,7 +271,9 @@ class Form extends Block implements FormInterface
     protected function afterSave()
     {
         $this->setStatus(self::STATUS_BEFORE_REDIRECT);
-        header("Refresh:0");
+        if($this->method == self::METHOD_POST) {
+            header("Refresh:0");
+        }
     }
     
     protected function beforeSave()
@@ -280,14 +284,6 @@ class Form extends Block implements FormInterface
     protected function afterRefresh()
     {
         $this->setStatus(self::STATUS_SHOW_RESULT);
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public function getResultMessage()
-    {
-        return $this->resultMessage;
     }
     
     /**
@@ -318,13 +314,42 @@ class Form extends Block implements FormInterface
     /**
      * @inheritdoc
      */
-    public function resultMessage($message)
+    public function getSuccessMessage()
+    {
+        return $this->successMessage;
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function successMessage($message)
     {
         TypeChecker::getInstance()
             ->isString($message, 'message')
             ->throwTypeErrorIfNotValid();
         
-        $this->resultMessage = $message;
+        $this->successMessage = $message;
+        return $this;
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function getFailMessage()
+    {
+        return $this->failMessage;
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function failMessage($message)
+    {
+        TypeChecker::getInstance()
+            ->isString($message, 'message')
+            ->throwTypeErrorIfNotValid();
+        
+        $this->failMessage = $message;
         return $this;
     }
     

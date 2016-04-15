@@ -117,7 +117,7 @@ $form
 //    ->handler(new Handler\ResetHandler($form))
     ->handler([$a, 'asd'], 'tot', 'Еще')
     ->handler(['A', 'zxc'], 'tot1', 'Еще1')
-    ->resultMessage('Данные сохранены.')
+    ->successMessage('Данные сохранены.')
 ->end();
 if($form->load() && $form->validate()){
     $form->save();

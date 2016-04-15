@@ -81,12 +81,6 @@ interface FormInterface extends BlockInterface
      */
     public function save(array $customData = null);
 
-    /**
-     * @param $message
-     * @throws ArgumentTypeException
-     * @return FormInterface
-     */
-    public function resultMessage($message);
 
     /**
      * @return FormInterface
@@ -101,7 +95,25 @@ interface FormInterface extends BlockInterface
     /**
      * @return string
      */
-    public function getResultMessage();
+    public function getSuccessMessage();
+
+    /**
+     * @param $message
+     * @throws ArgumentTypeException
+     * @return FormInterface
+     */
+    public function successMessage($message);
+    /**
+     * @return string
+     */
+    public function getFailMessage();
+
+    /**
+     * @param $message
+     * @throws ArgumentTypeException
+     * @return FormInterface
+     */
+    public function failMessage($message);
     
     /**
      * @return array
