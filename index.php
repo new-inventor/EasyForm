@@ -118,7 +118,6 @@ $form
     ->handler([$a, 'asd'], 'tot', 'Еще')
     ->handler(['A', 'zxc'], 'tot1', 'Еще1')
     ->resultMessage('Данные сохранены.')
-    ->loadJQuery()
 ->end();
 if($form->load() && $form->validate()){
     $form->save();

@@ -180,6 +180,8 @@ class Form extends Block implements FormInterface
         $res['method'] = $this->getMethod();
         $res['action'] = $this->getAction();
         $res['encType'] = $this->getEncType();
+        
+        return $res;
     }
     
     /**
@@ -227,6 +229,9 @@ class Form extends Block implements FormInterface
             $data = $_REQUEST[$this->getName()];
         }
         if ($data === null) {
+            return false;
+        }
+        if(!$this->validate()){
             return false;
         }
         /**

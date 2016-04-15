@@ -15,9 +15,10 @@ interface ValidatableInterface
     public function isValid();
 
     /**
+     * @param bool $revalidate
      * @return bool
      */
-    public function validate();
+    public function validate($revalidate = false);
 
     /**
      * @param string $error

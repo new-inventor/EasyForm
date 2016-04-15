@@ -33,6 +33,8 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     private $children = null;
     /** @var string */
     protected $templateName;
+    /** @var bool */
+    protected $validated = false;
 
     const DEFAULT_TEMPLATE = 'default';
 
@@ -166,7 +168,8 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
         $res = array_merge($res, [
             'title' => $this->getTitle(),
             'fullName' => $this->getFullName(),
-            'attrs' => $this->attributes()->toArray()
+            'attrs' => $this->attributes()->toArray(),
+            'children' => $this->children()->toArray()
         ]);
 
         return $res;
@@ -201,8 +204,11 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     }
 
     /** @inheritdoc */
-    public function validate()
+    public function validate($revalidate = false)
     {
+        if($this->validated && !$revalidate){
+            return $this->isValid();
+        }
         if ($this->children() !== null) {
             /** @var FieldInterface|BlockInterface $child */
             foreach ($this->children() as $child) {
