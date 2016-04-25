@@ -70,31 +70,33 @@ $form
     ->attribute('class', 'show')
     ->validator('string', ['minLength' => 6, 'maxLength' => 12])
     ->validator(
-        function ($value) {
-            return substr($value, 0, 2) == 'as';
-        },
-        ['message' => 'Значение поля "{f}" должно начинаться с "as"']
+        function ($objectName, $value) {
+            if(substr($value, 0, 2) == 'as'){
+                return true;
+            }
+            throw new \NewInventor\Form\Validator\Exceptions\String\Base($objectName, 'Значение поля "{n}" должно начинаться с "as"');
+        }
     )
     ->end()
     ->end()
     ->block('innerBlock')
-    ->text('city')
-    ->title('Город')
-    ->validator('required')
-    ->validator('integer', ['min' => 5, 'max' => 10])
-    ->attribute('data-city-input')
-    ->end()
-    ->select('selectBox1', ['1', '2', '3'])
-    ->multiple()
-    ->addOptionArray(['1' => 'qwerty', '2' => 'asdfgh', '3' => 'zxcvbn', '4' => 'qazwsx'])
-    ->attribute('size', 5)
-    ->end()
-    ->block('second')
-    ->textArea('message', 'input the message here...')
-    ->rows(5)
-    ->cols(50)
-    ->end()
-    ->end()
+        ->text('city')
+            ->title('Город')
+            ->validator('required')
+            ->validator('integer', ['min' => 5, 'max' => 10])
+            ->attribute('data-city-input')
+        ->end()
+        ->select('selectBox1', ['1', '2', '3'])
+            ->multiple()
+            ->addOptionArray(['1' => 'qwerty', '2' => 'asdfgh', '3' => 'zxcvbn', '4' => 'qazwsx'])
+            ->attribute('size', 5)
+        ->end()
+        ->block('second')
+            ->textArea('message', 'input the message here...')
+                ->rows(5)
+                ->cols(50)
+            ->end()
+        ->end()
     ->end()
     ->repeatable(
         (new Block('fullName', 'Полное имя участника.'))

@@ -8,21 +8,16 @@
 namespace NewInventor\Form\Validator\Validators;
 
 use NewInventor\Form\Validator\AbstractValidator;
+use NewInventor\Form\Validator\Exceptions\Required\NotFilledUp;
 use NewInventor\Form\Validator\ValidatorInterface;
 
 class RequiredValidator extends AbstractValidator implements ValidatorInterface
 {
-    /**
-     * RequiredValidator constructor.
-     * @param \Closure|null $customValidateMethod
-     */
-    public function __construct(\Closure $customValidateMethod = null)
-    {
-        parent::__construct('Поле "{f}" обязательно для заполнения.', $customValidateMethod);
-    }
-    
     public function validateValue($value)
     {
-        return !empty($value) || is_numeric($value);
+        if(!empty($value) || is_numeric($value)){
+            return true;
+        }
+        throw new NotFilledUp($this->objectName, $this->message);
     }
 }

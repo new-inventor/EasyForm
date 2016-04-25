@@ -5,7 +5,7 @@
  * Time: 13:57
  */
 
-namespace Validator\Exceptions;
+namespace NewInventor\Form\Validator\Exceptions;
 
 
 use NewInventor\Template\Template;
@@ -28,6 +28,14 @@ class Base extends \Exception
 
         parent::__construct($this->getMessageString($message), $code, $previous);
     }
+    
+    protected function setObjectName($objectName)
+    {
+        TypeChecker::getInstance()
+            ->isString($objectName, 'objectName')
+            ->throwTypeErrorIfNotValid();
+        $this->objectName = $objectName;
+    }
 
     protected function getMessageString($message)
     {
@@ -40,31 +48,21 @@ class Base extends \Exception
 
         return $this->processMessageTemplate($message);
     }
+    
+    protected function getDefaultMessage()
+    {
+        return 'Значение поля "{n}" не верно.';
+    }
 
     protected function processMessageTemplate($messageTemplate)
     {
         $template = new Template($messageTemplate);
-        $placeholders = $template->getPlaceholders();
-        foreach($placeholders as $placeholder){
-            $template->addReplacement($this->{$placeholder}());
-        }
 
-        return $template->getReplaced();
+        return $template->getString($this);
     }
 
-    /**
-     * @param string $objectName
-     */
-    protected function setObjectName($objectName)
+    public function n()
     {
-        TypeChecker::getInstance()
-            ->isString($objectName, 'objectName')
-            ->throwTypeErrorIfNotValid();
-        $this->objectName = $objectName;
-    }
-
-    protected function getDefaultMessage()
-    {
-        return 'Значение поля "{f}" не верно.';
+        return (string)$this->objectName;
     }
 }

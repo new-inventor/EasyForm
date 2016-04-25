@@ -5,37 +5,14 @@
  * Time: 14:02
  */
 
-namespace Validator\Exceptions\Integer;
+namespace NewInventor\Form\Validator\Exceptions\Integer;
 
 
-use NewInventor\TypeChecker\TypeChecker;
 
-class Base extends \Validator\Exceptions\Base
+class Base extends \NewInventor\Form\Validator\Exceptions\Base
 {
-    protected $minValue;
-    /**
-     * Base constructor.
-     * @param string $objectName
-     * @param int $minValue
-     * @param string $message
-     */
-    public function __construct($objectName, $minValue, $message = '')
+    protected function getDefaultMessage()
     {
-        $this->setObjectName($objectName);
-        
-        parent::__construct($this->getMessageString($message));
-    }
-    
-    protected function getDefaultMessage($message)
-    {
-        return 'Значение поля "{f}" не является целым числом.';
-    }
-    
-    protected function setMinValue($minValue)
-    {
-        TypeChecker::getInstance()
-            ->isInt($minValue, 'minValue')
-            ->throwTypeErrorIfNotValid();
-        $this->minValue = $minValue;
+        return 'Значение поля "{n}" не является целым числом.';
     }
 }

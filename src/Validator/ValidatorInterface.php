@@ -7,7 +7,6 @@
 
 namespace NewInventor\Form\Validator;
 
-use NewInventor\Form\Interfaces\FieldInterface;
 use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 
 interface ValidatorInterface
@@ -33,9 +32,10 @@ interface ValidatorInterface
      * @param \Closure $customValidateMethod
      */
     public function setCustomValidateMethod(\Closure $customValidateMethod);
-    
+
     /**
-     * @param FieldInterface $field
+     * @param string $objectName
+     * @return void
      */
-    public function field(FieldInterface $field);
+    public function setObjectName($objectName);
 }

@@ -222,12 +222,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/new-inventor/template.git",
-                "reference": "06822b4998ec7711897918272a4a639d84738b8f"
+                "reference": "c3c95edfbddfd2ef050da425babd77bbc62231af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/new-inventor/template/zipball/06822b4998ec7711897918272a4a639d84738b8f",
-                "reference": "06822b4998ec7711897918272a4a639d84738b8f",
+                "url": "https://api.github.com/repos/new-inventor/template/zipball/c3c95edfbddfd2ef050da425babd77bbc62231af",
+                "reference": "c3c95edfbddfd2ef050da425babd77bbc62231af",
                 "shasum": ""
             },
             "require": {
@@ -252,7 +252,7 @@
                 }
             ],
             "description": "Template class for string replacements",
-            "time": "2016-04-25 11:57:26"
+            "time": "2016-04-25 12:05:27"
         }
     ],
     "packages-dev": [

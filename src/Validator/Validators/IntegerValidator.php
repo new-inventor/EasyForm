@@ -8,6 +8,7 @@
 namespace NewInventor\Form\Validator\Validators;
 
 use NewInventor\Form\Validator\AbstractValidator;
+use NewInventor\Form\Validator\Exceptions\Integer;
 use NewInventor\Form\Validator\ValidatorInterface;
 use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 use NewInventor\TypeChecker\TypeChecker;
@@ -17,20 +18,9 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
     protected $min;
     protected $max;
     
-    protected $minMessage = 'Значение поля "{f}" должно быть больше {min}.';
-    protected $maxMessage = 'Значение поля "{f}" должно быть меньше {max}.';
-    protected $minMaxMessage = 'Значение поля "{f}" должно быть между {min} и {max}.';
-    
-    protected $error = '';
-    
-    /**
-     * IntegerValidator constructor.
-     * @param \Closure|null $customValidateMethod
-     */
-    public function __construct(\Closure $customValidateMethod = null)
-    {
-        parent::__construct('Значение поля "{f}" не является целым числом.', $customValidateMethod);
-    }
+    protected $minMessage = '';
+    protected $maxMessage = '';
+    protected $rangeMessage = '';
     
     public function validateValue($value)
     {
@@ -38,40 +28,25 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
             return true;
         }
         if (!is_numeric($value)) {
-            $this->error = $this->message;
-            
-            return false;
+            throw new Integer\Base($this->objectName);
         }
         $value = (string)$value;
         $testValue = (string)((int)((string)$value));
         if (mb_strlen($value) != mb_strlen($testValue)) {
-            $this->error = $this->message;
-            
-            return false;
+            throw new Integer\Base($this->objectName);
         }
         $value = (int)$value;
         if (isset($this->min) && isset($this->max) && ($value < $this->min || $value > $this->max)) {
-            $this->error = str_replace(['{min}', '{max}'], [$this->min, $this->max], $this->minMaxMessage);
-            
-            return false;
+            throw new Integer\Range($this->objectName, $this->min, $this->max, $this->rangeMessage);
         }
         if (isset($this->min) && $value < $this->min) {
-            $this->error = str_replace('{min}', $this->min, $this->minMessage);
-            
-            return false;
+            throw new Integer\Min($this->objectName, $this->min, $this->minMessage);
         }
         if (isset($this->max) && $value > $this->max) {
-            $this->error = str_replace('{max}', $this->max, $this->maxMessage);
-            
-            return false;
+            throw new Integer\Max($this->objectName, $this->max, $this->maxMessage);
         }
         
         return true;
-    }
-    
-    public function getError()
-    {
-        return $this->replaceFieldName($this->error);
     }
     
     /**
@@ -139,12 +114,12 @@ class IntegerValidator extends AbstractValidator implements ValidatorInterface
      * @return $this
      * @throws ArgumentTypeException
      */
-    public function setMinMaxMessage($value)
+    public function setRangeMessage($value)
     {
         TypeChecker::getInstance()
             ->isString($value, 'value')
             ->throwTypeErrorIfNotValid();
-        $this->minMaxMessage = $value;
+        $this->rangeMessage = $value;
         
         return $this;
     }

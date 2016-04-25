@@ -165,11 +165,16 @@ abstract class AbstractField extends FormObject implements FieldInterface
         } else {
             throw new ArgumentException('Передан неправильный валидатор.', 'validator');
         }
-        $validatorObj->field($this);
+        $validatorObj->setObjectName($this->getErrorName());
         $validatorObj->setOptions($options);
         $this->validators()->add($validatorObj);
         
         return $this;
+    }
+
+    protected function getErrorName()
+    {
+        return !empty($this->getTitle()) ? $this->getTitle() : $this->getName();
     }
     
     protected function generateInnerValidator($validatorName)

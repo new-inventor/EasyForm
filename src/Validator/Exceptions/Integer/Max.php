@@ -9,26 +9,26 @@ namespace NewInventor\Form\Validator\Exceptions\Integer;
 
 
 use NewInventor\Form\Validator\Exceptions\Base;
-use NewInventor\Form\Validator\Exceptions\Integer\Traits\MinTrait;
+use NewInventor\Form\Validator\Exceptions\Integer\Traits\MaxTrait;
 
-class Min extends Base
+class Max extends Base
 {
-    use MinTrait;
+    use MaxTrait;
     
     /**
      * Base constructor.
      * @param string $objectName
-     * @param int $minValue
+     * @param int $maxValue
      * @param string $message
      */
-    public function __construct($objectName, $minValue, $message = '')
+    public function __construct($objectName, $maxValue, $message = '')
     {
-        $this->setMin($minValue);
+        $this->setMax($maxValue);
         parent::__construct($objectName, $message);
     }
     
     protected function getDefaultMessage()
     {
-        return 'Значение поля "{n}" должно быть больше {min}.';
+        return 'Значение поля "{n}" должно быть меньше {max}.';
     }
 }

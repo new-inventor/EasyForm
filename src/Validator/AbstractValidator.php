@@ -8,7 +8,6 @@
 namespace NewInventor\Form\Validator;
 
 use NewInventor\Abstractions\Object;
-use NewInventor\Form\Interfaces\FieldInterface;
 use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 use NewInventor\TypeChecker\TypeChecker;
 
@@ -18,10 +17,12 @@ class AbstractValidator extends Object implements ValidatorInterface
     public $lastValidated;
     /** @var string */
     public $message;
+    /** @var string */
+    public $error;
     /** @var \Closure */
     protected $customValidateMethod;
-    /** @var FieldInterface */
-    protected $field;
+    /** @var string */
+    protected $objectName;
     
     /** @var bool */
     protected static $settingsInitialised = false;
@@ -31,10 +32,18 @@ class AbstractValidator extends Object implements ValidatorInterface
      * @param string $message
      * @param \Closure|null $customValidateMethod
      */
-    public function __construct($message = 'Ошибка в поле', \Closure $customValidateMethod = null)
+    public function __construct($message = '', \Closure $customValidateMethod = null)
     {
-        $this->message = $message;
+        $this->setMessage($message);
         $this->customValidateMethod = $customValidateMethod;
+    }
+    
+    protected function setMessage($message)
+    {
+        TypeChecker::getInstance()
+            ->isString($message, 'message')
+            ->throwTypeErrorIfNotValid();
+        $this->message = $message;
     }
     
     /**
@@ -49,11 +58,15 @@ class AbstractValidator extends Object implements ValidatorInterface
     public function isValid($value)
     {
         $this->lastValidated = $value;
-        if (isset($this->customValidateMethod)) {
-            return $this->customValidateMethod->__invoke($value);
+        try {
+            if (isset($this->customValidateMethod)) {
+                $this->customValidateMethod->__invoke($this->objectName, $value);
+            }
+            return $this->validateValue($value);
+        }catch (\Exception $e){
+            $this->error = $e->getMessage();
+            return false;
         }
-        
-        return $this->validateValue($value);
     }
     
     protected function validateValue($value)
@@ -63,16 +76,8 @@ class AbstractValidator extends Object implements ValidatorInterface
     
     public function getError()
     {
-        return $this->replaceFieldName($this->message);
+        return $this->error;
     }
-    
-    protected function replaceFieldName($message)
-    {
-        $name = !empty($this->field->getTitle()) ? $this->field->getTitle() : $this->field->getName();
-        
-        return str_replace('{f}', $name, $message);
-    }
-    
     
     /**
      * @param \Closure $customValidateMethod
@@ -96,27 +101,13 @@ class AbstractValidator extends Object implements ValidatorInterface
             $this->$argName($arg);
         }
     }
-    
-    /**
-     * @param string $message
-     * @return $this
-     * @throws ArgumentTypeException
-     */
-    public function setMessage($message)
+
+    /** @inheritdoc */
+    public function setObjectName($objectName)
     {
         TypeChecker::getInstance()
-            ->isString($message, 'message')
+            ->isString($objectName, 'objectName')
             ->throwTypeErrorIfNotValid();
-        $this->message = $message;
-        
-        return $this;
-    }
-    
-    /**
-     * @param FieldInterface $field
-     */
-    public function field(FieldInterface $field)
-    {
-        $this->field = $field;
+        $this->objectName = $objectName;
     }
 }

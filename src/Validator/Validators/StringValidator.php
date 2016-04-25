@@ -8,6 +8,7 @@
 namespace NewInventor\Form\Validator\Validators;
 
 use NewInventor\Form\Validator\AbstractValidator;
+use NewInventor\Form\Validator\Exceptions\String;
 use NewInventor\Form\Validator\ValidatorInterface;
 use NewInventor\TypeChecker\Exception\ArgumentTypeException;
 use NewInventor\TypeChecker\TypeChecker;
@@ -19,69 +20,50 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
     protected $maxLength;
     protected $regexp;
     
-    protected $lengthMessage = 'Длина значения поля "{f}" должна быть {length} символов.';
-    protected $minLengthMessage = 'Длина значения поля "{f}" должна быть больше {minLength} символов.';
-    protected $maxLengthMessage = 'Длина значения поля "{f}" должна быть меньше {maxLength} символов.';
-    protected $minMaxLengthMessage = 'Длина значения поля "{f}" должна быть между {minLength} и {maxLength} символами.';
-    protected $regexpMessage = 'Значение поля "{f}" не удовлетворяет правилам.';
-    
-    protected $error = '';
+    protected $lengthMessage = '';
+    protected $minLengthMessage = '';
+    protected $maxLengthMessage = '';
+    protected $rangeLengthMessage = '';
+    protected $regexpMessage = '';
     
     /**
      * IntegerValidator constructor.
+     * @param string $message
      * @param \Closure|null $customValidateMethod
      */
-    public function __construct(\Closure $customValidateMethod = null)
+    public function __construct($message = '', \Closure $customValidateMethod = null)
     {
-        parent::__construct('Значение поля "{f}" не является строкой.', $customValidateMethod);
+        parent::__construct($message, $customValidateMethod);
     }
     
     public function validateValue($value)
     {
         if (!is_string($value)) {
-            $this->error = $this->message;
-            
-            return false;
+            throw new String\Base($this->objectName, $this->message);
         }
         if (mb_strlen($value) == 0) {
             return true;
         }
         if (!is_null($this->length) && mb_strlen($value) !== $this->length) {
-            $this->error = str_replace('{length}', $this->length, $this->lengthMessage);
-            
-            return false;
+            throw new String\Length($this->objectName, $this->length, $this->lengthMessage);
         }
         if (!is_null($this->maxLength) && !is_null($this->minLength) && (mb_strlen($value) > $this->maxLength || mb_strlen($value) < $this->minLength)) {
-            $this->error = str_replace(['{minLength}', '{maxLength}'], [$this->minLength, $this->maxLength],
-                $this->minMaxLengthMessage);
-            
-            return false;
+            throw new String\RangeLength($this->objectName, $this->minLength, $this->maxLength, $this->rangeLengthMessage);
         }
         if (!is_null($this->minLength) && mb_strlen($value) < $this->minLength) {
-            $this->error = str_replace('{minLength}', $this->minLength, $this->minLengthMessage);
-            
-            return false;
+            throw new String\MinLength($this->objectName, $this->minLength, $this->minLengthMessage);
         }
         if (!is_null($this->maxLength) && mb_strlen($value) > $this->maxLength) {
-            $this->error = str_replace('{maxLength}', $this->maxLength, $this->maxLengthMessage);
-            
-            return false;
+            throw new String\MaxLength($this->objectName, $this->maxLength, $this->maxLengthMessage);
         }
         if (!is_null($this->regexp)) {
             preg_match($this->regexp, $value, $matches);
             if (count($matches) > 1 || empty($matches)) {
-                $this->error = $this->regexpMessage;
-                
-                return false;
+                throw new String\Regexp($this->objectName, $this->regexpMessage);
             }
         }
         
         return true;
-    }
-    
-    public function getError()
-    {
-        return $this->replaceFieldName($this->error);
     }
     
     /**
@@ -194,12 +176,12 @@ class StringValidator extends AbstractValidator implements ValidatorInterface
      * @return $this
      * @throws ArgumentTypeException
      */
-    public function setMinMaxLengthMessage($value)
+    public function setRangeLengthMessage($value)
     {
         TypeChecker::getInstance()
             ->isString($value, 'value')
             ->throwTypeErrorIfNotValid();
-        $this->minMaxLengthMessage = $value;
+        $this->rangeLengthMessage = $value;
         
         return $this;
     }
