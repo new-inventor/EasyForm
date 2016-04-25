@@ -28,15 +28,13 @@ trait Label
      *
      * @return string
      */
-    protected function label($object)
+    public function label($object)
     {
         $templateStr = Config::find(['renderer'], ['templates', $object->getTemplate(), 'label'], $object->getClass(),
             '');
         $template = new Template($templateStr);
-        $replacements = $this->getReplacements($template->getPlaceholders(), $object);
-        $template->setReplacements($replacements);
         
-        return $template->getReplaced();
+        return $template->getString($this, $object);
     }
     
     /**
@@ -44,7 +42,7 @@ trait Label
      *
      * @return string
      */
-    protected function title($object)
+    public function title($object)
     {
         return $object->getTitle();
     }

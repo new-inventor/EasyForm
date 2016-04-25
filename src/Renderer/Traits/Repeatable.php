@@ -29,14 +29,12 @@ trait Repeatable
      *
      * @return string
      */
-    protected function actions($block, $check = true)
+    public function actions($block, $check = true)
     {
         $templateStr = Config::get(['renderer', 'templates', $block->getTemplate(), 'repeatActionsBlock']);
         $template = new Template($templateStr);
-        $replacements = $this->getReplacements($template->getPlaceholders(), $block, $check);
-        $template->setReplacements($replacements);
         
-        return $template->getReplaced();
+        return $template->getString($this, $block, $check);
     }
     
     /**
@@ -45,15 +43,13 @@ trait Repeatable
      *
      * @return string
      */
-    protected function addButton($block, $check = true)
+    public function addButton($block, $check = true)
     {
         $res = '';
         if (((int)$block->getName() == count($block->getParent()->children()) - 1) || !$check) {
             $templateStr = Config::get(['renderer', 'templates', $block->getTemplate(), 'addButton']);
             $template = new Template($templateStr);
-            $replacements = $this->getReplacements($template->getPlaceholders(), $block);
-            $template->setReplacements($replacements);
-            $res = $template->getReplaced();
+            $res = $template->getString($this, $block);
         }
         
         return $res;
@@ -65,46 +61,44 @@ trait Repeatable
      *
      * @return string
      */
-    protected function deleteButton($block, $check = true)
+    public function deleteButton($block, $check = true)
     {
         $res = '';
         if (((int)$block->getName() != 0 || count($block->getParent()->children()) > 1) || !$check) {
             $templateStr = Config::get(['renderer', 'templates', $block->getTemplate(), 'deleteButton']);
             $template = new Template($templateStr);
-            $replacements = $this->getReplacements($template->getPlaceholders(), $block);
-            $template->setReplacements($replacements);
-            $res = $template->getReplaced();
+            $res = $template->getString($this, $block);
         }
         
         return $res;
     }
     
-    protected function blockSelector()
+    public function blockSelector()
     {
         return $this->getSelectorFromSettings('block');
     }
     
-    protected function containerSelector()
+    public function containerSelector()
     {
         return $this->getSelectorFromSettings('container');
     }
     
-    protected function actionsBlockSelector()
+    public function actionsBlockSelector()
     {
         return $this->getSelectorFromSettings('actionsBlock');
     }
     
-    protected function deleteActionSelector()
+    public function deleteActionSelector()
     {
         return $this->getSelectorFromSettings('deleteAction');
     }
     
-    protected function addActionSelector()
+    public function addActionSelector()
     {
         return $this->getSelectorFromSettings('addAction');
     }
     
-    protected function getSelectorFromSettings($type = '')
+    public function getSelectorFromSettings($type = '')
     {
         if (empty($type)) {
             return '';
@@ -121,7 +115,7 @@ trait Repeatable
      *
      * @return string
      */
-    protected function name($object)
+    public function name($object)
     {
         return $object->getParent()->getName();
     }

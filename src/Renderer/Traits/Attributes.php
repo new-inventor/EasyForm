@@ -20,7 +20,7 @@ trait Attributes
      *
      * @return mixed
      */
-    protected function attributes(FormObjectInterface $object)
+    public function attributes(FormObjectInterface $object)
     {
         $renderer = new AttributeRenderer();
         $name = new KeyValuePair('name', $object->getFullName());

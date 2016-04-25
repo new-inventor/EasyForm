@@ -24,13 +24,11 @@ class HandlerRenderer extends FieldRenderer
         /** @var HandlerInterface $handler */
         $templateStr = Config::get(['renderer', 'templates', $handler->getTemplate(), 'handler']);
         $template = new Template($templateStr);
-        $replacements = $this->getReplacements($template->getPlaceholders(), $handler);
-        $template->setReplacements($replacements);
         
-        return $template->getReplaced();
+        return $template->getString($this, $handler);
     }
     
-    protected function handler(HandlerInterface $handler)
+    public function handler(HandlerInterface $handler)
     {
         return $this->input($handler->attribute('type', 'submit'));
     }

@@ -24,15 +24,13 @@ class FormRenderer extends BaseRenderer
     use Traits\Children;
     
     /** @inheritdoc */
-    public function render(ObjectInterface $handler)
+    public function render(ObjectInterface $form)
     {
-        /** @var FormInterface $handler */
-        $templateStr = Config::get(['renderer', 'templates', $handler->getTemplate(), 'form']);
+        /** @var FormInterface $form */
+        $templateStr = Config::get(['renderer', 'templates', $form->getTemplate(), 'form']);
         $template = new Template($templateStr);
-        $replacements = $this->getReplacements($template->getPlaceholders(), $handler);
-        $template->setReplacements($replacements);
         
-        return $template->getReplaced();
+        return $template->getString($this, $form);
     }
     
     /**
@@ -40,7 +38,7 @@ class FormRenderer extends BaseRenderer
      *
      * @return string
      */
-    protected function start(FormInterface $form)
+    public function start(FormInterface $form)
     {
         return '<form ' . $this->attributes($form) . '>';
     }
@@ -49,7 +47,7 @@ class FormRenderer extends BaseRenderer
      * @return string
      * @internal param FormInterface $form
      */
-    protected function end()
+    public function end()
     {
         return '</form>';
     }
@@ -74,9 +72,8 @@ class FormRenderer extends BaseRenderer
         if ($form->getStatus() == Form::STATUS_SHOW_RESULT) {
             $templateStr = Config::get(['renderer', 'templates', $form->getTemplate(), 'result']);
             $template = new Template($templateStr);
-            $replacements = $this->getReplacements($template->getPlaceholders(), $form);
-            $template->setReplacements($replacements);
-            return $template->getReplaced();
+
+            return $template->getString($this, $form);
         }
         return '';
     }
@@ -122,7 +119,7 @@ class FormRenderer extends BaseRenderer
         return $res;
     }
     
-    protected function pingJquery()
+    public function pingJquery()
     {
         $ch = curl_init('https://code.jquery.com/jquery-1.12.1.min.js');
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);

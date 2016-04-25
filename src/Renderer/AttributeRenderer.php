@@ -28,18 +28,16 @@ class AttributeRenderer extends BaseRenderer
         if ($template === null) {
             return '';
         }
-        $replacements = $this->getReplacements($template->getPlaceholders(), $attribute);
-        $template->setReplacements($replacements);
         
-        return $template->getReplaced();
+        return $template->getString($this, $attribute);
     }
     
-    protected function name(KeyValuePair $pair)
+    public function name(KeyValuePair $pair)
     {
         return $pair->getName();
     }
     
-    protected function value(KeyValuePair $pair)
+    public function value(KeyValuePair $pair)
     {
         return (string)$pair->getValue();
     }

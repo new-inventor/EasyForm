@@ -26,22 +26,20 @@ class FieldRenderer extends BaseRenderer
     use Traits\Repeatable;
     
     /** @inheritdoc */
-    public function render(ObjectInterface $handler)
+    public function render(ObjectInterface $field)
     {
-        /** @var FieldInterface $handler */
-        if ($handler->isRepeatable()) {
-            $templateStr = Config::get(['renderer', 'templates', $handler->getTemplate(), 'repeatFiled']);
+        /** @var FieldInterface $field */
+        if ($field->isRepeatable()) {
+            $templateStr = Config::get(['renderer', 'templates', $field->getTemplate(), 'repeatFiled']);
         } else {
-            $templateStr = Config::get(['renderer', 'templates', $handler->getTemplate(), 'field']);
+            $templateStr = Config::get(['renderer', 'templates', $field->getTemplate(), 'field']);
         }
         $template = new Template($templateStr);
-        $replacements = $this->getReplacements($template->getPlaceholders(), $handler);
-        $template->setReplacements($replacements);
         
-        return $template->getReplaced();
+        return $template->getString($this, $field);
     }
     
-    protected function forField(FieldInterface $field)
+    public function forField(FieldInterface $field)
     {
         return 'for="' . $field->attributes()->get('id')->getValue() . '"';
     }
@@ -51,7 +49,7 @@ class FieldRenderer extends BaseRenderer
      *
      * @return string
      */
-    protected function field(FieldInterface $field)
+    public function field(FieldInterface $field)
     {
         $fieldStr = '';
         if ($field instanceof Field\CheckBox) {
@@ -71,7 +69,7 @@ class FieldRenderer extends BaseRenderer
         return $fieldStr;
     }
     
-    protected function checkBox(Field\CheckBox $field)
+    public function checkBox(Field\CheckBox $field)
     {
         $checked = $field->getValue() ? ' checked' : '';
         
@@ -83,25 +81,21 @@ class FieldRenderer extends BaseRenderer
      *
      * @return string
      */
-    protected function checkSet(Field\ListField $field)
+    public function checkSet(Field\ListField $field)
     {
         $templateStr = Config::get(['renderer', 'templates', $field->getTemplate(), 'checkSet']);
         $template = new Template($templateStr);
-        $replacements = $this->getReplacements($template->getPlaceholders(), $field);
-        $template->setReplacements($replacements);
         
-        return $template->getReplaced();
+        return $template->getString($this, $field);
     }
     
-    protected function options(Field\ListField $field)
+    public function options(Field\ListField $field)
     {
         $templateStr = Config::get(['renderer', 'templates', $field->getTemplate(), 'checkSetOption']);
         $template = new Template($templateStr);
-        $placeholders = $template->getPlaceholders();
         $options = '';
         foreach ($field->options() as $option) {
-            $template->setReplacements($this->getOptionReplacements($placeholders, $field, $option));
-            $options .= $template->getReplaced();
+            $options .= $template->getString($this, $field, $option);
         }
         
         return $options;
@@ -109,11 +103,12 @@ class FieldRenderer extends BaseRenderer
     
     /**
      * @param array $placeholders
+     * @param FieldInterface $field
      * @param array $option
      *
      * @return array
      */
-    protected function getOptionReplacements(array $placeholders, FieldInterface $field, array $option)
+    public function getOptionReplacements(array $placeholders, FieldInterface $field, array $option)
     {
         $res = [];
         foreach ($placeholders as $placeholder) {
@@ -123,7 +118,7 @@ class FieldRenderer extends BaseRenderer
         return $res;
     }
     
-    protected function option(Field\ListField $field, array $option = [])
+    public function option(Field\ListField $field, array $option = [])
     {
         $checked = $field->optionSelected($option['value']) ? ' checked' : '';
         
@@ -133,7 +128,7 @@ class FieldRenderer extends BaseRenderer
         return $res;
     }
     
-    protected function renderOptionAttributes(Field\ListField $field)
+    public function renderOptionAttributes(Field\ListField $field)
     {
         $renderer = new AttributeRenderer();
         $asArray = '';
@@ -154,18 +149,18 @@ class FieldRenderer extends BaseRenderer
         return implode(' ', $attrs);
     }
     
-    protected function optionTitle(Field\ListField $field, array $option = [])
+    public function optionTitle(Field\ListField $field, array $option = [])
     {
         return $option['title'];
     }
     
-    protected function input(FormObjectInterface $field)
+    public function input(FormObjectInterface $field)
     {
         
         return "<input {$this->attributes($field)}/>";
     }
     
-    protected function select(Field\Select $field)
+    public function select(Field\Select $field)
     {
         $res = '<select ' . $this->attributes($field) . '>';
         foreach ($field->options() as $option) {
@@ -181,7 +176,7 @@ class FieldRenderer extends BaseRenderer
         return $res;
     }
     
-    protected function textArea(Field\TextArea $field)
+    public function textArea(Field\TextArea $field)
     {
         return "<textarea {$this->attributes($field)}>{$field->getValue()}</textarea>";
     }

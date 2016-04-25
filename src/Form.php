@@ -28,6 +28,10 @@ use NewInventor\TypeChecker\TypeChecker;
 //TODO change validators (elements relations) and translate to separate project. Fill up validators
 //TODO i18n internationalisation
 //TODO Increase work speed
+//TODO горячие клавиши для форм
+//TODO опциональное шифрование данных формы
+//TODO визуальный конструктор
+//TODO
 
 class Form extends Block implements FormInterface
 {
@@ -266,10 +270,8 @@ class Form extends Block implements FormInterface
             ];
             $this->afterSave();
             return true;
-        } catch (FormBadDataException $e) {
-            $this->result['message'] = $e->getMessage();
         } catch (\Exception $e) {
-            $this->result['message'] = $this->failMessage;
+            $this->result['message'] = $e->getMessage();
         }
         $this->afterSave();
         return false;

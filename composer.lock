@@ -105,12 +105,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/new-inventor/config-tool.git",
-                "reference": "79454c873fc101aa9f318133b2e008cbacbada13"
+                "reference": "c752f369bbee6d8dc524fc5ae5879ad352e988b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/new-inventor/config-tool/zipball/79454c873fc101aa9f318133b2e008cbacbada13",
-                "reference": "79454c873fc101aa9f318133b2e008cbacbada13",
+                "url": "https://api.github.com/repos/new-inventor/config-tool/zipball/c752f369bbee6d8dc524fc5ae5879ad352e988b2",
+                "reference": "c752f369bbee6d8dc524fc5ae5879ad352e988b2",
                 "shasum": ""
             },
             "require": {
@@ -138,7 +138,7 @@
                 }
             ],
             "description": "Config tool for projects",
-            "time": "2016-04-15 11:49:23"
+            "time": "2016-04-15 12:23:08"
         },
         {
             "name": "new-inventor/patterns",
@@ -222,12 +222,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/new-inventor/template.git",
-                "reference": "f51b9e60b0b933a57ff6a666ed6a787d30a71ede"
+                "reference": "06822b4998ec7711897918272a4a639d84738b8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/new-inventor/template/zipball/f51b9e60b0b933a57ff6a666ed6a787d30a71ede",
-                "reference": "f51b9e60b0b933a57ff6a666ed6a787d30a71ede",
+                "url": "https://api.github.com/repos/new-inventor/template/zipball/06822b4998ec7711897918272a4a639d84738b8f",
+                "reference": "06822b4998ec7711897918272a4a639d84738b8f",
                 "shasum": ""
             },
             "require": {
@@ -252,7 +252,7 @@
                 }
             ],
             "description": "Template class for string replacements",
-            "time": "2016-04-15 12:18:30"
+            "time": "2016-04-25 11:57:26"
         }
     ],
     "packages-dev": [
@@ -427,12 +427,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "2431befdd451fac43fbcde94d1a92fb3b8b68f86"
+                "reference": "bbb025d01f41411efb982f32b1ed9365049a0bf0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/2431befdd451fac43fbcde94d1a92fb3b8b68f86",
-                "reference": "2431befdd451fac43fbcde94d1a92fb3b8b68f86",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/bbb025d01f41411efb982f32b1ed9365049a0bf0",
+                "reference": "bbb025d01f41411efb982f32b1ed9365049a0bf0",
                 "shasum": ""
             },
             "require": {
@@ -482,7 +482,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-04-08 08:14:53"
+            "time": "2016-04-10 09:49:46"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -668,12 +668,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "193ad63c624354eabbf2d6e3b985952fdf1409e1"
+                "reference": "6b9a683fa1e683e197d53eccc6f3e02350995950"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/193ad63c624354eabbf2d6e3b985952fdf1409e1",
-                "reference": "193ad63c624354eabbf2d6e3b985952fdf1409e1",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/6b9a683fa1e683e197d53eccc6f3e02350995950",
+                "reference": "6b9a683fa1e683e197d53eccc6f3e02350995950",
                 "shasum": ""
             },
             "require": {
@@ -734,7 +734,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-04-12 07:25:30"
+            "time": "2016-04-25 09:18:24"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -742,12 +742,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "def4c9df058eaac669a762c000daee0b66e3b163"
+                "reference": "5d8c2a839d2c77757b7499eb135f34f9f5f07e6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/def4c9df058eaac669a762c000daee0b66e3b163",
-                "reference": "def4c9df058eaac669a762c000daee0b66e3b163",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/5d8c2a839d2c77757b7499eb135f34f9f5f07e6f",
+                "reference": "5d8c2a839d2c77757b7499eb135f34f9f5f07e6f",
                 "shasum": ""
             },
             "require": {
@@ -790,7 +790,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2016-04-14 19:47:29"
+            "time": "2016-04-20 14:39:30"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

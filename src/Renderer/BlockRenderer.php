@@ -25,22 +25,20 @@ class BlockRenderer extends BaseRenderer
     use Traits\Repeatable;
     
     /** @inheritdoc */
-    public function render(ObjectInterface $handler)
+    public function render(ObjectInterface $block)
     {
-        /** @var BlockInterface $handler */
-        if ($handler->isRepeatable()) {
-            $templateStr = Config::get(['renderer', 'templates', $handler->getTemplate(), 'repeatBlock']);
-        } elseif ($handler->isRepeatableContainer()) {
-            $templateStr = Config::get(['renderer', 'templates', $handler->getTemplate(), 'repeatContainer']);
+        /** @var BlockInterface $block */
+        if ($block->isRepeatable()) {
+            $templateStr = Config::get(['renderer', 'templates', $block->getTemplate(), 'repeatBlock']);
+        } elseif ($block->isRepeatableContainer()) {
+            $templateStr = Config::get(['renderer', 'templates', $block->getTemplate(), 'repeatContainer']);
         } else {
-            $templateStr = Config::get(['renderer', 'templates', $handler->getTemplate(), 'block']);
+            $templateStr = Config::get(['renderer', 'templates', $block->getTemplate(), 'block']);
         }
         
         $template = new Template($templateStr);
-        $replacements = $this->getReplacements($template->getPlaceholders(), $handler);
-        $template->setReplacements($replacements);
         
-        return $template->getReplaced();
+        return $template->getString($this, $block);
     }
     
     /**
@@ -48,7 +46,7 @@ class BlockRenderer extends BaseRenderer
      *
      * @return string
      */
-    protected function repeatScript(BlockInterface $block)
+    public function repeatScript(BlockInterface $block)
     {
         $deepCopy = new DeepCopy();
         /** @var BlockInterface|FieldInterface|RenderableInterface $childCopy */

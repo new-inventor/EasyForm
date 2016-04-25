@@ -28,7 +28,7 @@ trait Errors
      *
      * @return string
      */
-    protected function errors($object)
+    public function errors($object)
     {
         $errors = $object->getErrors();
         if (empty($errors)) {
@@ -42,10 +42,8 @@ trait Errors
             ''
         );
         $template = new Template($templateStr);
-        $replacements = $this->getReplacements($template->getPlaceholders(), $object);
-        $template->setReplacements($replacements);
         
-        return $template->getReplaced();
+        return $template->getString($this, $object);
     }
     
     /**
@@ -53,7 +51,7 @@ trait Errors
      *
      * @return string
      */
-    protected function errorsStr($object)
+    public function errorsStr($object)
     {
         $errorDelimiter = Config::get(['renderer', 'errors', 'delimiter']);
         $errorsStr = implode($errorDelimiter, $object->getErrors());

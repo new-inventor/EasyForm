@@ -10,6 +10,7 @@ namespace NewInventor\Form\Exceptions;
 
 class SessionException extends \Exception
 {
+    /** @inheritdoc */
     public function __construct($message = '', $code = 0, $previous = null)
     {
         parent::__construct($this->getMessageString($message), $code, $previous);
