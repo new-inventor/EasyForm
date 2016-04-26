@@ -34,6 +34,8 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
     protected $templateName;
     /** @var bool */
     protected $validated = false;
+    /** @var string|null */
+    protected $fullName = null;
     
     const DEFAULT_TEMPLATE = 'default';
     
@@ -139,6 +141,9 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
      */
     public function getFullName()
     {
+        if($this->fullName !== null){
+            return $this->fullName;
+        }
         $objectName = $this->getName();
         /** @var FormObject|null $parent */
         $parent = $this->getParent();
@@ -146,6 +151,18 @@ abstract class FormObject extends NamedObject implements FormObjectInterface, Va
             return $parent->getFullName() . '[' . $objectName . ']';
         }
         
+        return $objectName;
+    }
+
+    public function getId()
+    {
+        $objectName = $this->getName();
+        /** @var FormObject|null $parent */
+        $parent = $this->getParent();
+        if (isset($parent)) {
+            return $parent->getId() . '-' . $objectName;
+        }
+
         return $objectName;
     }
     

@@ -39,7 +39,6 @@ abstract class AbstractField extends FormObject implements FieldInterface
     {
         parent::__construct($name, $title);
         $this->setValue($value);
-        $this->attribute('id', $name);
         $this->validators = new ObjectList(['NewInventor\Form\Validator\ValidatorInterface']);
     }
     

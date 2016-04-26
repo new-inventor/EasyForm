@@ -41,7 +41,7 @@ class FieldRenderer extends BaseRenderer
     
     public function forField(FieldInterface $field)
     {
-        return 'for="' . $field->attributes()->get('id')->getValue() . '"';
+        return 'for="' . $field->getId() . '"';
     }
     
     /**
